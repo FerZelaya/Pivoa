@@ -6,6 +6,7 @@ import { HealthModule } from './health/health.module.js';
 import { CategoriesModule } from './categories/categories.module.js';
 import { ExpensesModule } from './expenses/expenses.module.js';
 import { ReceiptsModule } from './receipts/receipts.module.js';
+import { AnalyticsModule } from './analytics/analytics.module.js';
 import { validate } from './config/env.validation.js';
 
 @Module({
@@ -20,6 +21,7 @@ import { validate } from './config/env.validation.js';
     CategoriesModule,
     ExpensesModule,
     ReceiptsModule,
+    AnalyticsModule,
   ],
 })
 export class AppModule {}
