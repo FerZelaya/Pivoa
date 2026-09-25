@@ -1,0 +1,26 @@
+{
+  "name": "pivoa",
+  "version": "1.0.0",
+  "description": "Smart personal finance and expense tracking platform",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "clean": "pnpm -r clean",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:status": "supabase status",
+    "db:reset": "supabase db reset",
+    "db:migrate": "supabase migration up",
+    "db:seed": "supabase db seed"
+  },
+  "keywords": ["finance", "expense-tracker", "supabase", "nestjs", "react"],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@12.6.0",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
