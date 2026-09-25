@@ -1,65 +1,139 @@
 @import "tailwindcss";
 
-/* Custom theme variables for shadcn/ui compatibility */
+/* 
+ * Pivoa Design System - Modern Light Finance Theme
+ * Style: Bento Grid (Apple-style modular cards)
+ * Palette: Banking/Traditional Finance - Light
+ * Typography: Inter (minimal, clean, professional)
+ */
+
 @theme {
-  --color-background: oklch(100% 0 0);
-  --color-foreground: oklch(14.5% 0.004 285.75);
+  /* Primary - Trust Navy Blue */
+  --color-primary: oklch(38.5% 0.14 260);
+  --color-primary-foreground: oklch(100% 0 0);
+  
+  /* Secondary - Soft Blue */
+  --color-secondary: oklch(62% 0.17 255);
+  --color-secondary-foreground: oklch(100% 0 0);
+  
+  /* Accent - Warm Gold (for highlights) */
+  --color-accent: oklch(68% 0.15 75);
+  --color-accent-foreground: oklch(100% 0 0);
+  
+  /* Background - Soft off-white */
+  --color-background: oklch(98% 0.005 260);
+  --color-foreground: oklch(13% 0.03 260);
+  
+  /* Cards - Pure white with depth */
   --color-card: oklch(100% 0 0);
-  --color-card-foreground: oklch(14.5% 0.004 285.75);
+  --color-card-foreground: oklch(13% 0.03 260);
+  
+  /* Popover */
   --color-popover: oklch(100% 0 0);
-  --color-popover-foreground: oklch(14.5% 0.004 285.75);
-  --color-primary: oklch(20.5% 0.006 285.75);
-  --color-primary-foreground: oklch(98.5% 0 0);
-  --color-secondary: oklch(96.9% 0.003 264.54);
-  --color-secondary-foreground: oklch(20.5% 0.006 285.75);
-  --color-muted: oklch(96.9% 0.003 264.54);
-  --color-muted-foreground: oklch(55.6% 0.014 285.94);
-  --color-accent: oklch(96.9% 0.003 264.54);
-  --color-accent-foreground: oklch(20.5% 0.006 285.75);
-  --color-destructive: oklch(57.7% 0.245 27.33);
-  --color-destructive-foreground: oklch(98.5% 0 0);
-  --color-border: oklch(91.4% 0.006 264.54);
-  --color-input: oklch(91.4% 0.006 264.54);
-  --color-ring: oklch(70.7% 0.022 261.33);
-  --color-chart-1: oklch(64.6% 0.222 41.12);
-  --color-chart-2: oklch(60% 0.118 184.7);
-  --color-chart-3: oklch(39.8% 0.07 227.39);
-  --color-chart-4: oklch(82.8% 0.189 84.43);
-  --color-chart-5: oklch(76.9% 0.188 70.08);
-  --radius: 0.625rem;
+  --color-popover-foreground: oklch(13% 0.03 260);
+  
+  /* Muted surfaces */
+  --color-muted: oklch(96% 0.006 260);
+  --color-muted-foreground: oklch(50% 0.03 260);
+  
+  /* Borders - subtle */
+  --color-border: oklch(92% 0.01 260);
+  --color-input: oklch(92% 0.01 260);
+  --color-ring: oklch(62% 0.17 255);
+  
+  /* Semantic colors */
+  --color-destructive: oklch(55% 0.22 25);
+  --color-destructive-foreground: oklch(100% 0 0);
+  
+  /* Success green */
+  --color-success: oklch(60% 0.15 155);
+  --color-success-foreground: oklch(100% 0 0);
+  
+  /* Warning yellow */
+  --color-warning: oklch(75% 0.15 85);
+  --color-warning-foreground: oklch(20% 0.03 85);
+  
+  /* Chart colors - harmonious palette */
+  --color-chart-1: oklch(62% 0.17 255);
+  --color-chart-2: oklch(68% 0.15 75);
+  --color-chart-3: oklch(60% 0.15 155);
+  --color-chart-4: oklch(65% 0.15 320);
+  --color-chart-5: oklch(55% 0.15 30);
+  
+  /* Radius - rounded for modern feel */
+  --radius: 1rem;
+  --radius-sm: 0.625rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
 }
 
-/* Dark mode */
+/* Dark mode override */
 @media (prefers-color-scheme: dark) {
   @theme {
-    --color-background: oklch(14.5% 0.004 285.75);
-    --color-foreground: oklch(98.5% 0 0);
-    --color-card: oklch(14.5% 0.004 285.75);
-    --color-card-foreground: oklch(98.5% 0 0);
-    --color-popover: oklch(14.5% 0.004 285.75);
-    --color-popover-foreground: oklch(98.5% 0 0);
-    --color-primary: oklch(98.5% 0 0);
-    --color-primary-foreground: oklch(20.5% 0.006 285.75);
-    --color-secondary: oklch(26.9% 0.006 286.03);
-    --color-secondary-foreground: oklch(98.5% 0 0);
-    --color-muted: oklch(26.9% 0.006 286.03);
-    --color-muted-foreground: oklch(71.2% 0.013 286.07);
-    --color-accent: oklch(26.9% 0.006 286.03);
-    --color-accent-foreground: oklch(98.5% 0 0);
-    --color-destructive: oklch(57.7% 0.245 27.33);
-    --color-destructive-foreground: oklch(98.5% 0 0);
-    --color-border: oklch(26.9% 0.006 286.03);
-    --color-input: oklch(26.9% 0.006 286.03);
-    --color-ring: oklch(83.9% 0.016 286.38);
-    --color-chart-1: oklch(48.8% 0.243 264.38);
-    --color-chart-2: oklch(69.6% 0.17 162.48);
-    --color-chart-3: oklch(98.5% 0 0);
-    --color-chart-4: oklch(75.1% 0.183 55.93);
-    --color-chart-5: oklch(64.9% 0.2 27.33);
+    --color-primary: oklch(70% 0.15 255);
+    --color-primary-foreground: oklch(15% 0.02 260);
+    
+    --color-secondary: oklch(75% 0.12 255);
+    --color-secondary-foreground: oklch(15% 0.02 260);
+    
+    --color-accent: oklch(75% 0.12 75);
+    --color-accent-foreground: oklch(15% 0.02 75);
+    
+    --color-background: oklch(14% 0.02 260);
+    --color-foreground: oklch(98% 0.005 260);
+    
+    --color-card: oklch(18% 0.02 260);
+    --color-card-foreground: oklch(98% 0.005 260);
+    
+    --color-popover: oklch(18% 0.02 260);
+    --color-popover-foreground: oklch(98% 0.005 260);
+    
+    --color-muted: oklch(22% 0.02 260);
+    --color-muted-foreground: oklch(65% 0.02 260);
+    
+    --color-border: oklch(25% 0.02 260);
+    --color-input: oklch(25% 0.02 260);
+    --color-ring: oklch(70% 0.15 255);
   }
 }
 
 /* Base styles */
+* {
+  @apply border-border;
+}
+
 body {
   @apply bg-background text-foreground antialiased;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Smooth transitions globally */
+* {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Card shadows - soft and modern */
+.card-shadow {
+  box-shadow: 
+    0 1px 3px 0 rgba(0, 0, 0, 0.04),
+    0 4px 6px -1px rgba(0, 0, 0, 0.03);
+}
+
+.card-shadow-hover {
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.06),
+    0 10px 15px -3px rgba(0, 0, 0, 0.04);
+}
+
+/* Soft inset shadow for inputs */
+.input-shadow {
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* Focus ring */
+.focus-ring {
+  @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
 }

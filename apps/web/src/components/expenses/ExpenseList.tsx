@@ -34,10 +34,10 @@ function CategoryIcon({ icon, color }: { icon: string; color: string }) {
   const Icon = iconMap[icon] || MoreHorizontal
   return (
     <div 
-      className="w-8 h-8 rounded-full flex items-center justify-center"
-      style={{ backgroundColor: `${color}20` }}
+      className="flex h-10 w-10 items-center justify-center rounded-xl"
+      style={{ backgroundColor: `${color}12` }}
     >
-      <Icon className="h-4 w-4" style={{ color }} />
+      <Icon className="h-5 w-5" style={{ color }} />
     </div>
   )
 }
@@ -65,19 +65,19 @@ export function ExpenseList({ onEdit }: ExpenseListProps) {
   if (isLoading) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle>Recent Expenses</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-semibold">Recent Expenses</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="flex items-center gap-4 animate-pulse">
-                <div className="w-8 h-8 bg-muted rounded-full" />
+          <div className="space-y-3">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="flex items-center gap-4 rounded-xl bg-muted/30 p-3 animate-pulse">
+                <div className="h-10 w-10 rounded-xl bg-muted" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-muted rounded w-1/4" />
-                  <div className="h-3 bg-muted rounded w-1/2" />
+                  <div className="h-4 w-32 rounded bg-muted" />
+                  <div className="h-3 w-24 rounded bg-muted" />
                 </div>
-                <div className="h-4 bg-muted rounded w-16" />
+                <div className="h-4 w-16 rounded bg-muted" />
               </div>
             ))}
           </div>
@@ -89,8 +89,8 @@ export function ExpenseList({ onEdit }: ExpenseListProps) {
   if (error) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle>Recent Expenses</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base font-semibold">Recent Expenses</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-destructive">Failed to load expenses</p>
@@ -104,71 +104,121 @@ export function ExpenseList({ onEdit }: ExpenseListProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Recent Expenses</CardTitle>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base font-semibold">Recent Expenses</CardTitle>
       </CardHeader>
       <CardContent>
         {expenses.length === 0 ? (
-          <p className="text-muted-foreground text-center py-8">
-            No expenses yet. Add your first expense to get started!
-          </p>
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
+              <ShoppingBag className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <p className="font-medium">No expenses yet</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Add your first expense to get started
+            </p>
+          </div>
         ) : (
           <>
-            <div className="space-y-4">
+            {/* Table Header */}
+            <div className="mb-2 hidden grid-cols-[1fr_1fr_100px_100px_80px] gap-4 px-3 text-xs font-medium text-muted-foreground sm:grid">
+              <span>Description</span>
+              <span>Category</span>
+              <span>Date</span>
+              <span className="text-right">Amount</span>
+              <span></span>
+            </div>
+
+            {/* Expense Rows */}
+            <div className="space-y-2">
               {expenses.map((expense) => (
                 <div
                   key={expense.id}
-                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                  className="group grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-xl p-3 transition-colors hover:bg-muted/50 sm:grid-cols-[1fr_1fr_100px_100px_80px] sm:gap-4"
                 >
-                  <CategoryIcon 
-                    icon={expense.category.icon} 
-                    color={expense.category.color} 
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">
-                      {expense.vendor || expense.category.name}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {expense.category.name} • {new Date(expense.date).toLocaleDateString()}
-                    </p>
+                  {/* Icon + Description */}
+                  <CategoryIcon icon={expense.category.icon} color={expense.category.color} />
+                  <div className="min-w-0 sm:contents">
+                    <div className="sm:col-span-1">
+                      <p className="truncate font-medium">
+                        {expense.vendor || expense.category.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground sm:hidden">
+                        {expense.category.name} • {new Date(expense.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </p>
+                    </div>
+                    
+                    {/* Category - Desktop */}
+                    <div className="hidden sm:block">
+                      <span 
+                        className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium"
+                        style={{ 
+                          backgroundColor: `${expense.category.color}12`,
+                          color: expense.category.color 
+                        }}
+                      >
+                        {expense.category.name}
+                      </span>
+                    </div>
+
+                    {/* Date - Desktop */}
+                    <div className="hidden text-sm text-muted-foreground sm:block">
+                      {new Date(expense.date).toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold">
-                      {expense.currency} {expense.amount.toFixed(2)}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    {onEdit && (
+
+                  {/* Amount + Actions */}
+                  <div className="flex items-center gap-2">
+                    <div className="text-right">
+                      <p className="font-semibold">
+                        ${expense.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      </p>
+                      <p className="text-xs text-muted-foreground sm:hidden">
+                        {expense.currency}
+                      </p>
+                    </div>
+                    
+                    <div className="flex items-center opacity-0 transition-opacity group-hover:opacity-100">
+                      {onEdit && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => onEdit(expense)}
+                        >
+                          <Edit className="h-4 w-4 text-muted-foreground" />
+                        </Button>
+                      )}
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => onEdit(expense)}
+                        className="h-8 w-8"
+                        onClick={() => handleDelete(expense.id)}
+                        disabled={deleteExpense.isPending}
                       >
-                        <Edit className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
-                    )}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDelete(expense.id)}
-                      disabled={deleteExpense.isPending}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
 
+            {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-between pt-4 border-t mt-4">
+              <div className="mt-4 flex items-center justify-between border-t pt-4">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
+                  className="gap-1"
                 >
-                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  <ChevronLeft className="h-4 w-4" />
                   Previous
                 </Button>
                 <span className="text-sm text-muted-foreground">
@@ -179,9 +229,10 @@ export function ExpenseList({ onEdit }: ExpenseListProps) {
                   size="sm"
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
+                  className="gap-1"
                 >
                   Next
-                  <ChevronRight className="h-4 w-4 ml-1" />
+                  <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             )}
