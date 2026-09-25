@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { HealthModule } from './health/health.module.js';
 import { CategoriesModule } from './categories/categories.module.js';
 import { ExpensesModule } from './expenses/expenses.module.js';
+import { ReceiptsModule } from './receipts/receipts.module.js';
 import { validate } from './config/env.validation.js';
 
 @Module({
@@ -18,6 +19,7 @@ import { validate } from './config/env.validation.js';
     HealthModule,
     CategoriesModule,
     ExpensesModule,
+    ReceiptsModule,
   ],
 })
 export class AppModule {}

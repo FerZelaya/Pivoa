@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -17,8 +17,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { ReceiptScanner } from './ReceiptScanner'
 import { useCategories } from '@/hooks/useCategories'
 import { useCreateExpense } from '@/hooks/useExpenses'
+import type { ParsedReceipt } from '@/hooks/useScanReceipt'
 import { Plus } from 'lucide-react'
 
 const expenseSchema = z.object({
@@ -28,6 +30,7 @@ const expenseSchema = z.object({
   vendor: z.string().max(255).optional(),
   date: z.string().min(1, 'Date is required'),
   notes: z.string().max(1000).optional(),
+  receiptImageUrl: z.string().optional(),
 })
 
 type ExpenseFormData = z.infer<typeof expenseSchema>
@@ -38,6 +41,7 @@ interface AddExpenseDialogProps {
 
 export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
   const [open, setOpen] = useState(false)
+  const [scannedImageUrl, setScannedImageUrl] = useState<string | null>(null)
   const { data: categories, isLoading: categoriesLoading } = useCategories()
   const createExpense = useCreateExpense()
 
@@ -45,6 +49,7 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ExpenseFormData>({
     resolver: zodResolver(expenseSchema),
@@ -55,6 +60,45 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
     },
   })
 
+  // Reset form when dialog opens
+  useEffect(() => {
+    if (open) {
+      reset({
+        currency: 'USD',
+        date: new Date().toISOString().split('T')[0],
+        ...initialData,
+      })
+      setScannedImageUrl(null)
+    }
+  }, [open, reset, initialData])
+
+  const handleScanComplete = (result: ParsedReceipt) => {
+    // Prefill form with AI results
+    if (result.amount > 0) {
+      setValue('amount', result.amount)
+    }
+    if (result.vendor) {
+      setValue('vendor', result.vendor)
+    }
+    if (result.date) {
+      setValue('date', result.date)
+    }
+    if (result.imageUrl) {
+      setScannedImageUrl(result.imageUrl)
+      setValue('receiptImageUrl', result.imageUrl)
+    }
+    
+    // Try to match suggested category
+    if (result.suggestedCategory && categories) {
+      const matchedCategory = categories.find(
+        (cat) => cat.name.toLowerCase() === result.suggestedCategory?.toLowerCase()
+      )
+      if (matchedCategory) {
+        setValue('categoryId', matchedCategory.id)
+      }
+    }
+  }
+
   const onSubmit = async (data: ExpenseFormData) => {
     try {
       await createExpense.mutateAsync({
@@ -64,9 +108,11 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
         vendor: data.vendor || undefined,
         date: data.date,
         notes: data.notes || undefined,
+        receiptImageUrl: data.receiptImageUrl || undefined,
       })
       toast.success('Expense added successfully')
       reset()
+      setScannedImageUrl(null)
       setOpen(false)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to add expense')
@@ -86,13 +132,19 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
           Add Expense
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Expense</DialogTitle>
           <DialogDescription>
-            Enter the details of your expense. Click save when you're done.
+            Scan a receipt or enter the details manually.
           </DialogDescription>
         </DialogHeader>
+        
+        {/* Receipt Scanner */}
+        <div className="mb-4">
+          <ReceiptScanner onScanComplete={handleScanComplete} />
+        </div>
+
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
@@ -167,6 +219,10 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
                 <p className="text-sm text-destructive">{errors.notes.message}</p>
               )}
             </div>
+
+            {scannedImageUrl && (
+              <input type="hidden" {...register('receiptImageUrl')} />
+            )}
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
