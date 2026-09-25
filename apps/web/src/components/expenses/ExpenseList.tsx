@@ -34,7 +34,7 @@ function CategoryIcon({ icon, color }: { icon: string; color: string }) {
   const Icon = iconMap[icon] || MoreHorizontal
   return (
     <div 
-      className="flex h-10 w-10 items-center justify-center rounded-xl"
+      className="flex h-10 w-10 items-center justify-center rounded-lg"
       style={{ backgroundColor: `${color}12` }}
     >
       <Icon className="h-5 w-5" style={{ color }} />
@@ -71,8 +71,8 @@ export function ExpenseList({ onEdit }: ExpenseListProps) {
         <CardContent>
           <div className="space-y-3">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="flex items-center gap-4 rounded-xl bg-muted/30 p-3 animate-pulse">
-                <div className="h-10 w-10 rounded-xl bg-muted" />
+              <div key={i} className="flex items-center gap-4 rounded-lg bg-muted/30 p-3 animate-pulse">
+                <div className="h-10 w-10 rounded-lg bg-muted" />
                 <div className="flex-1 space-y-2">
                   <div className="h-4 w-32 rounded bg-muted" />
                   <div className="h-3 w-24 rounded bg-muted" />
@@ -110,7 +110,7 @@ export function ExpenseList({ onEdit }: ExpenseListProps) {
       <CardContent>
         {expenses.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-muted">
               <ShoppingBag className="h-8 w-8 text-muted-foreground" />
             </div>
             <p className="font-medium">No expenses yet</p>
@@ -134,7 +134,7 @@ export function ExpenseList({ onEdit }: ExpenseListProps) {
               {expenses.map((expense) => (
                 <div
                   key={expense.id}
-                  className="group grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-xl p-3 transition-colors hover:bg-muted/50 sm:grid-cols-[1fr_1fr_100px_100px_80px] sm:gap-4"
+                  className="group grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-lg p-3 transition-colors hover:bg-muted/50 sm:grid-cols-[1fr_1fr_100px_100px_80px] sm:gap-4"
                 >
                   {/* Icon + Description */}
                   <CategoryIcon icon={expense.category.icon} color={expense.category.color} />
@@ -210,7 +210,7 @@ export function ExpenseList({ onEdit }: ExpenseListProps) {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-4 flex items-center justify-between border-t pt-4">
+              <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
                 <Button
                   variant="outline"
                   size="sm"

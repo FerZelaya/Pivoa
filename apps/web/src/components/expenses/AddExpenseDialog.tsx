@@ -132,7 +132,7 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
           Add Expense
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Expense</DialogTitle>
           <DialogDescription>
@@ -141,14 +141,15 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
         </DialogHeader>
         
         {/* Receipt Scanner */}
-        <div className="mb-4">
+        <div className="my-4">
           <ReceiptScanner onScanComplete={handleScanComplete} />
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid gap-4 py-4">
+          <div className="grid gap-4">
+            {/* Amount + Currency */}
             <div className="grid gap-2">
-              <Label htmlFor="amount">Amount *</Label>
+              <Label htmlFor="amount">Amount <span className="text-destructive">*</span></Label>
               <div className="flex gap-2">
                 <Input
                   id="amount"
@@ -161,6 +162,7 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
                 <Input
                   className="w-20"
                   maxLength={3}
+                  placeholder="USD"
                   {...register('currency')}
                 />
               </div>
@@ -169,8 +171,9 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
               )}
             </div>
 
+            {/* Category */}
             <div className="grid gap-2">
-              <Label htmlFor="categoryId">Category *</Label>
+              <Label htmlFor="categoryId">Category <span className="text-destructive">*</span></Label>
               <Select
                 id="categoryId"
                 options={categoryOptions}
@@ -183,6 +186,7 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
               )}
             </div>
 
+            {/* Vendor */}
             <div className="grid gap-2">
               <Label htmlFor="vendor">Vendor</Label>
               <Input
@@ -195,8 +199,9 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
               )}
             </div>
 
+            {/* Date */}
             <div className="grid gap-2">
-              <Label htmlFor="date">Date *</Label>
+              <Label htmlFor="date">Date <span className="text-destructive">*</span></Label>
               <Input
                 id="date"
                 type="date"
@@ -207,6 +212,7 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
               )}
             </div>
 
+            {/* Notes */}
             <div className="grid gap-2">
               <Label htmlFor="notes">Notes</Label>
               <Textarea
@@ -224,7 +230,8 @@ export function AddExpenseDialog({ initialData }: AddExpenseDialogProps) {
               <input type="hidden" {...register('receiptImageUrl')} />
             )}
           </div>
-          <DialogFooter>
+
+          <DialogFooter className="mt-6">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>

@@ -10,9 +10,9 @@ export function SummaryCards() {
   const isUp = summary && summary.changePercent > 0
 
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {/* Total Spending Card */}
-      <Card className="overflow-hidden">
+      <Card>
         <CardContent className="p-5">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
@@ -25,12 +25,12 @@ export function SummaryCards() {
                 </p>
               )}
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
               <Wallet className="h-5 w-5 text-primary" />
             </div>
           </div>
           {summary && summary.previousMonthTotal > 0 && (
-            <div className={`mt-3 flex items-center gap-1.5 text-sm ${isUp ? 'text-destructive' : 'text-success'}`}>
+            <div className={`mt-3 flex items-center gap-1.5 text-sm ${isUp ? 'text-destructive' : 'text-accent'}`}>
               {isUp ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
               <span className="font-medium">{Math.abs(summary.changePercent).toFixed(1)}%</span>
               <span className="text-muted-foreground">vs last month</span>
@@ -40,7 +40,7 @@ export function SummaryCards() {
       </Card>
 
       {/* Transactions Card */}
-      <Card className="overflow-hidden">
+      <Card>
         <CardContent className="p-5">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
@@ -53,7 +53,7 @@ export function SummaryCards() {
                 </p>
               )}
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary/10">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary/10">
               <Receipt className="h-5 w-5 text-secondary" />
             </div>
           </div>
@@ -62,7 +62,7 @@ export function SummaryCards() {
       </Card>
 
       {/* Average Card */}
-      <Card className="overflow-hidden">
+      <Card>
         <CardContent className="p-5">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
@@ -75,7 +75,7 @@ export function SummaryCards() {
                 </p>
               )}
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10">
               <Target className="h-5 w-5 text-accent" />
             </div>
           </div>
@@ -84,7 +84,7 @@ export function SummaryCards() {
       </Card>
 
       {/* Top Category Card */}
-      <Card className="overflow-hidden">
+      <Card>
         <CardContent className="p-5">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
@@ -99,7 +99,7 @@ export function SummaryCards() {
             </div>
             {topCategory && (
               <div 
-                className="flex h-10 w-10 items-center justify-center rounded-xl"
+                className="flex h-10 w-10 items-center justify-center rounded-lg"
                 style={{ backgroundColor: `${topCategory.categoryColor}15` }}
               >
                 <div 

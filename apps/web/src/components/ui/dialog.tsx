@@ -63,7 +63,7 @@ export function DialogOverlay({ className, ...props }: React.HTMLAttributes<HTML
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 bg-black/40 backdrop-blur-sm",
+        "fixed inset-0 z-50 bg-foreground/50 backdrop-blur-sm",
         "animate-in fade-in-0 duration-200",
         className
       )}
@@ -85,7 +85,7 @@ export function DialogContent({
       <div
         className={cn(
           "fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2",
-          "rounded-2xl border border-border bg-card p-6 shadow-xl",
+          "rounded-xl border border-border bg-card p-6 shadow-xl",
           "animate-in fade-in-0 zoom-in-95 duration-200",
           className
         )}
@@ -136,7 +136,7 @@ export function DialogTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h2
-      className={cn("text-lg font-semibold leading-none tracking-tight", className)}
+      className={cn("text-lg font-semibold leading-none tracking-tight text-foreground", className)}
       {...props}
     />
   )

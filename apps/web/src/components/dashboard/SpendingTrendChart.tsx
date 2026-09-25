@@ -50,7 +50,7 @@ export function SpendingTrendChart() {
         <CardTitle className="text-base font-semibold">Spending Trend</CardTitle>
         <div className="flex gap-1 rounded-lg bg-muted p-1">
           <Button
-            variant={granularity === 'day' ? 'secondary' : 'ghost'}
+            variant={granularity === 'day' ? 'default' : 'ghost'}
             size="sm"
             className="h-7 rounded-md px-3 text-xs"
             onClick={() => setGranularity('day')}
@@ -58,7 +58,7 @@ export function SpendingTrendChart() {
             Daily
           </Button>
           <Button
-            variant={granularity === 'week' ? 'secondary' : 'ghost'}
+            variant={granularity === 'week' ? 'default' : 'ghost'}
             size="sm"
             className="h-7 rounded-md px-3 text-xs"
             onClick={() => setGranularity('week')}
@@ -83,38 +83,38 @@ export function SpendingTrendChart() {
               <BarChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                 <CartesianGrid 
                   strokeDasharray="3 3" 
-                  stroke="#e5ebe8" 
+                  stroke="#e5e5e5" 
                   vertical={false}
                 />
                 <XAxis 
                   dataKey="date" 
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: '#6b8a7a', fontSize: 12 }}
+                  tick={{ fill: '#737373', fontSize: 12 }}
                   dy={8}
                 />
                 <YAxis 
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: '#6b8a7a', fontSize: 12 }}
+                  tick={{ fill: '#737373', fontSize: 12 }}
                   tickFormatter={(value) => `$${value}`}
                   dx={-8}
                 />
                 <Tooltip
                   formatter={(value: number) => [`$${value.toFixed(2)}`, 'Spent']}
-                  cursor={{ fill: 'rgba(26, 92, 92, 0.06)' }}
+                  cursor={{ fill: 'rgba(23, 23, 23, 0.04)' }}
                   contentStyle={{
                     backgroundColor: 'white',
-                    border: '1px solid #e5ebe8',
-                    borderRadius: '12px',
+                    border: '1px solid #e5e5e5',
+                    borderRadius: '8px',
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                     padding: '8px 12px',
                   }}
                 />
                 <Bar 
                   dataKey="total" 
-                  fill="#1a5c5c"
-                  radius={[6, 6, 0, 0]}
+                  fill="#171717"
+                  radius={[4, 4, 0, 0]}
                   maxBarSize={40}
                 />
               </BarChart>

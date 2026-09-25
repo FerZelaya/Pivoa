@@ -34,13 +34,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4">
-            <img src="/logo.png" alt="Pivoa" className="h-16 w-16 object-contain mx-auto" />
+            <img src="/logo.png" alt="Pivoa" className="h-14 w-14 object-contain mx-auto" />
           </div>
-          <CardTitle className="text-2xl">Welcome back</CardTitle>
+          <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
           <CardDescription>
             Sign in to your Pivoa account
           </CardDescription>
@@ -48,7 +48,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && (
-              <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl p-3">
+              <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-lg p-3">
                 {error}
               </div>
             )}
@@ -83,7 +83,7 @@ export default function LoginPage() {
             </Button>
             <p className="text-sm text-muted-foreground text-center">
               Don't have an account?{' '}
-              <Link to="/register" className="text-primary hover:underline font-medium">
+              <Link to="/register" className="text-foreground hover:underline font-medium">
                 Sign up
               </Link>
             </p>

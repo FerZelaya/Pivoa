@@ -87,8 +87,8 @@ export function CategoryPieChart() {
                   formatter={(value: number) => [`$${value.toFixed(2)}`, '']}
                   contentStyle={{
                     backgroundColor: 'white',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '12px',
+                    border: '1px solid #e5e5e5',
+                    borderRadius: '8px',
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                     padding: '8px 12px',
                   }}
