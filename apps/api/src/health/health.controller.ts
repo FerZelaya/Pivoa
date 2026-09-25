@@ -1,6 +1,7 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SUPABASE_CLIENT } from '../supabase/supabase.module.js';
+import { Public } from '../auth/decorators/index.js';
 import type { HealthResponse } from '@pivoa/shared';
 
 @Controller('health')
@@ -10,6 +11,7 @@ export class HealthController {
   ) {}
 
   @Get()
+  @Public()
   async check(): Promise<HealthResponse> {
     let dbStatus: 'connected' | 'disconnected' = 'disconnected';
 
