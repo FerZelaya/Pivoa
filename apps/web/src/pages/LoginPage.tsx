@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Wallet } from 'lucide-react'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -38,8 +37,8 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Wallet className="h-6 w-6 text-primary" />
+          <div className="mx-auto mb-4">
+            <img src="/logo.png" alt="Pivoa" className="h-16 w-16 object-contain mx-auto" />
           </div>
           <CardTitle className="text-2xl">Welcome back</CardTitle>
           <CardDescription>
@@ -49,7 +48,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && (
-              <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-lg p-3">
+              <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-xl p-3">
                 {error}
               </div>
             )}
@@ -84,7 +83,7 @@ export default function LoginPage() {
             </Button>
             <p className="text-sm text-muted-foreground text-center">
               Don't have an account?{' '}
-              <Link to="/register" className="text-primary hover:underline">
+              <Link to="/register" className="text-primary hover:underline font-medium">
                 Sign up
               </Link>
             </p>

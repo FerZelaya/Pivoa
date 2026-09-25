@@ -83,29 +83,29 @@ export function SpendingTrendChart() {
               <BarChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                 <CartesianGrid 
                   strokeDasharray="3 3" 
-                  stroke="#f1f5f9" 
+                  stroke="#e5ebe8" 
                   vertical={false}
                 />
                 <XAxis 
                   dataKey="date" 
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: '#94a3b8', fontSize: 12 }}
+                  tick={{ fill: '#6b8a7a', fontSize: 12 }}
                   dy={8}
                 />
                 <YAxis 
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: '#94a3b8', fontSize: 12 }}
+                  tick={{ fill: '#6b8a7a', fontSize: 12 }}
                   tickFormatter={(value) => `$${value}`}
                   dx={-8}
                 />
                 <Tooltip
                   formatter={(value: number) => [`$${value.toFixed(2)}`, 'Spent']}
-                  cursor={{ fill: 'rgba(0, 0, 0, 0.04)' }}
+                  cursor={{ fill: 'rgba(26, 92, 92, 0.06)' }}
                   contentStyle={{
                     backgroundColor: 'white',
-                    border: '1px solid #e5e7eb',
+                    border: '1px solid #e5ebe8',
                     borderRadius: '12px',
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                     padding: '8px 12px',
@@ -113,7 +113,7 @@ export function SpendingTrendChart() {
                 />
                 <Bar 
                   dataKey="total" 
-                  fill="hsl(220, 70%, 55%)"
+                  fill="#1a5c5c"
                   radius={[6, 6, 0, 0]}
                   maxBarSize={40}
                 />

@@ -2,7 +2,6 @@ import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { 
-  Wallet, 
   Receipt, 
   PieChart, 
   Camera, 
@@ -10,7 +9,8 @@ import {
   Zap,
   CheckCircle2,
   ChevronDown,
-  ArrowRight
+  ArrowRight,
+  TrendingUp
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -20,9 +20,9 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="border-b border-border sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Wallet className="h-6 w-6 text-primary" />
-            <span className="font-bold text-xl">Pivoa</span>
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Pivoa" className="h-10 w-10 object-contain" />
+            <span className="font-bold text-xl text-primary">Pivoa</span>
           </div>
           <div className="flex items-center gap-4">
             <Link to="/login">
@@ -39,12 +39,15 @@ export default function LandingPage() {
       <section className="py-20 lg:py-32">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-              Take control of your{' '}
-              <span className="text-primary">finances</span>
+            <div className="flex justify-center mb-8">
+              <img src="/logo.png" alt="Pivoa" className="h-24 w-24 object-contain" />
+            </div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
+              Track. Understand.{' '}
+              <span className="text-primary">Grow.</span>
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Pivoa is your smart personal finance companion. Track expenses manually or let AI scan your receipts. Get insights that matter.
+              Pivoa is your smart personal finance companion. Track expenses manually or let AI scan your receipts. Get insights that help you grow financially.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/register">
@@ -76,7 +79,7 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="bg-background">
               <CardContent className="pt-6">
-                <div className="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
+                <div className="rounded-xl bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
                   <Receipt className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Manual Entry</h3>
@@ -88,8 +91,8 @@ export default function LandingPage() {
 
             <Card className="bg-background">
               <CardContent className="pt-6">
-                <div className="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
-                  <Camera className="h-6 w-6 text-primary" />
+                <div className="rounded-xl bg-secondary/10 w-12 h-12 flex items-center justify-center mb-4">
+                  <Camera className="h-6 w-6 text-secondary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">AI Receipt Scanning</h3>
                 <p className="text-muted-foreground">
@@ -100,8 +103,8 @@ export default function LandingPage() {
 
             <Card className="bg-background">
               <CardContent className="pt-6">
-                <div className="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
-                  <PieChart className="h-6 w-6 text-primary" />
+                <div className="rounded-xl bg-accent/20 w-12 h-12 flex items-center justify-center mb-4">
+                  <PieChart className="h-6 w-6 text-accent" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Smart Analytics</h3>
                 <p className="text-muted-foreground">
@@ -112,7 +115,7 @@ export default function LandingPage() {
 
             <Card className="bg-background">
               <CardContent className="pt-6">
-                <div className="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
+                <div className="rounded-xl bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
                   <Zap className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Lightning Fast</h3>
@@ -124,8 +127,8 @@ export default function LandingPage() {
 
             <Card className="bg-background">
               <CardContent className="pt-6">
-                <div className="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
-                  <Shield className="h-6 w-6 text-primary" />
+                <div className="rounded-xl bg-secondary/10 w-12 h-12 flex items-center justify-center mb-4">
+                  <Shield className="h-6 w-6 text-secondary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Secure & Private</h3>
                 <p className="text-muted-foreground">
@@ -136,12 +139,12 @@ export default function LandingPage() {
 
             <Card className="bg-background">
               <CardContent className="pt-6">
-                <div className="rounded-lg bg-primary/10 w-12 h-12 flex items-center justify-center mb-4">
-                  <Wallet className="h-6 w-6 text-primary" />
+                <div className="rounded-xl bg-accent/20 w-12 h-12 flex items-center justify-center mb-4">
+                  <TrendingUp className="h-6 w-6 text-accent" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Multi-Currency</h3>
+                <h3 className="text-xl font-semibold mb-2">Growth Focused</h3>
                 <p className="text-muted-foreground">
-                  Track expenses in any currency. Perfect for travelers and those managing international finances.
+                  More than tracking — understand patterns and take control of your financial growth journey.
                 </p>
               </CardContent>
             </Card>
@@ -164,7 +167,7 @@ export default function LandingPage() {
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold mx-auto mb-4">
                   1
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Create Account</h3>
@@ -174,7 +177,7 @@ export default function LandingPage() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-secondary text-secondary-foreground flex items-center justify-center text-2xl font-bold mx-auto mb-4">
                   2
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Log Expenses</h3>
@@ -184,12 +187,12 @@ export default function LandingPage() {
               </div>
 
               <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-accent text-accent-foreground flex items-center justify-center text-2xl font-bold mx-auto mb-4">
                   3
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Get Insights</h3>
+                <h3 className="text-xl font-semibold mb-2">Grow</h3>
                 <p className="text-muted-foreground">
-                  View your dashboard to understand your spending patterns.
+                  Understand your patterns and make smarter financial decisions.
                 </p>
               </div>
             </div>
@@ -295,7 +298,7 @@ export default function LandingPage() {
             Ready to take control of your finances?
           </h2>
           <p className="text-primary-foreground/80 text-lg mb-8 max-w-2xl mx-auto">
-            Join thousands of users who are already tracking their expenses smarter with Pivoa.
+            Join thousands of users who are already tracking, understanding, and growing with Pivoa.
           </p>
           <Link to="/register">
             <Button size="lg" variant="secondary">
@@ -310,12 +313,12 @@ export default function LandingPage() {
       <footer className="py-12 border-t border-border">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <Wallet className="h-5 w-5 text-primary" />
-              <span className="font-semibold">Pivoa</span>
+            <div className="flex items-center gap-3">
+              <img src="/logo.png" alt="Pivoa" className="h-8 w-8 object-contain" />
+              <span className="font-semibold text-primary">Pivoa</span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} Pivoa. All rights reserved.
+            <p className="text-sm text-muted-foreground text-center">
+              Track. Understand. Grow. &copy; {new Date().getFullYear()} Pivoa. All rights reserved.
             </p>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
