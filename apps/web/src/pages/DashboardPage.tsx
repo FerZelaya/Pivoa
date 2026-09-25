@@ -1,10 +1,32 @@
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { AddExpenseDialog } from '@/components/expenses/AddExpenseDialog'
+import { ExpenseList } from '@/components/expenses/ExpenseList'
 import { LogOut, Wallet, TrendingUp, Receipt, PieChart } from 'lucide-react'
+import { useExpenses } from '@/hooks/useExpenses'
 
 export default function DashboardPage() {
   const { user, signOut } = useAuth()
+  const { data: expensesData } = useExpenses({ pageSize: 100 })
+
+  // Calculate basic stats from expenses
+  const expenses = expensesData?.data || []
+  const thisMonth = new Date()
+  const startOfMonth = new Date(thisMonth.getFullYear(), thisMonth.getMonth(), 1)
+  
+  const monthlyExpenses = expenses.filter((e) => new Date(e.date) >= startOfMonth)
+  const totalMonthlySpend = monthlyExpenses.reduce((sum, e) => sum + e.amount, 0)
+  const transactionCount = monthlyExpenses.length
+
+  // Find top category
+  const categorySpending = monthlyExpenses.reduce((acc, expense) => {
+    const catName = expense.category.name
+    acc[catName] = (acc[catName] || 0) + expense.amount
+    return acc
+  }, {} as Record<string, number>)
+
+  const topCategory = Object.entries(categorySpending).sort((a, b) => b[1] - a[1])[0]
 
   return (
     <div className="min-h-screen bg-background">
@@ -29,15 +51,18 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">
-            Welcome back! Here's an overview of your finances.
-          </p>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold">Dashboard</h1>
+            <p className="text-muted-foreground mt-1">
+              Welcome back! Here's an overview of your finances.
+            </p>
+          </div>
+          <AddExpenseDialog />
         </div>
 
-        {/* Empty State */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Stats Cards */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -47,10 +72,18 @@ export default function DashboardPage() {
               <CardDescription>This month</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">$0.00</p>
-              <p className="text-sm text-muted-foreground mt-1">
-                No expenses recorded yet
+              <p className="text-3xl font-bold">
+                ${totalMonthlySpend.toFixed(2)}
               </p>
+              {transactionCount > 0 ? (
+                <p className="text-sm text-muted-foreground mt-1">
+                  From {transactionCount} transaction{transactionCount !== 1 ? 's' : ''}
+                </p>
+              ) : (
+                <p className="text-sm text-muted-foreground mt-1">
+                  No expenses recorded yet
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -63,9 +96,11 @@ export default function DashboardPage() {
               <CardDescription>This month</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">0</p>
+              <p className="text-3xl font-bold">{transactionCount}</p>
               <p className="text-sm text-muted-foreground mt-1">
-                Start by adding your first expense
+                {transactionCount === 0 
+                  ? 'Start by adding your first expense' 
+                  : `Average: $${(totalMonthlySpend / transactionCount).toFixed(2)}`}
               </p>
             </CardContent>
           </Card>
@@ -79,29 +114,20 @@ export default function DashboardPage() {
               <CardDescription>By spending</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-3xl font-bold">--</p>
+              <p className="text-3xl font-bold">
+                {topCategory ? topCategory[0] : '--'}
+              </p>
               <p className="text-sm text-muted-foreground mt-1">
-                Categories will appear here
+                {topCategory 
+                  ? `$${topCategory[1].toFixed(2)} spent` 
+                  : 'Categories will appear here'}
               </p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Call to Action */}
-        <Card className="mt-8">
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <div className="rounded-full bg-primary/10 p-4 mb-4">
-              <Receipt className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">No expenses yet</h3>
-            <p className="text-muted-foreground text-center mb-4 max-w-md">
-              Start tracking your spending by adding your first expense. You can enter it manually or scan a receipt.
-            </p>
-            <Button disabled>
-              Add Expense (Coming in Phase 3)
-            </Button>
-          </CardContent>
-        </Card>
+        {/* Expense List */}
+        <ExpenseList />
       </main>
     </div>
   )

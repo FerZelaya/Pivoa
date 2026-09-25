@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module.js';
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AppModule } from './app.module.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -8,6 +9,15 @@ async function bootstrap() {
 
   // Set global API prefix
   app.setGlobalPrefix('api');
+
+  // Enable validation
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
 
   // Enable CORS for web app
   const webOrigin = configService.get<string>('WEB_ORIGIN', 'http://localhost:5173');
