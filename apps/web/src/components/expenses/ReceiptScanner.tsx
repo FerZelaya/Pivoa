@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useScanReceipt, type ParsedReceipt } from '@/hooks/useScanReceipt'
 import { Button } from '@/components/ui/button'
-import { Upload, Camera, Loader2, Sparkles, X, AlertCircle } from 'lucide-react'
+import { Icon } from '@/components/ui/icon'
 import { toast } from 'sonner'
 
 interface ReceiptScannerProps {
@@ -17,53 +17,39 @@ export function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) {
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
-
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       toast.error('Please select an image file')
       return
     }
-
-    // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
       toast.error('File size must be less than 10MB')
       return
     }
-
     setSelectedFile(file)
-    
-    // Create preview
     const reader = new FileReader()
-    reader.onload = (e) => {
-      setPreview(e.target?.result as string)
-    }
+    reader.onload = (e) => setPreview(e.target?.result as string)
     reader.readAsDataURL(file)
   }
 
   const handleScan = () => {
     if (!selectedFile) return
-
     scanReceipt(selectedFile, {
       onSuccess: (result) => {
         onScanComplete(result)
-        toast.success('Receipt scanned successfully!')
+        toast.success('Receipt scanned — details filled in')
       },
-      onError: (err) => {
-        toast.error(err instanceof Error ? err.message : 'Failed to scan receipt')
-      },
+      onError: (err) => toast.error(err instanceof Error ? err.message : 'Failed to scan receipt'),
     })
   }
 
   const clearSelection = () => {
     setSelectedFile(null)
     setPreview(null)
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   return (
-    <div className="space-y-3">
+    <div>
       <input
         ref={fileInputRef}
         type="file"
@@ -74,78 +60,53 @@ export function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) {
       />
 
       {!preview ? (
-        <div
+        <button
+          type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="group relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/30 p-6 transition-all duration-200 cursor-pointer hover:border-foreground/30 hover:bg-muted/50"
+          className="group w-full flex items-center gap-space-md rounded-lg border border-dashed border-outline-variant bg-surface-container-low/60 p-space-md text-left transition-colors hover:border-primary-container hover:bg-primary-fixed/30"
         >
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-transform group-hover:scale-105">
-              <Camera className="h-6 w-6" />
-            </div>
-            <div className="text-left">
-              <p className="font-medium">Scan Receipt</p>
-              <p className="text-sm text-muted-foreground">
-                Take a photo or upload an image
-              </p>
-            </div>
+          <div className="w-10 h-10 rounded-lg bg-primary-fixed text-primary flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <Icon name="document_scanner" className="text-[22px]" />
           </div>
-          <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
-            <Upload className="h-3.5 w-3.5" />
-            <span>PNG, JPG, HEIC up to 10MB</span>
+          <div className="flex-1 min-w-0">
+            <p className="font-body-md text-body-md font-semibold text-on-surface">Scan a receipt with AI</p>
+            <p className="font-body-sm text-body-sm text-outline truncate">Photo or image · PNG, JPG, HEIC up to 10MB</p>
           </div>
-        </div>
+          <Icon name="upload" className="text-outline text-[20px]" />
+        </button>
       ) : (
-        <div className="space-y-3">
-          <div className="relative overflow-hidden rounded-lg border border-border bg-card">
-            <img
-              src={preview}
-              alt="Receipt preview"
-              className="h-40 w-full object-cover"
-            />
-            <button
-              type="button"
-              onClick={clearSelection}
-              className="absolute right-2 top-2 rounded-lg bg-background/90 p-1.5 text-muted-foreground shadow-sm transition-colors hover:bg-background hover:text-foreground"
-            >
-              <X className="h-4 w-4" />
-            </button>
+        <div className="flex items-center gap-space-md rounded-lg bg-surface-container-low p-space-sm">
+          <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-surface-container">
+            <img src={preview} alt="Receipt preview" className="w-full h-full object-cover" />
             {isPending && (
-              <div className="absolute inset-0 flex items-center justify-center bg-background/80">
-                <div className="flex flex-col items-center gap-2">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                  <p className="text-sm font-medium">
-                    Analyzing receipt...
-                  </p>
-                </div>
+              <div className="absolute inset-0 flex items-center justify-center bg-surface-container-lowest/70">
+                <Icon name="progress_activity" className="animate-spin text-primary-container" />
               </div>
             )}
           </div>
-
-          {isError && (
-            <div className="flex items-start gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
-              <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
-              <p>{error instanceof Error ? error.message : 'Failed to scan receipt'}</p>
-            </div>
-          )}
-
-          <Button
-            type="button"
-            onClick={handleScan}
-            disabled={isPending}
-            className="w-full"
-          >
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Scanning...
-              </>
+          <div className="flex-1 min-w-0">
+            <p className="font-body-md text-body-md font-semibold text-on-surface truncate">{selectedFile?.name}</p>
+            {isError ? (
+              <p className="font-body-sm text-body-sm text-tertiary-container">
+                {error instanceof Error ? error.message : 'Failed to scan receipt'}
+              </p>
             ) : (
-              <>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Scan with AI
-              </>
+              <p className="font-body-sm text-body-sm text-outline">
+                {isPending ? 'Extracting amount, merchant and date…' : 'Ready to analyze'}
+              </p>
             )}
+          </div>
+          <Button type="button" size="sm" onClick={handleScan} disabled={isPending}>
+            <Icon name="auto_awesome" className="text-[16px]" />
+            {isPending ? 'Scanning' : 'Scan'}
           </Button>
+          <button
+            type="button"
+            onClick={clearSelection}
+            className="p-1 rounded-lg text-outline hover:bg-surface-container hover:text-on-surface"
+          >
+            <Icon name="close" className="text-[18px]" />
+          </button>
         </div>
       )}
     </div>

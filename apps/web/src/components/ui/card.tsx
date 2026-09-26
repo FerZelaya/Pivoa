@@ -1,78 +1,67 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 
-const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-xl border border-border bg-card text-card-foreground",
-      "shadow-[0_1px_3px_0_rgba(0,0,0,0.06),0_1px_2px_-1px_rgba(0,0,0,0.06)]",
-      "hover:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.08),0_2px_4px_-2px_rgba(0,0,0,0.06)]",
-      "transition-shadow duration-200",
-      className
-    )}
-    {...props}
-  />
-))
-Card.displayName = "Card"
+const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('bg-surface-container-lowest rounded-xl shadow-sm', className)} {...props} />
+  )
+)
+Card.displayName = 'Card'
 
-const CardHeader = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex flex-col space-y-1.5 p-6", className)}
-    {...props}
-  />
-))
-CardHeader.displayName = "CardHeader"
+interface SectionHeaderProps {
+  title: string
+  subtitle?: string
+  action?: React.ReactNode
+  className?: string
+}
 
-const CardTitle = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("text-lg font-semibold leading-none tracking-tight", className)}
-    {...props}
-  />
-))
-CardTitle.displayName = "CardTitle"
+function CardHeading({ title, subtitle, action, className }: SectionHeaderProps) {
+  return (
+    <div className={cn('flex items-start justify-between gap-space-md mb-space-lg', className)}>
+      <div>
+        <h3 className="font-headline-sm text-headline-sm text-on-surface">{title}</h3>
+        {subtitle && <p className="font-body-sm text-body-sm text-on-surface-variant">{subtitle}</p>}
+      </div>
+      {action}
+    </div>
+  )
+}
 
-const CardDescription = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
-    {...props}
-  />
-))
-CardDescription.displayName = "CardDescription"
+interface PageHeaderProps {
+  eyebrow: string
+  title: string
+  actions?: React.ReactNode
+}
 
-const CardContent = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
-))
-CardContent.displayName = "CardContent"
+function PageHeader({ eyebrow, title, actions }: PageHeaderProps) {
+  return (
+    <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+      <div>
+        <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">{eyebrow}</span>
+        <h1 className="font-headline-lg text-headline-lg text-on-surface mt-0.5">{title}</h1>
+      </div>
+      {actions && <div className="flex flex-wrap items-center gap-space-sm">{actions}</div>}
+    </div>
+  )
+}
 
-const CardFooter = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex items-center p-6 pt-0", className)}
-    {...props}
-  />
-))
-CardFooter.displayName = "CardFooter"
+function ProgressBar({
+  value,
+  className,
+  barClassName,
+}: {
+  value: number
+  className?: string
+  barClassName?: string
+}) {
+  return (
+    <div className={cn('w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden', className)}>
+      <div
+        className={cn('h-full rounded-full transition-all duration-700 bg-primary-container', barClassName)}
+        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+      />
+    </div>
+  )
+}
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+export { Card, CardHeading, PageHeader, ProgressBar }

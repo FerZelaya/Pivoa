@@ -3,3 +3,7 @@ export * from "./category.js";
 export * from "./expense.js";
 export * from "./health.js";
 export * from "./api.js";
+export * from "./settings.js";
+export * from "./budget.js";
+export * from "./goal.js";
+export * from "./currency.js";

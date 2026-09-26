@@ -3,6 +3,8 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import type { User } from '@supabase/supabase-js';
 import { SUPABASE_CLIENT } from '../supabase/supabase.module.js';
 import { CurrentUser } from '../auth/decorators/index.js';
+import { getCycleWindow } from '../common/cycle.js';
+import { baseAmountOf } from '../common/money.js';
 
 interface SpendingSummary {
   totalSpent: number;
@@ -10,6 +12,26 @@ interface SpendingSummary {
   averageTransaction: number;
   previousMonthTotal: number;
   changePercent: number;
+}
+
+interface OverviewMetrics {
+  totalBalance: number;
+  monthlyIncome: number;
+  monthlySpent: number;
+  netSavings: number;
+  savingsRate: number;
+  budgetUsed: number;
+  budgetRemaining: number;
+  budgetPercentage: number;
+  daysInMonth: number;
+  daysRemaining: number;
+  dailyBudget: number;
+  projectedMonthEnd: number;
+  isOverBudget: boolean;
+  changeFromLastMonth: number;
+  cycleStart: string;
+  cycleEnd: string;
+  currency: string;
 }
 
 interface CategorySpending {
@@ -34,31 +56,44 @@ export class AnalyticsController {
     @Inject(SUPABASE_CLIENT) private readonly supabase: SupabaseClient,
   ) {}
 
+  private async loadCycle(userId: string, offset = 0) {
+    const { data } = await this.supabase
+      .from('user_settings')
+      .select('cycle_start_day, monthly_income_cap, currency')
+      .eq('user_id', userId)
+      .single();
+
+    const cycleStartDay = Number(data?.cycle_start_day) || 1;
+    return {
+      window: getCycleWindow(cycleStartDay, new Date(), offset),
+      monthlyIncome: parseFloat(String(data?.monthly_income_cap ?? 0)) || 0,
+      currency: (data?.currency as string) || 'USD',
+      cycleStartDay,
+    };
+  }
+
   @Get('summary')
   async getSummary(@CurrentUser() user: User): Promise<SpendingSummary> {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const startOfPrevMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const endOfPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    const current = await this.loadCycle(user.id, 0);
+    const previous = getCycleWindow(current.cycleStartDay, new Date(), -1);
 
-    // Current month stats
     const { data: currentMonth } = await this.supabase
       .from('expenses')
-      .select('amount')
+      .select('amount, base_amount')
       .eq('user_id', user.id)
-      .gte('date', startOfMonth.toISOString().split('T')[0]);
+      .gte('date', current.window.start)
+      .lte('date', current.window.end);
 
-    // Previous month stats
     const { data: prevMonth } = await this.supabase
       .from('expenses')
-      .select('amount')
+      .select('amount, base_amount')
       .eq('user_id', user.id)
-      .gte('date', startOfPrevMonth.toISOString().split('T')[0])
-      .lte('date', endOfPrevMonth.toISOString().split('T')[0]);
+      .gte('date', previous.start)
+      .lte('date', previous.end);
 
-    const currentTotal = (currentMonth || []).reduce((sum, e) => sum + parseFloat(e.amount), 0);
+    const currentTotal = (currentMonth || []).reduce((sum, e) => sum + baseAmountOf(e), 0);
     const currentCount = (currentMonth || []).length;
-    const prevTotal = (prevMonth || []).reduce((sum, e) => sum + parseFloat(e.amount), 0);
+    const prevTotal = (prevMonth || []).reduce((sum, e) => sum + baseAmountOf(e), 0);
 
     let changePercent = 0;
     if (prevTotal > 0) {
@@ -76,27 +111,27 @@ export class AnalyticsController {
 
   @Get('by-category')
   async getByCategory(@CurrentUser() user: User): Promise<CategorySpending[]> {
-    const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const { window } = await this.loadCycle(user.id);
 
     const { data } = await this.supabase
       .from('expenses')
       .select(`
         amount,
+        base_amount,
         category:categories(id, name, icon, color)
       `)
       .eq('user_id', user.id)
-      .gte('date', startOfMonth.toISOString().split('T')[0]);
+      .gte('date', window.start)
+      .lte('date', window.end);
 
     if (!data || data.length === 0) {
       return [];
     }
 
-    // Group by category
-    const categoryMap = new Map<string, { 
+    const categoryMap = new Map<string, {
       category: { id: string; name: string; icon: string; color: string };
-      total: number; 
-      count: number 
+      total: number;
+      count: number;
     }>();
 
     let grandTotal = 0;
@@ -104,8 +139,8 @@ export class AnalyticsController {
     for (const expense of data) {
       const cat = expense.category as unknown as { id: string; name: string; icon: string; color: string };
       if (!cat) continue;
-      
-      const amount = parseFloat(expense.amount as string);
+
+      const amount = baseAmountOf(expense);
       grandTotal += amount;
 
       const existing = categoryMap.get(cat.id);
@@ -134,31 +169,37 @@ export class AnalyticsController {
   async getTrend(
     @CurrentUser() user: User,
     @Query('granularity') granularity: 'day' | 'week' = 'day',
-    @Query('days') days = '30',
+    @Query('from') from?: string,
+    @Query('to') to?: string,
   ): Promise<TrendDataPoint[]> {
-    const daysNum = Math.min(90, Math.max(7, parseInt(days, 10) || 30));
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - daysNum);
+    const { window } = await this.loadCycle(user.id);
+    const startDate = from || window.start;
+    const endDate = to || window.end;
 
-    const { data } = await this.supabase
+    let query = this.supabase
       .from('expenses')
-      .select('amount, date')
+      .select('amount, base_amount, date')
       .eq('user_id', user.id)
-      .gte('date', startDate.toISOString().split('T')[0])
+      .gte('date', startDate)
       .order('date', { ascending: true });
+
+    if (endDate) {
+      query = query.lte('date', endDate);
+    }
+
+    const { data } = await query;
 
     if (!data || data.length === 0) {
       return [];
     }
 
-    // Group by date or week
     const groupedData = new Map<string, { total: number; count: number }>();
 
     for (const expense of data) {
       let key: string;
-      
+
       if (granularity === 'week') {
-        const date = new Date(expense.date);
+        const date = new Date(`${expense.date}T00:00:00`);
         const weekStart = new Date(date);
         weekStart.setDate(date.getDate() - date.getDay());
         key = weekStart.toISOString().split('T')[0];
@@ -167,8 +208,8 @@ export class AnalyticsController {
       }
 
       const existing = groupedData.get(key);
-      const amount = parseFloat(expense.amount);
-      
+      const amount = baseAmountOf(expense);
+
       if (existing) {
         existing.total += amount;
         existing.count += 1;
@@ -178,11 +219,79 @@ export class AnalyticsController {
     }
 
     return Array.from(groupedData.entries())
-      .map(([date, data]) => ({
+      .map(([date, point]) => ({
         date,
-        total: data.total,
-        count: data.count,
+        total: point.total,
+        count: point.count,
       }))
       .sort((a, b) => a.date.localeCompare(b.date));
+  }
+
+  @Get('overview')
+  async getOverview(@CurrentUser() user: User): Promise<OverviewMetrics> {
+    const current = await this.loadCycle(user.id, 0);
+    const previous = getCycleWindow(current.cycleStartDay, new Date(), -1);
+    const { window, monthlyIncome, currency } = current;
+
+    const { data: currentExpenses } = await this.supabase
+      .from('expenses')
+      .select('amount, base_amount')
+      .eq('user_id', user.id)
+      .gte('date', window.start)
+      .lte('date', window.end);
+
+    const { data: prevExpenses } = await this.supabase
+      .from('expenses')
+      .select('amount, base_amount')
+      .eq('user_id', user.id)
+      .gte('date', previous.start)
+      .lte('date', previous.end);
+
+    const { data: goals } = await this.supabase
+      .from('savings_goals')
+      .select('current_amount')
+      .eq('user_id', user.id);
+
+    const monthlySpent = (currentExpenses || []).reduce((sum, e) => sum + baseAmountOf(e), 0);
+    const prevMonthSpent = (prevExpenses || []).reduce((sum, e) => sum + baseAmountOf(e), 0);
+    const totalSavings = (goals || []).reduce(
+      (sum, g) => sum + parseFloat(String(g.current_amount)),
+      0,
+    );
+
+    const netSavings = monthlyIncome - monthlySpent;
+    const savingsRate = monthlyIncome > 0 ? (netSavings / monthlyIncome) * 100 : 0;
+    const budgetRemaining = Math.max(0, monthlyIncome - monthlySpent);
+    const budgetPercentage = monthlyIncome > 0 ? (monthlySpent / monthlyIncome) * 100 : 0;
+
+    const { daysInCycle, dayIndex, daysRemaining } = window;
+    const dailyBudget = daysRemaining > 0 ? budgetRemaining / daysRemaining : 0;
+    const avgDailySpend = dayIndex > 0 ? monthlySpent / dayIndex : 0;
+    const projectedMonthEnd = avgDailySpend * daysInCycle;
+
+    let changeFromLastMonth = 0;
+    if (prevMonthSpent > 0) {
+      changeFromLastMonth = ((monthlySpent - prevMonthSpent) / prevMonthSpent) * 100;
+    }
+
+    return {
+      totalBalance: totalSavings,
+      monthlyIncome,
+      monthlySpent: Math.round(monthlySpent * 100) / 100,
+      netSavings: Math.round(netSavings * 100) / 100,
+      savingsRate: Math.round(savingsRate * 10) / 10,
+      budgetUsed: Math.round(monthlySpent * 100) / 100,
+      budgetRemaining: Math.round(budgetRemaining * 100) / 100,
+      budgetPercentage: Math.round(budgetPercentage * 10) / 10,
+      daysInMonth: daysInCycle,
+      daysRemaining,
+      dailyBudget: Math.round(dailyBudget * 100) / 100,
+      projectedMonthEnd: Math.round(projectedMonthEnd * 100) / 100,
+      isOverBudget: monthlySpent > monthlyIncome,
+      changeFromLastMonth: Math.round(changeFromLastMonth * 10) / 10,
+      cycleStart: window.start,
+      cycleEnd: window.end,
+      currency,
+    };
   }
 }

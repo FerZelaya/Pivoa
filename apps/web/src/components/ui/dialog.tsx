@@ -1,155 +1,79 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import { X } from "lucide-react"
+import * as React from 'react'
+import { createPortal } from 'react-dom'
+import { cn } from '@/lib/utils'
+import { Icon } from './icon'
 
-interface DialogContextValue {
+interface ModalProps {
   open: boolean
-  setOpen: (open: boolean) => void
-}
-
-const DialogContext = React.createContext<DialogContextValue | undefined>(undefined)
-
-function useDialogContext() {
-  const context = React.useContext(DialogContext)
-  if (!context) {
-    throw new Error("Dialog components must be used within a Dialog")
-  }
-  return context
-}
-
-interface DialogProps {
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
+  onClose: () => void
+  title: string
+  eyebrow?: string
+  description?: string
+  icon?: string
   children: React.ReactNode
+  footer?: React.ReactNode
+  className?: string
 }
 
-export function Dialog({ open: controlledOpen, onOpenChange, children }: DialogProps) {
-  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false)
-  const isControlled = controlledOpen !== undefined
-  const open = isControlled ? controlledOpen : uncontrolledOpen
-  const setOpen = isControlled ? onOpenChange! : setUncontrolledOpen
+export function Modal({ open, onClose, title, eyebrow, description, icon, children, footer, className }: ModalProps) {
+  React.useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
+    document.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+    }
+  }, [open, onClose])
 
-  return (
-    <DialogContext.Provider value={{ open, setOpen }}>
-      {children}
-    </DialogContext.Provider>
-  )
-}
-
-export function DialogTrigger({ children, asChild }: { children: React.ReactNode; asChild?: boolean }) {
-  const { setOpen } = useDialogContext()
-  
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement<{ onClick?: () => void }>, {
-      onClick: () => setOpen(true),
-    })
-  }
-  
-  return (
-    <button type="button" onClick={() => setOpen(true)}>
-      {children}
-    </button>
-  )
-}
-
-export function DialogPortal({ children }: { children: React.ReactNode }) {
-  const { open } = useDialogContext()
   if (!open) return null
-  return <>{children}</>
-}
 
-export function DialogOverlay({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  const { setOpen } = useDialogContext()
-  return (
-    <div
-      className={cn(
-        "fixed inset-0 z-50 bg-foreground/50 backdrop-blur-sm",
-        "animate-in fade-in-0 duration-200",
-        className
-      )}
-      onClick={() => setOpen(false)}
-      {...props}
-    />
-  )
-}
-
-export function DialogContent({
-  className,
-  children,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const { setOpen } = useDialogContext()
-  return (
-    <DialogPortal>
-      <DialogOverlay />
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-space-md">
+      <div className="absolute inset-0 bg-inverse-surface/40 backdrop-blur-sm animate-fade-in" onClick={onClose} />
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
         className={cn(
-          "fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2",
-          "rounded-xl border border-border bg-card p-6 shadow-xl",
-          "animate-in fade-in-0 zoom-in-95 duration-200",
+          'relative w-full max-w-lg max-h-[calc(100vh-2rem)] min-w-0 overflow-hidden flex flex-col bg-surface-container-lowest rounded-xl shadow-[0_20px_50px_-12px_rgba(11,28,48,0.25)] animate-scale-in',
           className
         )}
-        onClick={(e) => e.stopPropagation()}
-        {...props}
       >
-        {children}
-        <button
-          type="button"
-          className="absolute right-4 top-4 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          onClick={() => setOpen(false)}
-        >
-          <X className="h-4 w-4" />
-          <span className="sr-only">Close</span>
-        </button>
+        <div className="flex items-start justify-between gap-space-md p-space-lg pb-space-md">
+          <div className="flex items-start gap-space-sm">
+            {icon && (
+              <div className="w-9 h-9 rounded-lg bg-primary-fixed text-primary flex items-center justify-center shrink-0">
+                <Icon name={icon} className="text-[20px]" />
+              </div>
+            )}
+            <div>
+              {eyebrow && (
+                <p className="font-label-caps text-label-caps uppercase text-on-surface-variant">{eyebrow}</p>
+              )}
+              <h2 className="font-headline-sm text-headline-sm text-on-surface">{title}</h2>
+              {description && <p className="font-body-sm text-body-sm text-on-surface-variant mt-0.5">{description}</p>}
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1 rounded-lg text-outline hover:bg-surface-container-low hover:text-on-surface transition-colors"
+          >
+            <Icon name="close" className="text-[20px]" />
+            <span className="sr-only">Close</span>
+          </button>
+        </div>
+        <div className="px-space-lg pb-space-lg min-w-0 overflow-y-auto overflow-x-hidden custom-scrollbar">{children}</div>
+        {footer && (
+          <div className="flex items-center justify-end gap-space-sm px-space-lg py-space-md bg-surface-container-low/60 rounded-b-xl">
+            {footer}
+          </div>
+        )}
       </div>
-    </DialogPortal>
-  )
-}
-
-export function DialogHeader({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn("flex flex-col space-y-2 text-center sm:text-left", className)}
-      {...props}
-    />
-  )
-}
-
-export function DialogFooter({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
-      {...props}
-    />
-  )
-}
-
-export function DialogTitle({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLHeadingElement>) {
-  return (
-    <h2
-      className={cn("text-lg font-semibold leading-none tracking-tight text-foreground", className)}
-      {...props}
-    />
-  )
-}
-
-export function DialogDescription({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLParagraphElement>) {
-  return (
-    <p
-      className={cn("text-sm text-muted-foreground", className)}
-      {...props}
-    />
+    </div>,
+    document.body
   )
 }

@@ -1,526 +1,305 @@
-import { Link } from 'react-router'
-import { Button } from '@/components/ui/button'
-import { 
-  Receipt, 
-  PieChart, 
-  Camera, 
-  Shield, 
-  Zap,
-  CheckCircle2,
-  ChevronDown,
-  ArrowRight,
-  TrendingUp,
-  CreditCard,
-  BarChart3,
-  Bell,
-  ChevronRight,
-  Smartphone,
-  Wallet,
-  LineChart
-} from 'lucide-react'
 import { useState } from 'react'
+import { Link } from 'react-router'
+import { useAuth } from '@/contexts/AuthContext'
+import { Icon } from '@/components/ui/icon'
+import { Logo } from '@/components/ui/logo'
+import { cn } from '@/lib/utils'
+
+const FEATURES = [
+  {
+    icon: 'account_balance_wallet',
+    tile: 'bg-primary-fixed text-primary',
+    title: 'Monthly income cap',
+    text: 'Set what you earn — say $3,000 — and Pivoa paces every day against it with a safe daily run rate.',
+  },
+  {
+    icon: 'donut_small',
+    tile: 'bg-secondary-container/50 text-secondary',
+    title: 'Category budgets',
+    text: 'Give Food, Housing or Shopping their own cap. Cards turn amber at 80% and red once you go over.',
+  },
+  {
+    icon: 'flag',
+    tile: 'bg-tertiary-fixed text-tertiary-container',
+    title: 'Savings goals',
+    text: 'Track an emergency fund or a trip with target dates, the monthly pace you need, and one-tap boosts.',
+  },
+  {
+    icon: 'document_scanner',
+    tile: 'bg-primary-fixed text-primary',
+    title: 'AI receipt scanning',
+    text: 'Snap a receipt and the amount, merchant, date and category are filled in for you automatically.',
+  },
+  {
+    icon: 'monitoring',
+    tile: 'bg-secondary-container/50 text-secondary',
+    title: 'Cash-flow velocity',
+    text: 'See cumulative spending against your income baseline, peak outflow days and month-end projections.',
+  },
+  {
+    icon: 'receipt_long',
+    tile: 'bg-surface-container-high text-on-surface',
+    title: 'Searchable ledger',
+    text: 'Filter by date or category, search merchants and notes, bulk-select, and export to CSV in a click.',
+  },
+]
+
+const STEPS = [
+  { n: '01', title: 'Set your monthly budget', text: 'Tell Pivoa your income or spending ceiling during a two-minute setup.' },
+  { n: '02', title: 'Cap categories & add goals', text: 'Split your cap across categories and create your first savings goal.' },
+  { n: '03', title: 'Log or scan expenses', text: 'Add transactions manually or scan receipts — dashboards update instantly.' },
+]
+
+const FAQS = [
+  { q: 'Is Pivoa free?', a: 'Yes. Create an account and start budgeting — no credit card required.' },
+  { q: 'Can I change my monthly budget later?', a: 'Anytime. Your income cap, category caps and goals are all editable in Settings.' },
+  { q: 'How does receipt scanning work?', a: 'Upload a photo of a receipt and Pivoa uses AI to extract the amount, merchant, date and a suggested category.' },
+  { q: 'Is my data private?', a: 'Your data is protected with row-level security — only you can read your expenses, budgets and goals.' },
+]
 
 export default function LandingPage() {
+  const { user } = useAuth()
+  const [openFaq, setOpenFaq] = useState<number | null>(0)
+
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-8">
-              <div className="flex items-center gap-2">
-                <img src="/logo.png" alt="Pivoa" className="h-8 w-8 object-contain" />
-                <span className="font-bold text-xl">Pivoa</span>
-              </div>
-              <div className="hidden md:flex items-center gap-6">
-                <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                  Features
-                </a>
-                <a href="#how-it-works" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                  How it works
-                </a>
-                <a href="#security" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                  Security
-                </a>
-                <a href="#faq" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                  FAQ
-                </a>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link to="/login">
-                <Button variant="ghost" size="sm">Login</Button>
+    <div className="min-h-screen bg-background text-on-surface">
+      {/* Nav */}
+      <header className="fixed top-0 inset-x-0 z-50 h-16 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+        <div className="max-w-[1200px] mx-auto h-full px-space-lg flex items-center justify-between">
+          <Link to="/">
+            <Logo className="h-10" />
+          </Link>
+          <nav className="hidden md:flex items-center gap-space-lg font-body-md text-body-md text-on-surface-variant">
+            <a href="#features" className="hover:text-on-surface transition-colors">Features</a>
+            <a href="#how" className="hover:text-on-surface transition-colors">How it works</a>
+            <a href="#faq" className="hover:text-on-surface transition-colors">FAQ</a>
+          </nav>
+          <div className="flex items-center gap-space-sm">
+            {user ? (
+              <Link to="/overview" className="px-space-md py-space-sm rounded-lg bg-primary-container text-on-primary hover:bg-primary font-body-md text-body-md font-semibold shadow-sm transition-colors">
+                Open Dashboard
               </Link>
-              <Link to="/register">
-                <Button size="sm">Signup</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="py-16 lg:py-24">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left - Text Content */}
-            <div className="max-w-xl">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-6">
-                Invest Intelligently,
-                <br />
-                Live Independently
-              </h1>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                Your all-in-one solution to smarter money management. Track spending, set goals, and make informed financial decisions with clarity and ease.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <Link to="/register">
-                  <Button size="lg" className="h-12 px-6">
-                    Get Started
-                  </Button>
+            ) : (
+              <>
+                <Link to="/login" className="px-space-md py-space-sm rounded-lg text-on-surface hover:bg-surface-container-low font-body-md text-body-md font-medium transition-colors">
+                  Sign in
                 </Link>
-                <Button size="lg" variant="outline" className="h-12 px-6" asChild>
-                  <a href="#features">See Details</a>
-                </Button>
+                <Link to="/register" className="px-space-md py-space-sm rounded-lg bg-primary-container text-on-primary hover:bg-primary font-body-md text-body-md font-semibold shadow-sm transition-colors">
+                  Get started
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section className="relative pt-32 pb-space-xl overflow-hidden">
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+        <div className="relative max-w-[1200px] mx-auto px-space-lg text-center">
+          <span className="inline-flex items-center gap-space-xs px-space-md py-1 rounded-full bg-surface-container-lowest shadow-sm font-label-caps text-label-caps uppercase text-primary-container">
+            <span className="w-1.5 h-1.5 rounded-full bg-secondary" /> Modern Financial Studio
+          </span>
+          <h1 className="mt-space-lg font-display text-[44px] leading-[52px] sm:text-[56px] sm:leading-[64px] font-bold tracking-[-0.03em] text-on-surface max-w-3xl mx-auto">
+            Budget your month. <span className="text-primary-container">Hit every goal.</span>
+          </h1>
+          <p className="mt-space-md font-body-lg text-body-lg text-on-surface-variant max-w-xl mx-auto">
+            Pivoa turns your monthly income into a clear plan — category caps, savings goals and real-time pacing, with AI receipt scanning built in.
+          </p>
+          <div className="mt-space-xl flex flex-col sm:flex-row items-center justify-center gap-space-sm">
+            <Link
+              to={user ? '/overview' : '/register'}
+              className="flex items-center gap-space-xs px-space-lg py-3 rounded-lg bg-primary-container text-on-primary hover:bg-primary font-body-lg text-body-lg font-semibold shadow-sm transition-colors"
+            >
+              {user ? 'Open your dashboard' : 'Start budgeting free'} <Icon name="arrow_forward" className="text-[20px]" />
+            </Link>
+            <a href="#features" className="flex items-center gap-space-xs px-space-lg py-3 rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container-low font-body-lg text-body-lg font-medium shadow-sm transition-colors">
+              <Icon name="play_circle" className="text-[20px] text-primary-container" /> See features
+            </a>
+          </div>
+        </div>
+
+        <HeroPreview />
+      </section>
+
+      {/* Features */}
+      <section id="features" className="py-20">
+        <div className="max-w-[1200px] mx-auto px-space-lg">
+          <div className="text-center max-w-2xl mx-auto mb-space-xl">
+            <span className="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant">Everything in one workspace</span>
+            <h2 className="font-headline-lg text-headline-lg text-on-surface mt-1">Built for monthly discipline</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg">
+            {FEATURES.map((f) => (
+              <div key={f.title} className="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+                <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-primary/5 group-hover:scale-110 transition-transform duration-500" />
+                <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center', f.tile)}>
+                  <Icon name={f.icon} className="text-[22px]" />
+                </div>
+                <h3 className="font-headline-sm text-headline-sm text-on-surface mt-space-md">{f.title}</h3>
+                <p className="font-body-md text-body-md text-on-surface-variant mt-space-xs">{f.text}</p>
               </div>
-            </div>
-
-            {/* Right - Phone Mockup with Cards */}
-            <div className="relative flex justify-center lg:justify-end">
-              <PhoneMockup />
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Trust Badges */}
-      <section className="py-12 border-y border-border">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-60">
-            <TrustLogo name="Dropbox" />
-            <TrustLogo name="airbnb" />
-            <TrustLogo name="GitHub" />
-            <TrustLogo name="NETFLIX" />
-            <TrustLogo name="HBO" />
+      {/* How it works */}
+      <section id="how" className="py-20 bg-surface-container-low">
+        <div className="max-w-[1200px] mx-auto px-space-lg">
+          <div className="text-center max-w-2xl mx-auto mb-space-xl">
+            <span className="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant">Up and running in minutes</span>
+            <h2 className="font-headline-lg text-headline-lg text-on-surface mt-1">How Pivoa works</h2>
           </div>
-        </div>
-      </section>
-
-      {/* Feature Showcase - Left Card */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left - Savings Card Preview */}
-            <div className="flex justify-center">
-              <SavingsCardPreview />
-            </div>
-
-            {/* Right - Content */}
-            <div className="max-w-lg">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Streamline Sales With
-                <br />
-                Seamless Payments
-              </h2>
-              <p className="text-muted-foreground mb-8 leading-relaxed">
-                Deliver A Frictionless Buying Experience With Secure, Responsive, And Fully Integrated Payment Tools
-              </p>
-              <ul className="space-y-4 mb-8">
-                <FeatureCheckItem text="Real-Time Payment Tracking" />
-                <FeatureCheckItem text="Accept Payments Quickly And Securely" />
-                <FeatureCheckItem text="Effortless Integration With Your Platform" />
-              </ul>
-              <Link to="/register">
-                <Button size="lg" className="h-12 px-6">
-                  Create Account
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Our Features Section */}
-      <section id="features" className="py-20 bg-muted/50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Our Features
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              These are the questions we hear most often.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <FeatureCard
-              icon={<CreditCard className="h-5 w-5" />}
-              title="Account"
-              description="Build Data With Login. Featuring All Fintech In Peace Of Mind."
-            />
-            <FeatureCard
-              icon={<BarChart3 className="h-5 w-5" />}
-              title="Credit Score Monitoring"
-              description="Stay On Top Of Your Financial Health With Real-Time Credit Score Monitoring And Personalized Improvement Tips."
-            />
-            <FeatureCard
-              icon={<Wallet className="h-5 w-5" />}
-              title="Real-Time Balance"
-              description="Get Instant Access To Your Account Balance Anytime, Anywhere. So You Always Know Where Your Money Stands."
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section id="how-it-works" className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              How Pivoa Works
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Get started in minutes and start taking control of your finances.
-            </p>
-          </div>
-
-          <div className="max-w-4xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-8">
-              <StepCard number={1} title="Create Account" description="Sign up in seconds with just your email and password." />
-              <StepCard number={2} title="Log Expenses" description="Add expenses manually or scan receipts with your camera." />
-              <StepCard number={3} title="Grow" description="Understand your patterns and make smarter financial decisions." />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section id="faq" className="py-20 bg-muted/50">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Left - Title */}
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Frequently Asked Questions
-              </h2>
-              <p className="text-muted-foreground mb-8">
-                These are the questions we hear most often.
-              </p>
-              
-              {/* FAQ Support Card */}
-              <div className="bg-card border border-border rounded-xl p-6 max-w-sm">
-                <h3 className="font-semibold mb-2">Don't see the answer you need?</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  That's ok. Just drop a message and we will get back to you ASAP.
-                </p>
-                <Button variant="outline" size="sm">
-                  Contact us
-                </Button>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+            {STEPS.map((s) => (
+              <div key={s.n} className="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm">
+                <span className="font-label-numeric-lg text-label-numeric-lg text-primary-container">{s.n}</span>
+                <h3 className="font-headline-sm text-headline-sm text-on-surface mt-space-sm">{s.title}</h3>
+                <p className="font-body-md text-body-md text-on-surface-variant mt-space-xs">{s.text}</p>
               </div>
-            </div>
-
-            {/* Right - FAQ Items */}
-            <div className="space-y-0">
-              <FAQItem 
-                question="What is your platform?"
-                answer="Pivoa is a smart personal finance platform that helps you track expenses, scan receipts with AI, and gain insights into your spending habits."
-              />
-              <FAQItem 
-                question="How is my data safe and secure?"
-                answer="We use industry-standard encryption and multi-factor authentication to keep your information protected at all times."
-              />
-              <FAQItem 
-                question="Do I need to link my bank accounts to use this app?"
-                answer="No, linking bank accounts is optional. You can manually track expenses or use our AI receipt scanning feature."
-              />
-              <FAQItem 
-                question="Can I set financial goals and monitor progress?"
-                answer="Yes! You can set savings goals, budget limits, and track your progress with visual charts and insights."
-              />
-              <FAQItem 
-                question="What devices is this app available on?"
-                answer="Pivoa is available on web browsers, iOS, and Android devices for seamless access anywhere."
-              />
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section - Green */}
-      <section className="py-16 bg-accent">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                Take Full Control of Your Financial Future Starting Today
-              </h2>
-              <p className="text-white/80">
-                Start Taking Charge of Your Finances and Build a Better Tomorrow.
-              </p>
-            </div>
-            <Link to="/register">
-              <Button size="lg" variant="secondary" className="h-12 px-6 bg-white text-foreground hover:bg-white/90">
-                Contact us
-              </Button>
+      {/* FAQ */}
+      <section id="faq" className="py-20">
+        <div className="max-w-[760px] mx-auto px-space-lg">
+          <div className="text-center mb-space-xl">
+            <span className="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant">Questions</span>
+            <h2 className="font-headline-lg text-headline-lg text-on-surface mt-1">Frequently asked</h2>
+          </div>
+          <div className="flex flex-col gap-space-sm">
+            {FAQS.map((f, i) => (
+              <div key={f.q} className="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between gap-space-md px-space-lg py-space-md text-left"
+                >
+                  <span className="font-body-lg text-body-lg font-semibold text-on-surface">{f.q}</span>
+                  <Icon name={openFaq === i ? 'remove' : 'add'} className="text-outline" />
+                </button>
+                {openFaq === i && (
+                  <p className="px-space-lg pb-space-md font-body-md text-body-md text-on-surface-variant animate-fade-in">{f.a}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="pb-20">
+        <div className="max-w-[1200px] mx-auto px-space-lg">
+          <div className="relative overflow-hidden rounded-xl bg-primary-container p-space-xl sm:p-12 text-center">
+            <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-white/10 blur-2xl" />
+            <div className="absolute -bottom-24 -left-10 w-72 h-72 rounded-full bg-secondary/30 blur-3xl" />
+            <h2 className="relative font-headline-lg text-headline-lg text-on-primary">Ready to take control of your month?</h2>
+            <p className="relative font-body-lg text-body-lg text-on-primary-container mt-space-sm">Set your budget in two minutes. Free forever for personal use.</p>
+            <Link
+              to={user ? '/overview' : '/register'}
+              className="relative inline-flex items-center gap-space-xs mt-space-lg px-space-lg py-3 rounded-lg bg-surface-container-lowest text-primary font-body-lg text-body-lg font-semibold shadow-sm hover:bg-primary-fixed transition-colors"
+            >
+              {user ? 'Go to dashboard' : 'Create free account'} <Icon name="arrow_forward" className="text-[20px]" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 border-t border-border">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-5 gap-8 mb-8">
-            {/* Logo & Description */}
-            <div className="md:col-span-1">
-              <div className="flex items-center gap-2 mb-4">
-                <img src="/logo.png" alt="Pivoa" className="h-8 w-8 object-contain" />
-                <span className="font-bold">Pivoa</span>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Track. Understand. Grow.
-              </p>
-            </div>
-
-            {/* Links */}
-            <FooterColumn title="About" links={['Partnerships', 'Terms of Use', 'Features']} />
-            <FooterColumn title="Product" links={['About', 'Product', 'Features']} />
-            <FooterColumn title="Resources" links={['Career', 'Blog']} />
-            <FooterColumn title="Contact" links={['+123 456 780', 'Los Angeles, CA']} />
-          </div>
-
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-border">
-            <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} Pivoa. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-              <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-              <a href="#" className="hover:text-foreground transition-colors">Contact</a>
-            </div>
-          </div>
+      <footer className="bg-surface-container-lowest shadow-[0_-1px_8px_rgba(0,0,0,0.03)]">
+        <div className="max-w-[1200px] mx-auto px-space-lg py-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-md">
+          <Logo className="h-8" />
+          <p className="font-body-sm text-body-sm text-outline">© {new Date().getFullYear()} Pivoa. Smart expense tracking.</p>
         </div>
       </footer>
     </div>
   )
 }
 
-// Phone Mockup Component
-function PhoneMockup() {
+function HeroPreview() {
+  const bars = [38, 52, 44, 61, 58, 72, 66, 80, 74, 86]
   return (
-    <div className="relative">
-      {/* Phone Frame */}
-      <div className="relative w-[280px] h-[560px] bg-foreground rounded-[3rem] p-3 shadow-2xl">
-        {/* Screen */}
-        <div className="relative w-full h-full bg-background rounded-[2.25rem] overflow-hidden">
-          {/* Status Bar */}
-          <div className="flex items-center justify-between px-6 py-3 text-xs">
-            <span className="font-medium">9:41</span>
-            <div className="flex items-center gap-1">
-              <div className="w-4 h-2 bg-foreground/20 rounded-sm" />
-              <div className="w-4 h-2 bg-foreground/20 rounded-sm" />
-              <div className="w-6 h-3 bg-foreground rounded-sm" />
+    <div className="relative max-w-[1100px] mx-auto px-space-lg mt-16">
+      <div className="bg-surface-container-lowest rounded-xl shadow-[0_24px_60px_-20px_rgba(11,28,48,0.25)] overflow-hidden">
+        <div className="flex">
+          <aside className="hidden md:flex w-52 flex-col gap-space-lg p-space-lg bg-surface-container-lowest shadow-[1px_0_8px_rgba(0,0,0,0.03)]">
+            <Logo className="h-8 self-start" />
+            <div className="py-space-xs rounded-lg bg-primary-container text-on-primary text-center font-body-sm text-body-sm font-semibold">+ New Expense</div>
+            <div className="flex flex-col gap-space-xs">
+              {[
+                ['grid_view', 'Overview', true],
+                ['receipt_long', 'Transactions', false],
+                ['track_changes', 'Budgets & Goals', false],
+                ['tune', 'Settings', false],
+              ].map(([icon, label, active]) => (
+                <div
+                  key={label as string}
+                  className={cn(
+                    'flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg font-body-sm text-body-sm',
+                    active ? 'bg-surface-container-high text-on-surface font-semibold' : 'text-on-surface-variant'
+                  )}
+                >
+                  <Icon name={icon as string} filled={Boolean(active)} className="text-[18px]" /> {label}
+                </div>
+              ))}
             </div>
-          </div>
-          
-          {/* App Content */}
-          <div className="px-4 py-2">
-            <p className="text-xs text-muted-foreground mb-1">Total Balance</p>
-            <p className="text-3xl font-bold mb-4">$4,089</p>
-            
-            <div className="flex gap-2 mb-4">
-              <button className="flex-1 bg-foreground text-background text-xs py-2 rounded-lg font-medium">
-                Payout
-              </button>
-              <button className="flex-1 bg-muted text-foreground text-xs py-2 rounded-lg font-medium">
-                Card
-              </button>
+          </aside>
+          <div className="flex-1 bg-background p-space-lg flex flex-col gap-space-md text-left">
+            <div>
+              <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">October Cycle • Day 18 of 31</span>
+              <div className="font-headline-md text-headline-md text-on-surface">Financial Overview</div>
             </div>
-            
-            {/* Mini Chart */}
-            <div className="bg-muted rounded-xl p-3 mb-3">
-              <p className="text-xs text-muted-foreground mb-1">Total Payout</p>
-              <p className="text-lg font-bold">$1,469</p>
-              <div className="h-12 flex items-end gap-1 mt-2">
-                {[40, 65, 45, 80, 55, 70, 60].map((h, i) => (
-                  <div key={i} className="flex-1 bg-foreground/20 rounded-t" style={{ height: `${h}%` }} />
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-space-md">
+              {[
+                ['Saved in Goals', '$12,480.00', 'account_balance', 'bg-primary-fixed text-primary', 'text-on-surface'],
+                ['Monthly Income', '$3,000.00', 'south_west', 'bg-secondary-container/40 text-secondary', 'text-on-surface'],
+                ['Monthly Outflow', '$1,842.50', 'north_east', 'bg-tertiary-fixed text-tertiary-container', 'text-on-surface'],
+                ['Net Savings', '+$1,157.50', 'savings', 'bg-primary-fixed text-primary', 'text-secondary'],
+              ].map(([label, value, icon, tile, color]) => (
+                <div key={label} className="bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="font-label-caps text-[10px] uppercase text-on-surface-variant">{label}</span>
+                    <div className={cn('w-6 h-6 rounded-md flex items-center justify-center', tile)}>
+                      <Icon name={icon} className="text-[15px]" />
+                    </div>
+                  </div>
+                  <div className={cn('font-label-numeric-md text-[18px] font-semibold mt-space-xs', color)}>{value}</div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-space-md">
+              <div className="lg:col-span-2 bg-surface-container-lowest p-space-md rounded-xl shadow-sm">
+                <div className="font-body-md text-body-md font-semibold text-on-surface">Cash Flow &amp; Daily Velocity</div>
+                <div className="h-32 mt-space-sm flex items-end gap-1.5">
+                  {bars.map((h, i) => (
+                    <div key={i} className="flex-1 rounded-t bg-gradient-to-t from-primary-container/20 to-primary-container" style={{ height: `${h}%` }} />
+                  ))}
+                </div>
+              </div>
+              <div className="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col gap-space-sm">
+                <div className="font-body-md text-body-md font-semibold text-on-surface">Budget Watch</div>
+                {[
+                  ['Food', 72, 'bg-secondary'],
+                  ['Shopping', 91, 'bg-primary-container'],
+                  ['Entertainment', 100, 'bg-tertiary-container'],
+                ].map(([name, pct, bar]) => (
+                  <div key={name as string}>
+                    <div className="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
+                      <span>{name}</span>
+                      <span className="font-label-numeric-sm text-label-numeric-sm">{pct}%</span>
+                    </div>
+                    <div className="h-1.5 bg-surface-container rounded-full overflow-hidden mt-1">
+                      <div className={cn('h-full rounded-full', bar as string)} style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
           </div>
         </div>
-        
-        {/* Notch */}
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-foreground rounded-full" />
       </div>
-
-      {/* Floating Cards */}
-      <div className="absolute -right-4 top-20 bg-white rounded-xl shadow-lg p-3 border border-border">
-        <div className="flex items-center gap-2">
-          <div className="w-2 h-2 bg-accent rounded-full" />
-          <span className="text-xs text-muted-foreground">On Saves</span>
-        </div>
-        <p className="text-lg font-bold text-accent">$ 10,400.22</p>
-      </div>
-
-      <div className="absolute -left-8 bottom-32 bg-white rounded-xl shadow-lg p-3 border border-border">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-4 h-4 text-primary" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Total Expends</p>
-              <p className="text-sm font-bold">$659.00</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center">
-              <Wallet className="w-4 h-4 text-accent" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Cash Available</p>
-              <p className="text-sm font-bold">$546.00</p>
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-4 mt-2 text-xs">
-          <span className="text-accent">▲ 5.23% vs last month</span>
-          <span className="text-destructive">▼ 5.23% vs last month</span>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Trust Logo Component
-function TrustLogo({ name }: { name: string }) {
-  return (
-    <span className="text-lg md:text-xl font-bold tracking-tight text-foreground/60">
-      {name}
-    </span>
-  )
-}
-
-// Savings Card Preview Component
-function SavingsCardPreview() {
-  return (
-    <div className="relative">
-      <div className="bg-card border border-border rounded-2xl p-6 shadow-lg w-[280px]">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-            <Smartphone className="w-4 h-4 text-primary" />
-          </div>
-          <span className="text-sm font-medium">Payon</span>
-        </div>
-        
-        <p className="text-sm text-muted-foreground mb-1">Savings Card</p>
-        <p className="text-3xl font-bold mb-6">
-          $16,058<span className="text-accent">.94</span>
-        </p>
-        
-        <p className="text-xs text-muted-foreground mb-3">Better Integration</p>
-        
-        <div className="flex gap-2">
-          <button className="w-10 h-10 bg-foreground rounded-lg flex items-center justify-center">
-            <ArrowRight className="w-4 h-4 text-background -rotate-45" />
-          </button>
-          <button className="w-10 h-10 bg-foreground rounded-lg flex items-center justify-center">
-            <ArrowRight className="w-4 h-4 text-background rotate-135" />
-          </button>
-          <button className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
-            <ArrowRight className="w-4 h-4 text-white -rotate-45" />
-          </button>
-          <button className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
-            <CreditCard className="w-4 h-4 text-white" />
-          </button>
-          <button className="w-10 h-10 bg-muted rounded-lg flex items-center justify-center">
-            <span className="text-muted-foreground">•••</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-// Feature Check Item
-function FeatureCheckItem({ text }: { text: string }) {
-  return (
-    <li className="flex items-center gap-3">
-      <ChevronRight className="h-5 w-5 text-foreground" />
-      <span className="text-muted-foreground">{text}</span>
-    </li>
-  )
-}
-
-// Feature Card Component
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
-  return (
-    <div className="bg-card border border-border rounded-xl p-6 hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between mb-4">
-        <h3 className="font-semibold">{title}</h3>
-        <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center">
-          {icon}
-        </div>
-      </div>
-      <p className="text-sm text-muted-foreground leading-relaxed">
-        {description}
-      </p>
-    </div>
-  )
-}
-
-// Step Card Component
-function StepCard({ number, title, description }: { number: number; title: string; description: string }) {
-  return (
-    <div className="text-center">
-      <div className="w-14 h-14 rounded-xl bg-foreground text-background flex items-center justify-center text-xl font-bold mx-auto mb-4">
-        {number}
-      </div>
-      <h3 className="text-lg font-semibold mb-2">{title}</h3>
-      <p className="text-muted-foreground text-sm">
-        {description}
-      </p>
-    </div>
-  )
-}
-
-// FAQ Item Component
-function FAQItem({ question, answer }: { question: string; answer: string }) {
-  const [isOpen, setIsOpen] = useState(false)
-
-  return (
-    <div className="border-b border-border">
-      <button
-        className="flex items-center justify-between w-full py-4 text-left"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span className="font-medium pr-4">{question}</span>
-        <ChevronDown className={`h-5 w-5 text-muted-foreground transition-transform flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
-      </button>
-      {isOpen && (
-        <p className="pb-4 text-muted-foreground text-sm leading-relaxed">
-          {answer}
-        </p>
-      )}
-    </div>
-  )
-}
-
-// Footer Column Component
-function FooterColumn({ title, links }: { title: string; links: string[] }) {
-  return (
-    <div>
-      <h4 className="font-semibold mb-4">{title}</h4>
-      <ul className="space-y-2">
-        {links.map((link, i) => (
-          <li key={i}>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              {link}
-            </a>
-          </li>
-        ))}
-      </ul>
     </div>
   )
 }

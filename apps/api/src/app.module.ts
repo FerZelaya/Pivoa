@@ -7,6 +7,10 @@ import { CategoriesModule } from './categories/categories.module.js';
 import { ExpensesModule } from './expenses/expenses.module.js';
 import { ReceiptsModule } from './receipts/receipts.module.js';
 import { AnalyticsModule } from './analytics/analytics.module.js';
+import { SettingsModule } from './settings/settings.module.js';
+import { BudgetsModule } from './budgets/budgets.module.js';
+import { GoalsModule } from './goals/goals.module.js';
+import { CurrencyModule } from './currency/currency.module.js';
 import { validate } from './config/env.validation.js';
 
 @Module({
@@ -22,6 +26,10 @@ import { validate } from './config/env.validation.js';
     ExpensesModule,
     ReceiptsModule,
     AnalyticsModule,
+    SettingsModule,
+    BudgetsModule,
+    GoalsModule,
+    CurrencyModule,
   ],
 })
 export class AppModule {}

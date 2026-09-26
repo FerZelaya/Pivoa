@@ -1,8 +1,12 @@
 export interface Expense {
   id: string;
-  userId: string;
+  /** Amount exactly as entered by the user, in `currency`. */
   amount: number;
   currency: string;
+  /** Equivalent of `amount` in the user's base currency, converted at `fxRate`. */
+  baseAmount: number;
+  fxRate: number;
+  userId: string;
   categoryId: string;
   vendor: string | null;
   date: string;

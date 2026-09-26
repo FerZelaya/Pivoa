@@ -39,9 +39,16 @@ export function useCategorySpending() {
   })
 }
 
-export function useSpendingTrend(granularity: 'day' | 'week' = 'day', days = 30) {
+export function useSpendingTrend(options: { granularity?: 'day' | 'week'; from?: string; to?: string } = {}) {
+  const { granularity = 'day', from, to } = options
+  const params = new URLSearchParams()
+  params.set('granularity', granularity)
+  if (from) params.set('from', from)
+  if (to) params.set('to', to)
+
   return useQuery({
-    queryKey: ['analytics', 'trend', granularity, days],
-    queryFn: () => api<TrendDataPoint[]>(`/analytics/trend?granularity=${granularity}&days=${days}`),
+    queryKey: ['analytics', 'trend', granularity, from, to],
+    queryFn: () => api<TrendDataPoint[]>(`/analytics/trend?${params.toString()}`),
+    enabled: Boolean(from && to),
   })
 }

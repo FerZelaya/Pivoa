@@ -1,10 +1,12 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, Navigate, useNavigate } from 'react-router'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Icon } from '@/components/ui/icon'
+import { AuthError, AuthLayout } from '@/components/auth/AuthLayout'
+import { GoogleButton } from '@/components/auth/GoogleButton'
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState('')
@@ -13,116 +15,76 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  
-  const { signUp } = useAuth()
+
+  const { user, loading: authLoading, signUp, signInWithGoogle } = useAuth()
   const navigate = useNavigate()
+
+  if (!authLoading && user) return <Navigate to="/overview" replace />
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      return
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters')
-      return
-    }
+    if (password !== confirmPassword) return setError('Passwords do not match')
+    if (password.length < 6) return setError('Password must be at least 6 characters')
 
     setLoading(true)
-
     const { error } = await signUp(email, password, fullName || undefined)
-
     if (error) {
       setError(error.message)
       setLoading(false)
     } else {
-      navigate('/dashboard', { replace: true })
+      navigate('/onboarding', { replace: true })
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4">
-            <img src="/logo.png" alt="Pivoa" className="h-14 w-14 object-contain mx-auto" />
+    <AuthLayout
+      eyebrow="Get started • Free"
+      title="Create your account"
+      subtitle="Two minutes to set up your monthly budget and first goal."
+      footer={
+        <>
+          Already have an account?{' '}
+          <Link to="/login" className="text-primary-container font-semibold hover:text-primary">
+            Sign in
+          </Link>
+        </>
+      }
+    >
+      {error && <AuthError message={error} />}
+      <GoogleButton
+        disabled={loading}
+        onClick={async () => {
+          setError(null)
+          const { error } = await signInWithGoogle(email)
+          if (error) setError(error.message)
+        }}
+      />
+      <form onSubmit={handleSubmit} className="flex flex-col gap-space-md">
+        <div>
+          <Label htmlFor="fullName">Full name</Label>
+          <Input id="fullName" placeholder="Alex Morgan" value={fullName} onChange={(e) => setFullName(e.target.value)} autoComplete="name" autoFocus />
+        </div>
+        <div>
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+        </div>
+        <div className="grid grid-cols-2 gap-space-md">
+          <div>
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="new-password" />
           </div>
-          <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
-          <CardDescription>
-            Start your journey with Pivoa
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            {error && (
-              <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-lg p-3">
-                {error}
-              </div>
-            )}
-            <div className="space-y-2">
-              <Label htmlFor="fullName">Full Name (optional)</Label>
-              <Input
-                id="fullName"
-                type="text"
-                placeholder="John Doe"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                autoComplete="name"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                autoComplete="new-password"
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Creating account...' : 'Create account'}
-            </Button>
-            <p className="text-sm text-muted-foreground text-center">
-              Already have an account?{' '}
-              <Link to="/login" className="text-foreground hover:underline font-medium">
-                Sign in
-              </Link>
-            </p>
-          </CardFooter>
-        </form>
-      </Card>
-    </div>
+          <div>
+            <Label htmlFor="confirmPassword">Confirm</Label>
+            <Input id="confirmPassword" type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required autoComplete="new-password" />
+          </div>
+        </div>
+        <p className="font-body-sm text-body-sm text-outline -mt-space-xs">At least 6 characters.</p>
+        <Button type="submit" size="lg" className="w-full" disabled={loading}>
+          {loading ? 'Creating account…' : 'Create account'}
+          {!loading && <Icon name="arrow_forward" className="text-[18px]" />}
+        </Button>
+      </form>
+    </AuthLayout>
   )
 }

@@ -1,95 +1,98 @@
 import { useState } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Icon } from '@/components/ui/icon'
+import { AuthError, AuthLayout } from '@/components/auth/AuthLayout'
+import { GoogleButton } from '@/components/auth/GoogleButton'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  
-  const { signIn } = useAuth()
+
+  const { user, loading: authLoading, signIn, signInWithGoogle } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
-  const from = (location.state as { from?: { pathname: string } })?.from?.pathname || '/dashboard'
+  const requested = (location.state as { from?: { pathname: string } })?.from?.pathname
+  const dest = requested && requested !== '/onboarding' && requested !== '/login' ? requested : '/overview'
+
+  if (!authLoading && user) return <Navigate to={dest} replace />
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
-
     const { error } = await signIn(email, password)
-
     if (error) {
       setError(error.message)
       setLoading(false)
     } else {
-      navigate(from, { replace: true })
+      navigate(dest, { replace: true })
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4">
-            <img src="/logo.png" alt="Pivoa" className="h-14 w-14 object-contain mx-auto" />
+    <AuthLayout
+      eyebrow="Welcome back"
+      title="Sign in to Pivoa"
+      subtitle="Pick up right where your budget left off."
+      footer={
+        <>
+          New to Pivoa?{' '}
+          <Link to="/register" className="text-primary-container font-semibold hover:text-primary">
+            Create an account
+          </Link>
+        </>
+      }
+    >
+      {error && <AuthError message={error} />}
+      <GoogleButton
+        disabled={loading}
+        onClick={async () => {
+          setError(null)
+          const { error } = await signInWithGoogle(email)
+          if (error) setError(error.message)
+        }}
+      />
+      <form onSubmit={handleSubmit} className="flex flex-col gap-space-md">
+        <div>
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" autoFocus />
+        </div>
+        <div>
+          <Label htmlFor="password">Password</Label>
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              className="pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((s) => !s)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-outline hover:text-on-surface"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              <Icon name={showPassword ? 'visibility_off' : 'visibility'} className="text-[18px]" />
+            </button>
           </div>
-          <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-          <CardDescription>
-            Sign in to your Pivoa account
-          </CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            {error && (
-              <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-lg p-3">
-                {error}
-              </div>
-            )}
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                autoComplete="current-password"
-              />
-            </div>
-          </CardContent>
-          <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign in'}
-            </Button>
-            <p className="text-sm text-muted-foreground text-center">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-foreground hover:underline font-medium">
-                Sign up
-              </Link>
-            </p>
-          </CardFooter>
-        </form>
-      </Card>
-    </div>
+        </div>
+        <Button type="submit" size="lg" className="w-full mt-space-xs" disabled={loading}>
+          {loading ? 'Signing in…' : 'Sign in'}
+          {!loading && <Icon name="arrow_forward" className="text-[18px]" />}
+        </Button>
+      </form>
+    </AuthLayout>
   )
 }

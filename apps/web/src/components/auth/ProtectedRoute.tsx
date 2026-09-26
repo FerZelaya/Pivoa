@@ -1,25 +1,29 @@
-import { Navigate, useLocation } from 'react-router'
-import { useAuth } from '@/contexts/AuthContext'
+import { Navigate, useLocation } from 'react-router';
+import { useAuth } from '@/contexts/AuthContext';
+import { OnboardingGuard } from './OnboardingGuard';
+import { SplashScreen } from './SplashScreen';
 
 interface ProtectedRouteProps {
-  children: React.ReactNode
+  children: React.ReactNode;
+  skipOnboarding?: boolean;
 }
 
-export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { user, loading } = useAuth()
-  const location = useLocation()
+export function ProtectedRoute({ children, skipOnboarding = false }: ProtectedRouteProps) {
+  const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    )
+    return <SplashScreen />;
   }
 
   if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <>{children}</>
+  // Skip onboarding guard for the onboarding page itself
+  if (skipOnboarding) {
+    return <>{children}</>;
+  }
+
+  return <OnboardingGuard>{children}</OnboardingGuard>;
 }

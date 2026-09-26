@@ -1,6 +1,7 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react'
 import type { User, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
+import { queryClient } from '@/lib/queryClient'
 
 interface AuthContextType {
   user: User | null
@@ -8,6 +9,7 @@ interface AuthContextType {
   loading: boolean
   signUp: (email: string, password: string, fullName?: string) => Promise<{ error: Error | null }>
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>
+  signInWithGoogle: (emailHint?: string) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
 }
 
@@ -18,16 +20,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
+  const previousUserId = useRef<string | null>(null)
+
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
       setUser(session?.user ?? null)
+      previousUserId.current = session?.user?.id ?? null
       setLoading(false)
     })
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      const nextId = session?.user?.id ?? null
+      if (event === 'SIGNED_OUT' || (previousUserId.current && previousUserId.current !== nextId)) {
+        queryClient.clear()
+      }
+      previousUserId.current = nextId
       setSession(session)
       setUser(session?.user ?? null)
       setLoading(false)
@@ -57,12 +65,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error as Error | null }
   }
 
+  const signInWithGoogle = async (emailHint?: string) => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          prompt: 'select_account',
+          ...(emailHint?.trim() ? { login_hint: emailHint.trim() } : {}),
+        },
+      },
+    })
+    return { error: error as Error | null }
+  }
+
   const signOut = async () => {
     await supabase.auth.signOut()
+    queryClient.clear()
   }
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signInWithGoogle, signOut }}>
       {children}
     </AuthContext.Provider>
   )

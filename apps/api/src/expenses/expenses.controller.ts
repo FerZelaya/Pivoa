@@ -17,11 +17,14 @@ import { SUPABASE_CLIENT } from '../supabase/supabase.module.js';
 import { CurrentUser } from '../auth/decorators/index.js';
 import { CreateExpenseDto, UpdateExpenseDto } from './dto/index.js';
 import type { Expense, ExpenseWithCategory, PaginatedResponse } from '@pivoa/shared';
+import { CurrencyService } from '../currency/currency.service.js';
+import { mapExpense, mapExpenseWithCategory } from '../common/money.js';
 
 @Controller('expenses')
 export class ExpensesController {
   constructor(
     @Inject(SUPABASE_CLIENT) private readonly supabase: SupabaseClient,
+    private readonly currency: CurrencyService,
   ) {}
 
   @Get()
@@ -32,6 +35,7 @@ export class ExpensesController {
     @Query('categoryId') categoryId?: string,
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
+    @Query('search') search?: string,
   ): Promise<PaginatedResponse<ExpenseWithCategory>> {
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
     const pageSizeNum = Math.min(100, Math.max(1, parseInt(pageSize, 10) || 20));
@@ -39,10 +43,13 @@ export class ExpensesController {
 
     let query = this.supabase
       .from('expenses')
-      .select(`
+      .select(
+        `
         *,
         category:categories(id, name, icon, color)
-      `, { count: 'exact' })
+      `,
+        { count: 'exact' },
+      )
       .eq('user_id', user.id)
       .order('date', { ascending: false })
       .range(offset, offset + pageSizeNum - 1);
@@ -56,6 +63,10 @@ export class ExpensesController {
     if (endDate) {
       query = query.lte('date', endDate);
     }
+    const term = search?.trim().replace(/[%,()*]/g, ' ');
+    if (term) {
+      query = query.or(`vendor.ilike.%${term}%,notes.ilike.%${term}%`);
+    }
 
     const { data, error, count } = await query;
 
@@ -64,23 +75,8 @@ export class ExpensesController {
     }
 
     const total = count || 0;
-    const expenses: ExpenseWithCategory[] = (data || []).map((expense) => ({
-      id: expense.id,
-      userId: expense.user_id,
-      amount: parseFloat(expense.amount),
-      currency: expense.currency,
-      categoryId: expense.category_id,
-      vendor: expense.vendor,
-      date: expense.date,
-      receiptImageUrl: expense.receipt_image_url,
-      notes: expense.notes,
-      createdAt: expense.created_at,
-      updatedAt: expense.updated_at,
-      category: expense.category,
-    }));
-
     return {
-      data: expenses,
+      data: (data || []).map((expense) => mapExpenseWithCategory(expense)),
       total,
       page: pageNum,
       pageSize: pageSizeNum,
@@ -95,10 +91,12 @@ export class ExpensesController {
   ): Promise<ExpenseWithCategory> {
     const { data, error } = await this.supabase
       .from('expenses')
-      .select(`
+      .select(
+        `
         *,
         category:categories(id, name, icon, color)
-      `)
+      `,
+      )
       .eq('id', id)
       .eq('user_id', user.id)
       .single();
@@ -107,38 +105,29 @@ export class ExpensesController {
       throw new NotFoundException('Expense not found');
     }
 
-    return {
-      id: data.id,
-      userId: data.user_id,
-      amount: parseFloat(data.amount),
-      currency: data.currency,
-      categoryId: data.category_id,
-      vendor: data.vendor,
-      date: data.date,
-      receiptImageUrl: data.receipt_image_url,
-      notes: data.notes,
-      createdAt: data.created_at,
-      updatedAt: data.updated_at,
-      category: data.category,
-    };
+    return mapExpenseWithCategory(data);
   }
 
   @Post()
   async create(
     @CurrentUser() user: User,
-    @Body() createExpenseDto: CreateExpenseDto,
+    @Body() dto: CreateExpenseDto,
   ): Promise<Expense> {
+    const converted = await this.convertAmount(user.id, dto.amount, dto.currency);
+
     const { data, error } = await this.supabase
       .from('expenses')
       .insert({
         user_id: user.id,
-        amount: createExpenseDto.amount,
-        currency: createExpenseDto.currency || 'USD',
-        category_id: createExpenseDto.categoryId,
-        vendor: createExpenseDto.vendor || null,
-        date: createExpenseDto.date,
-        receipt_image_url: createExpenseDto.receiptImageUrl || null,
-        notes: createExpenseDto.notes || null,
+        amount: dto.amount,
+        currency: converted.currency,
+        base_amount: converted.baseAmount,
+        fx_rate: converted.fxRate,
+        category_id: dto.categoryId,
+        vendor: dto.vendor || null,
+        date: dto.date,
+        receipt_image_url: dto.receiptImageUrl || null,
+        notes: dto.notes || null,
       })
       .select()
       .single();
@@ -147,31 +136,18 @@ export class ExpensesController {
       throw new BadRequestException(`Failed to create expense: ${error.message}`);
     }
 
-    return {
-      id: data.id,
-      userId: data.user_id,
-      amount: parseFloat(data.amount),
-      currency: data.currency,
-      categoryId: data.category_id,
-      vendor: data.vendor,
-      date: data.date,
-      receiptImageUrl: data.receipt_image_url,
-      notes: data.notes,
-      createdAt: data.created_at,
-      updatedAt: data.updated_at,
-    };
+    return mapExpense(data);
   }
 
   @Patch(':id')
   async update(
     @CurrentUser() user: User,
     @Param('id') id: string,
-    @Body() updateExpenseDto: UpdateExpenseDto,
+    @Body() dto: UpdateExpenseDto,
   ): Promise<Expense> {
-    // First verify the expense belongs to the user
     const { data: existing, error: findError } = await this.supabase
       .from('expenses')
-      .select('id')
+      .select('*')
       .eq('id', id)
       .eq('user_id', user.id)
       .single();
@@ -180,15 +156,22 @@ export class ExpensesController {
       throw new NotFoundException('Expense not found');
     }
 
-    // Build the update object with snake_case keys
     const updateData: Record<string, unknown> = {};
-    if (updateExpenseDto.amount !== undefined) updateData.amount = updateExpenseDto.amount;
-    if (updateExpenseDto.currency !== undefined) updateData.currency = updateExpenseDto.currency;
-    if (updateExpenseDto.categoryId !== undefined) updateData.category_id = updateExpenseDto.categoryId;
-    if (updateExpenseDto.vendor !== undefined) updateData.vendor = updateExpenseDto.vendor;
-    if (updateExpenseDto.date !== undefined) updateData.date = updateExpenseDto.date;
-    if (updateExpenseDto.receiptImageUrl !== undefined) updateData.receipt_image_url = updateExpenseDto.receiptImageUrl;
-    if (updateExpenseDto.notes !== undefined) updateData.notes = updateExpenseDto.notes;
+    if (dto.categoryId !== undefined) updateData.category_id = dto.categoryId;
+    if (dto.vendor !== undefined) updateData.vendor = dto.vendor;
+    if (dto.date !== undefined) updateData.date = dto.date;
+    if (dto.receiptImageUrl !== undefined) updateData.receipt_image_url = dto.receiptImageUrl;
+    if (dto.notes !== undefined) updateData.notes = dto.notes;
+
+    const amount = dto.amount ?? parseFloat(String(existing.amount));
+    const currency = dto.currency ?? existing.currency;
+    if (dto.amount !== undefined || dto.currency !== undefined) {
+      const converted = await this.convertAmount(user.id, amount, currency);
+      updateData.amount = amount;
+      updateData.currency = converted.currency;
+      updateData.base_amount = converted.baseAmount;
+      updateData.fx_rate = converted.fxRate;
+    }
 
     const { data, error } = await this.supabase
       .from('expenses')
@@ -202,19 +185,7 @@ export class ExpensesController {
       throw new BadRequestException(`Failed to update expense: ${error.message}`);
     }
 
-    return {
-      id: data.id,
-      userId: data.user_id,
-      amount: parseFloat(data.amount),
-      currency: data.currency,
-      categoryId: data.category_id,
-      vendor: data.vendor,
-      date: data.date,
-      receiptImageUrl: data.receipt_image_url,
-      notes: data.notes,
-      createdAt: data.created_at,
-      updatedAt: data.updated_at,
-    };
+    return mapExpense(data);
   }
 
   @Delete(':id')
@@ -233,5 +204,19 @@ export class ExpensesController {
     }
 
     return { success: true };
+  }
+
+  private async convertAmount(userId: string, amount: number, currency?: string) {
+    const { data: settings } = await this.supabase
+      .from('user_settings')
+      .select('currency')
+      .eq('user_id', userId)
+      .single();
+
+    const base = this.currency.normalize(settings?.currency || 'USD');
+    const source = this.currency.normalize(currency || base);
+    const baseAmount = await this.currency.convert(amount, source, base);
+    const fxRate = amount > 0 ? baseAmount / amount : 1;
+    return { currency: source, baseAmount, fxRate };
   }
 }
