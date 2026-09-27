@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, Navigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,6 +9,7 @@ import { Icon } from '@/components/ui/icon'
 import { AuthError, AuthLayout } from '@/components/auth/AuthLayout'
 
 export default function ForgotPasswordPage() {
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -31,32 +33,32 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthLayout
-      eyebrow="Reset password"
-      title={sent ? 'Check your email' : 'Forgot your password?'}
+      eyebrow={t('auth.forgot.eyebrow')}
+      title={sent ? t('auth.forgot.titleSent') : t('auth.forgot.title')}
       subtitle={
         sent
-          ? `If an account exists for ${email}, we sent a link to choose a new password.`
-          : 'Enter your email and we will send a recovery link.'
+          ? t('auth.forgot.subtitleSent', { email })
+          : t('auth.forgot.subtitle')
       }
       footer={
         <Link to="/login" className="text-primary-container font-semibold hover:text-primary">
-          Back to sign in
+          {t('auth.forgot.backToSignIn')}
         </Link>
       }
     >
       {error && <AuthError message={error} />}
       {sent ? (
         <Button type="button" size="lg" className="w-full" onClick={() => setSent(false)}>
-          Send another email
+          {t('auth.forgot.sendAnother')}
         </Button>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-space-md">
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t('auth.forgot.email')}</Label>
             <Input
               id="email"
               type="email"
-              placeholder="you@example.com"
+              placeholder={t('auth.forgot.emailPlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -65,7 +67,7 @@ export default function ForgotPasswordPage() {
             />
           </div>
           <Button type="submit" size="lg" className="w-full mt-space-xs" disabled={loading}>
-            {loading ? 'Sending…' : 'Send reset link'}
+            {loading ? t('auth.forgot.submitting') : t('auth.forgot.submit')}
             {!loading && <Icon name="mail" className="text-[18px]" />}
           </Button>
         </form>

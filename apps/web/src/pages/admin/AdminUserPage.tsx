@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import type { PlanId } from '@pivoa/shared'
 import {
@@ -17,6 +18,7 @@ import { Button } from '@/components/ui/button'
 import { formatMoney } from '@/lib/format'
 
 export default function AdminUserPage() {
+  const { t } = useTranslation()
   const { id = '' } = useParams()
   const { data: user, isPending } = useAdminUser(id)
   const reset = useAdminPasswordReset(id)
@@ -33,89 +35,151 @@ export default function AdminUserPage() {
       await action()
       toast.success(ok)
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Action failed')
+      toast.error(err instanceof Error ? err.message : t('admin.user.toasts.actionFailed'))
     }
   }
 
   if (isPending || !user) {
-    return <p className="font-body-md text-body-md text-outline">{isPending ? 'Loading…' : 'User not found'}</p>
+    return (
+      <p className="font-body-md text-body-md text-outline">
+        {isPending ? t('admin.user.loading') : t('admin.user.notFound')}
+      </p>
+    )
   }
 
   return (
     <>
-      <PageHeader eyebrow="Support" title={user.fullName || user.email} />
+      <PageHeader eyebrow={t('admin.user.eyebrow')} title={user.fullName || user.email} />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-space-lg">
         <section className="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-xs font-body-sm text-body-sm">
-          <h2 className="font-headline-sm text-headline-sm text-on-surface mb-space-sm">Account</h2>
+          <h2 className="font-headline-sm text-headline-sm text-on-surface mb-space-sm">{t('admin.user.account')}</h2>
           <p>{user.email}</p>
-          <p>Created {new Date(user.createdAt).toLocaleString()}</p>
-          <p>Last sign-in {user.lastSignInAt ? new Date(user.lastSignInAt).toLocaleString() : '—'}</p>
-          <p>Providers: {user.providers.join(', ') || 'email'}</p>
-          <p>Email confirmed: {user.emailConfirmed ? 'yes' : 'no'}</p>
-          <p>Banned until: {user.bannedUntil || 'not banned'}</p>
-          <p>Onboarding: {user.onboardingCompleted ? 'complete' : 'incomplete'}</p>
+          <p>{t('admin.user.created', { date: new Date(user.createdAt).toLocaleString() })}</p>
+          <p>
+            {t('admin.user.lastSignIn', {
+              date: user.lastSignInAt ? new Date(user.lastSignInAt).toLocaleString() : t('common.emDash'),
+            })}
+          </p>
+          <p>
+            {t('admin.user.providers', {
+              providers: user.providers.join(', ') || t('admin.user.emailProvider'),
+            })}
+          </p>
+          <p>
+            {t('admin.user.emailConfirmed', {
+              value: user.emailConfirmed ? t('common.yes') : t('common.no'),
+            })}
+          </p>
+          <p>
+            {t('admin.user.bannedUntil', {
+              value: user.bannedUntil || t('admin.user.notBanned'),
+            })}
+          </p>
+          <p>
+            {t('admin.user.onboarding', {
+              value: user.onboardingCompleted ? t('admin.user.complete') : t('admin.user.incomplete'),
+            })}
+          </p>
         </section>
         <section className="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-xs font-body-sm text-body-sm">
-          <h2 className="font-headline-sm text-headline-sm text-on-surface mb-space-sm">Money & plan</h2>
+          <h2 className="font-headline-sm text-headline-sm text-on-surface mb-space-sm">{t('admin.user.moneyPlan')}</h2>
           <p>
-            {user.currency} · resets on day {user.cycleStartDay} · cap {formatMoney(user.monthlyIncomeCap, user.currency)}
+            {t('admin.user.moneyMeta', {
+              currency: user.currency,
+              day: user.cycleStartDay,
+              cap: formatMoney(user.monthlyIncomeCap, user.currency),
+            })}
           </p>
           <p>
-            Plan {user.plan}
-            {user.complimentary ? ' (complimentary)' : ''} · {user.subscriptionStatus}
+            {t('admin.user.planLine', {
+              plan: user.plan,
+              complimentary: user.complimentary ? t('admin.user.complimentary') : '',
+              status: user.subscriptionStatus,
+            })}
           </p>
-          <p>Period end: {user.currentPeriodEnd ? new Date(user.currentPeriodEnd).toLocaleString() : '—'}</p>
-          <p>PayPal payer: {user.paypalPayerId || '—'}</p>
-          <p>PayPal subscription: {user.paypalSubscriptionId || '—'}</p>
           <p>
-            Usage: {user.expenseCount} expenses · {user.goalCount} goals · {user.budgetCount} budgets · {user.receiptScansUsed}/
-            {user.receiptScanLimit} scans
+            {t('admin.user.periodEnd', {
+              date: user.currentPeriodEnd ? new Date(user.currentPeriodEnd).toLocaleString() : t('common.emDash'),
+            })}
+          </p>
+          <p>{t('admin.user.paypalPayer', { id: user.paypalPayerId || t('common.emDash') })}</p>
+          <p>{t('admin.user.paypalSubscription', { id: user.paypalSubscriptionId || t('common.emDash') })}</p>
+          <p>
+            {t('admin.user.usage', {
+              expenses: user.expenseCount,
+              goals: user.goalCount,
+              budgets: user.budgetCount,
+              scansUsed: user.receiptScansUsed,
+              scansLimit: user.receiptScanLimit,
+            })}
           </p>
         </section>
       </div>
       <section className="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
-        <h2 className="font-headline-sm text-headline-sm text-on-surface">Support actions</h2>
+        <h2 className="font-headline-sm text-headline-sm text-on-surface">{t('admin.user.supportActions')}</h2>
         <div className="flex flex-wrap gap-space-sm">
-          <Button type="button" variant="tonal" onClick={() => run(() => reset.mutateAsync(), 'Password reset email sent')}>
-            Send password reset email
-          </Button>
-          <Button type="button" variant="tonal" onClick={() => run(() => confirm.mutateAsync(undefined), 'Email confirmed')}>
-            Confirm email
-          </Button>
-          <Button type="button" variant="tonal" onClick={() => run(() => ban.mutateAsync(undefined), 'User disabled')}>
-            Disable user
-          </Button>
-          <Button type="button" variant="tonal" onClick={() => run(() => unban.mutateAsync(undefined), 'User enabled')}>
-            Enable user
+          <Button
+            type="button"
+            variant="tonal"
+            onClick={() => run(() => reset.mutateAsync(), t('admin.user.toasts.passwordResetSent'))}
+          >
+            {t('admin.user.sendPasswordReset')}
           </Button>
           <Button
             type="button"
             variant="tonal"
-            onClick={() => run(() => onboarding.mutateAsync({ completed: !user.onboardingCompleted }), 'Onboarding updated')}
+            onClick={() => run(() => confirm.mutateAsync(undefined), t('admin.user.toasts.emailConfirmed'))}
           >
-            {user.onboardingCompleted ? 'Mark onboarding incomplete' : 'Mark onboarding complete'}
+            {t('admin.user.confirmEmail')}
           </Button>
-          <Button type="button" variant="ghost" onClick={() => run(() => cancel.mutateAsync(undefined), 'Renewal stopped. Access lasts until the paid period ends.')}>
-            Cancel renewal
+          <Button
+            type="button"
+            variant="tonal"
+            onClick={() => run(() => ban.mutateAsync(undefined), t('admin.user.toasts.userDisabled'))}
+          >
+            {t('admin.user.disableUser')}
           </Button>
-          <p className="font-body-sm text-body-sm text-on-surface-variant basis-full">
-            Cancel stops future PayPal charges. Access lasts until the paid period ends.
-          </p>
+          <Button
+            type="button"
+            variant="tonal"
+            onClick={() => run(() => unban.mutateAsync(undefined), t('admin.user.toasts.userEnabled'))}
+          >
+            {t('admin.user.enableUser')}
+          </Button>
+          <Button
+            type="button"
+            variant="tonal"
+            onClick={() =>
+              run(() => onboarding.mutateAsync({ completed: !user.onboardingCompleted }), t('admin.user.toasts.onboardingUpdated'))
+            }
+          >
+            {user.onboardingCompleted ? t('admin.user.markOnboardingIncomplete') : t('admin.user.markOnboardingComplete')}
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => run(() => cancel.mutateAsync(undefined), t('admin.user.toasts.renewalStopped'))}
+          >
+            {t('admin.user.cancelRenewal')}
+          </Button>
+          <p className="font-body-sm text-body-sm text-on-surface-variant basis-full">{t('admin.user.cancelHint')}</p>
         </div>
         <div className="flex items-center gap-space-sm">
           <select value={plan} onChange={(e) => setPlan(e.target.value as PlanId)} className="bg-surface-container-low rounded-lg px-space-md py-2">
-            <option value="free">Free</option>
-            <option value="plus">Plus complimentary</option>
-            <option value="pro">Pro complimentary</option>
+            <option value="free">{t('admin.user.free')}</option>
+            <option value="plus">{t('admin.user.plusComplimentary')}</option>
+            <option value="pro">{t('admin.user.proComplimentary')}</option>
           </select>
-          <Button type="button" onClick={() => run(() => grant.mutateAsync({ plan }), 'Plan updated')}>
-            Grant plan
+          <Button type="button" onClick={() => run(() => grant.mutateAsync({ plan }), t('admin.user.toasts.planUpdated'))}>
+            {t('admin.user.grantPlan')}
           </Button>
         </div>
       </section>
       <section className="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg">
-        <h2 className="font-headline-sm text-headline-sm text-on-surface mb-space-sm">Recent tickets</h2>
-        {user.recentTickets.length === 0 && <p className="font-body-sm text-body-sm text-outline">None</p>}
+        <h2 className="font-headline-sm text-headline-sm text-on-surface mb-space-sm">{t('admin.user.recentTickets')}</h2>
+        {user.recentTickets.length === 0 && (
+          <p className="font-body-sm text-body-sm text-outline">{t('admin.user.none')}</p>
+        )}
         <ul>
           {user.recentTickets.map((ticket) => (
             <li key={ticket.id}>

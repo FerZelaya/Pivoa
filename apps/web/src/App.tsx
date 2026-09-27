@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { LanguageSync } from '@/i18n/LanguageSwitcher';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { AppLayout } from '@/components/layout/AppLayout';
 import LandingPage from '@/pages/LandingPage';
@@ -27,6 +28,7 @@ import AdminTicketPage from '@/pages/admin/AdminTicketPage';
 function App() {
   return (
     <AuthProvider>
+      <LanguageSync />
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<LandingPage />} />

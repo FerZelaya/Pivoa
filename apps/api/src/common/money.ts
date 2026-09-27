@@ -1,11 +1,13 @@
 import type { Expense, ExpenseWithCategory, UserSettings } from '@pivoa/shared';
 
 export function mapSettings(row: Record<string, unknown>): UserSettings {
+  const language = row.language === 'es' ? 'es' : 'en';
   return {
     userId: row.user_id as string,
     monthlyIncomeCap: parseFloat(String(row.monthly_income_cap ?? 0)) || 0,
     currency: (row.currency as string) || 'USD',
     cycleStartDay: Number(row.cycle_start_day) || 1,
+    language,
     onboardingCompleted: Boolean(row.onboarding_completed),
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,

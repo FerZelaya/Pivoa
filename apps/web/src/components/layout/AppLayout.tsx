@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate, useOutletContext } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import type { ExpenseWithCategory } from '@pivoa/shared'
 import { useAuth } from '@/contexts/AuthContext'
 import { useOverview } from '@/hooks/useOverview'
@@ -12,6 +13,7 @@ import { useDisplayCurrency } from '@/hooks/useDisplayCurrency'
 import { cn } from '@/lib/utils'
 import { HelpBubble } from '@/components/support/HelpBubble'
 import { useMe } from '@/hooks/useMe'
+import { LanguageSwitcher } from '@/i18n/LanguageSwitcher'
 
 interface AppShellContext {
   openExpense: (options?: { expense?: ExpenseWithCategory; categoryId?: string }) => void
@@ -22,14 +24,15 @@ export function useAppShell() {
 }
 
 const NAV_ITEMS = [
-  { to: '/overview', label: 'Overview', icon: 'grid_view' },
-  { to: '/transactions', label: 'Transactions', icon: 'receipt_long' },
-  { to: '/budgets', label: 'Budgets & Goals', icon: 'track_changes' },
-  { to: '/support', label: 'Support', icon: 'support_agent' },
-  { to: '/settings', label: 'Settings', icon: 'tune' },
-]
+  { to: '/overview', labelKey: 'nav.overview', icon: 'grid_view' },
+  { to: '/transactions', labelKey: 'nav.transactions', icon: 'receipt_long' },
+  { to: '/budgets', labelKey: 'nav.budgets', icon: 'track_changes' },
+  { to: '/support', labelKey: 'nav.support', icon: 'support_agent' },
+  { to: '/settings', labelKey: 'nav.settings', icon: 'tune' },
+] as const
 
 export function AppLayout() {
+  const { t } = useTranslation()
   const { user, signOut } = useAuth()
   const { data: me } = useMe()
   const navigate = useNavigate()
@@ -46,7 +49,8 @@ export function AppLayout() {
 
   useEffect(() => setMobileNavOpen(false), [location.pathname])
 
-  const fullName = (user?.user_metadata?.full_name as string | undefined) || user?.email?.split('@')[0] || 'Pivoa User'
+  const fullName =
+    (user?.user_metadata?.full_name as string | undefined) || user?.email?.split('@')[0] || t('common.defaultUserName')
 
   const alerts = budgets
     .filter((b) => b.percentage >= 80)
@@ -54,16 +58,23 @@ export function AppLayout() {
     .map((b) => ({
       id: b.id,
       icon: b.percentage > 100 ? 'warning' : 'notifications_active',
-      title: `${b.category.name} ${b.percentage > 100 ? 'over budget' : 'nearing cap'}`,
-      detail: `${formatCurrency(b.spent)} of ${formatCurrency(b.monthlyLimit)} · ${Math.round(b.percentage)}%`,
+      title: t(b.percentage > 100 ? 'nav.overBudget' : 'nav.nearingCap', { category: b.category.name }),
+      detail: t('nav.alertDetail', {
+        spent: formatCurrency(b.spent),
+        limit: formatCurrency(b.monthlyLimit),
+        pct: Math.round(b.percentage),
+      }),
       over: b.percentage > 100,
     }))
   if (overview?.isOverBudget) {
     alerts.unshift({
       id: 'monthly',
       icon: 'error',
-      title: 'Monthly cap exceeded',
-      detail: `${formatCurrency(overview.monthlySpent)} spent of ${formatCurrency(overview.monthlyIncome)}`,
+      title: t('nav.monthlyCapExceeded'),
+      detail: t('nav.monthlyCapDetail', {
+        spent: formatCurrency(overview.monthlySpent),
+        income: formatCurrency(overview.monthlyIncome),
+      }),
       over: true,
     })
   }
@@ -104,7 +115,7 @@ export function AppLayout() {
             className="w-full py-space-sm px-space-md rounded-lg bg-primary-container text-on-primary hover:bg-primary transition-all flex items-center justify-center gap-space-xs font-body-md text-body-md font-semibold shadow-sm active:scale-[0.98] cursor-pointer"
           >
             <Icon name="add" className="text-[20px]" />
-            New Expense
+            {t('nav.newExpense')}
           </button>
 
           <ul className="flex flex-col gap-space-xs">
@@ -124,7 +135,7 @@ export function AppLayout() {
                   {({ isActive }) => (
                     <>
                       <Icon name={item.icon} filled={isActive} className="text-[22px]" />
-                      <span>{item.label}</span>
+                      <span>{t(item.labelKey)}</span>
                     </>
                   )}
                 </NavLink>
@@ -146,7 +157,7 @@ export function AppLayout() {
                   {({ isActive }) => (
                     <>
                       <Icon name="admin_panel_settings" filled={isActive} className="text-[22px]" />
-                      <span>Admin</span>
+                      <span>{t('nav.admin')}</span>
                     </>
                   )}
                 </NavLink>
@@ -156,9 +167,9 @@ export function AppLayout() {
         </div>
 
         <div className="bg-surface-container-low rounded-xl p-space-md flex flex-col gap-space-xs">
-          <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">Left This Month</span>
+          <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">{t('nav.leftThisMonth')}</span>
           <span className="font-label-numeric-lg text-label-numeric-lg text-on-surface">
-            {overview ? formatCurrency(overview.budgetRemaining) : '—'}
+            {overview ? formatCurrency(overview.budgetRemaining) : t('common.emDash')}
           </span>
           <div className="w-full bg-surface-container-high h-1 rounded-full overflow-hidden mt-1">
             <div
@@ -169,7 +180,9 @@ export function AppLayout() {
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className={cn('w-2 h-2 rounded-full', overview?.isOverBudget ? 'bg-tertiary-container' : 'bg-secondary')} />
             <span className="font-body-sm text-body-sm text-on-surface-variant">
-              {overview?.monthlyIncome ? `${usedPct}% of ${formatCurrency(overview.monthlyIncome)} cap` : 'Set a monthly cap'}
+              {overview?.monthlyIncome
+                ? t('nav.pctOfCap', { pct: usedPct, amount: formatCurrency(overview.monthlyIncome) })
+                : t('nav.setMonthlyCap')}
             </span>
           </div>
         </div>
@@ -194,7 +207,7 @@ export function AppLayout() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full bg-transparent border-none focus:outline-none font-body-md text-body-md text-on-surface placeholder:text-outline py-1"
-              placeholder="Search transactions, merchants..."
+              placeholder={t('nav.searchPlaceholder')}
               type="text"
             />
           </form>
@@ -252,6 +265,7 @@ interface Alert {
 }
 
 function NotificationBell({ alerts }: { alerts: Alert[] }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const ref = useClickOutside(() => setOpen(false))
   const navigate = useNavigate()
@@ -269,14 +283,14 @@ function NotificationBell({ alerts }: { alerts: Alert[] }) {
       {open && (
         <div className="absolute right-0 mt-2 w-80 bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_-8px_rgba(11,28,48,0.18)] overflow-hidden animate-scale-in">
           <div className="px-space-md py-space-sm bg-surface-container-low flex items-center justify-between">
-            <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">Budget Alerts</span>
+            <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('nav.budgetAlerts')}</span>
             <span className="font-label-numeric-sm text-label-numeric-sm text-outline">{alerts.length}</span>
           </div>
           {alerts.length === 0 ? (
             <div className="p-space-lg text-center">
               <Icon name="task_alt" className="text-secondary text-[28px]" />
-              <p className="font-body-md text-body-md text-on-surface mt-1">All budgets on pace</p>
-              <p className="font-body-sm text-body-sm text-outline">We&apos;ll alert you at 80% of any cap.</p>
+              <p className="font-body-md text-body-md text-on-surface mt-1">{t('nav.allBudgetsOnPace')}</p>
+              <p className="font-body-sm text-body-sm text-outline">{t('nav.alertAtEighty')}</p>
             </div>
           ) : (
             <ul className="max-h-72 overflow-y-auto custom-scrollbar">
@@ -326,6 +340,7 @@ function ProfileMenu({
   isAdmin: boolean
   onSignOut: () => Promise<void>
 }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const ref = useClickOutside(() => setOpen(false))
   const navigate = useNavigate()
@@ -342,7 +357,9 @@ function ProfileMenu({
         </div>
         <div className="hidden md:flex flex-col text-left">
           <span className="font-body-md text-body-md font-semibold text-on-surface leading-tight">{name}</span>
-          <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">{plan ? `${plan} plan` : 'Plan'}</span>
+          <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
+            {plan ? t('nav.planLabel', { plan }) : t('common.plan')}
+          </span>
         </div>
         <Icon name="expand_more" className="hidden md:inline-block text-[18px] text-outline" />
       </button>
@@ -352,6 +369,9 @@ function ProfileMenu({
             <p className="font-body-md text-body-md font-semibold text-on-surface truncate">{name}</p>
             <p className="font-body-sm text-body-sm text-outline truncate">{email}</p>
           </div>
+          <div className="px-space-md py-space-sm border-b border-surface-container-low">
+            <LanguageSwitcher className="w-full justify-stretch [&>button]:flex-1" compact />
+          </div>
           <button
             type="button"
             onClick={() => {
@@ -360,7 +380,7 @@ function ProfileMenu({
             }}
             className="w-full flex items-center gap-space-sm px-space-md py-space-sm font-body-md text-body-md text-on-surface hover:bg-surface-container-low"
           >
-            <Icon name="tune" className="text-[18px] text-on-surface-variant" /> Settings
+            <Icon name="tune" className="text-[18px] text-on-surface-variant" /> {t('nav.settings')}
           </button>
           <button
             type="button"
@@ -370,7 +390,7 @@ function ProfileMenu({
             }}
             className="w-full flex items-center gap-space-sm px-space-md py-space-sm font-body-md text-body-md text-on-surface hover:bg-surface-container-low"
           >
-            <Icon name="support_agent" className="text-[18px] text-on-surface-variant" /> Support
+            <Icon name="support_agent" className="text-[18px] text-on-surface-variant" /> {t('nav.support')}
           </button>
           {isAdmin && (
             <button
@@ -381,7 +401,7 @@ function ProfileMenu({
               }}
               className="w-full flex items-center gap-space-sm px-space-md py-space-sm font-body-md text-body-md text-on-surface hover:bg-surface-container-low"
             >
-              <Icon name="admin_panel_settings" className="text-[18px] text-on-surface-variant" /> Admin
+              <Icon name="admin_panel_settings" className="text-[18px] text-on-surface-variant" /> {t('nav.admin')}
             </button>
           )}
           <button
@@ -392,7 +412,7 @@ function ProfileMenu({
             }}
             className="w-full flex items-center gap-space-sm px-space-md py-space-sm font-body-md text-body-md text-tertiary-container hover:bg-error-container/40"
           >
-            <Icon name="logout" className="text-[18px]" /> Sign out
+            <Icon name="logout" className="text-[18px]" /> {t('nav.signOut')}
           </button>
         </div>
       )}

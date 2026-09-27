@@ -1,4 +1,5 @@
 let displayCurrency = 'USD'
+let displayLocale = 'en'
 
 export function setDisplayCurrency(code: string) {
   displayCurrency = normalizeCurrency(code)
@@ -8,6 +9,14 @@ export function getDisplayCurrency() {
   return displayCurrency
 }
 
+export function setDisplayLocale(code: string) {
+  displayLocale = code?.toLowerCase().startsWith('es') ? 'es' : 'en'
+}
+
+export function getDisplayLocale() {
+  return displayLocale
+}
+
 export function normalizeCurrency(code?: string | null) {
   return (code || 'USD').trim().toUpperCase().slice(0, 3) || 'USD'
 }
@@ -15,7 +24,7 @@ export function normalizeCurrency(code?: string | null) {
 export function currencySymbol(code = displayCurrency) {
   const normalized = normalizeCurrency(code)
   try {
-    const parts = new Intl.NumberFormat('en-US', {
+    const parts = new Intl.NumberFormat(displayLocale, {
       style: 'currency',
       currency: normalized,
       currencyDisplay: 'narrowSymbol',
@@ -31,7 +40,7 @@ export function currencySymbol(code = displayCurrency) {
 export function formatMoney(value: number | null | undefined, currency = displayCurrency): string {
   const amount = Number.isFinite(value) ? (value as number) : 0
   try {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat(displayLocale, {
       style: 'currency',
       currency: normalizeCurrency(currency),
       minimumFractionDigits: 2,
@@ -49,7 +58,7 @@ export function formatCurrency(value: number | null | undefined): string {
 export function formatCompact(value: number, currency = displayCurrency): string {
   if (Math.abs(value) < 10_000) return formatMoney(value, currency)
   try {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat(displayLocale, {
       style: 'currency',
       currency: normalizeCurrency(currency),
       notation: 'compact',
@@ -78,18 +87,19 @@ export function toISODate(date: Date): string {
 }
 
 export function formatDate(date: string, opts: Intl.DateTimeFormatOptions = { month: 'short', day: '2-digit', year: 'numeric' }) {
-  return parseLocalDate(date).toLocaleDateString('en-US', opts)
+  return parseLocalDate(date).toLocaleDateString(displayLocale, opts)
 }
 
 export function monthName(date = new Date(), style: 'long' | 'short' = 'long') {
-  return date.toLocaleDateString('en-US', { month: style })
+  return date.toLocaleDateString(displayLocale, { month: style })
 }
 
 export function monthYear(date = new Date()) {
-  return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+  return date.toLocaleDateString(displayLocale, { month: 'long', year: 'numeric' })
 }
 
 export function ordinal(n: number) {
+  if (displayLocale === 'es') return `${n}.º`
   const v = n % 100
   const suffix = v >= 11 && v <= 13 ? 'th' : (['th', 'st', 'nd', 'rd'][n % 10] ?? 'th')
   return `${n}${suffix}`
@@ -100,7 +110,7 @@ export function formatCycleRange(start?: string | null, end?: string | null) {
   const a = parseLocalDate(start)
   const b = parseLocalDate(end)
   const sameYear = a.getFullYear() === b.getFullYear()
-  return `${a.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: sameYear ? undefined : 'numeric' })} – ${b.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+  return `${a.toLocaleDateString(displayLocale, { month: 'short', day: 'numeric', year: sameYear ? undefined : 'numeric' })} – ${b.toLocaleDateString(displayLocale, { month: 'short', day: 'numeric', year: 'numeric' })}`
 }
 
 export function startOfMonthISO(date = new Date()) {

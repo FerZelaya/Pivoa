@@ -1,0 +1,1060 @@
+{
+  "common": {
+    "appName": "Pivoa",
+    "defaultUserName": "Usuario Pivoa",
+    "signOut": "Cerrar sesión",
+    "signIn": "Iniciar sesión",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "sending": "Enviando…",
+    "loading": "Cargando…",
+    "delete": "Eliminar",
+    "remove": "Quitar",
+    "back": "Atrás",
+    "continue": "Continuar",
+    "skip": "Omitir",
+    "close": "Cerrar",
+    "select": "Seleccionar…",
+    "none": "Ninguno",
+    "plan": "Plan",
+    "admin": "Admin",
+    "settings": "Configuración",
+    "support": "Soporte",
+    "expense": "Gasto",
+    "other": "Otro",
+    "emDash": "—",
+    "copyright": "© {{year}} Pivoa. Control inteligente de gastos.",
+    "backToApp": "Volver a la app",
+    "actions": "Acciones",
+    "yes": "sí",
+    "no": "no",
+    "language": "Idioma",
+    "langEn": "English",
+    "langEs": "Español"
+  },
+  "nav": {
+    "overview": "Resumen",
+    "transactions": "Movimientos",
+    "budgets": "Presupuestos y metas",
+    "support": "Soporte",
+    "settings": "Configuración",
+    "admin": "Admin",
+    "newExpense": "Nuevo gasto",
+    "leftThisMonth": "Disponible este mes",
+    "pctOfCap": "{{pct}}% de tope {{amount}}",
+    "setMonthlyCap": "Define un tope mensual",
+    "searchPlaceholder": "Buscar movimientos, comercios…",
+    "budgetAlerts": "Alertas de presupuesto",
+    "allBudgetsOnPace": "Todos los presupuestos van bien",
+    "alertAtEighty": "Te avisamos al llegar al 80% de cualquier tope.",
+    "overBudget": "{{category}} sobre el presupuesto",
+    "nearingCap": "{{category}} cerca del tope",
+    "alertDetail": "{{spent}} de {{limit}} · {{pct}}%",
+    "monthlyCapExceeded": "Tope mensual excedido",
+    "monthlyCapDetail": "{{spent}} gastados de {{income}}",
+    "planLabel": "Plan {{plan}}",
+    "signOut": "Cerrar sesión"
+  },
+  "auth": {
+    "layout": {
+      "tagline": "© {{year}} Pivoa. Control inteligente de gastos.",
+      "studioEyebrow": "Estudio financiero moderno",
+      "studioTitle": "Cada lempira, a ritmo.",
+      "studioSubtitle": "Define un tope mensual, asigna presupuesto a cada categoría y mira crecer tus metas de ahorro — todo en un espacio tranquilo.",
+      "monthlyOutflow": "Salidas del mes",
+      "pctOfCap": "61% del tope de $3,000",
+      "netSavings": "Ahorro neto",
+      "retained": "38.6% retenido",
+      "food": "Comida",
+      "shopping": "Compras",
+      "entertainment": "Entretenimiento",
+      "paced": "72% al ritmo",
+      "spent": "91% gastado",
+      "over": "108% sobre"
+    },
+    "google": {
+      "continue": "Continuar con Google",
+      "orEmail": "o con correo"
+    },
+    "login": {
+      "eyebrow": "Bienvenido de nuevo",
+      "title": "Inicia sesión en Pivoa",
+      "subtitle": "Retoma tu presupuesto justo donde lo dejaste.",
+      "footerNew": "¿Nuevo en Pivoa?",
+      "createAccount": "Crea una cuenta",
+      "email": "Correo",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "password": "Contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "showPassword": "Mostrar contraseña",
+      "hidePassword": "Ocultar contraseña",
+      "submit": "Iniciar sesión",
+      "submitting": "Iniciando sesión…"
+    },
+    "register": {
+      "eyebrow": "Empieza • Gratis",
+      "title": "Crea tu cuenta",
+      "subtitle": "Dos minutos para armar tu presupuesto mensual y tu primera meta.",
+      "footerHaveAccount": "¿Ya tienes una cuenta?",
+      "signIn": "Iniciar sesión",
+      "fullName": "Nombre completo",
+      "fullNamePlaceholder": "Alex Morgan",
+      "email": "Correo",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "password": "Contraseña",
+      "confirm": "Confirmar",
+      "passwordHint": "Al menos 6 caracteres.",
+      "submit": "Crear cuenta",
+      "submitting": "Creando cuenta…",
+      "passwordsMismatch": "Las contraseñas no coinciden",
+      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres"
+    },
+    "forgot": {
+      "eyebrow": "Restablecer contraseña",
+      "title": "¿Olvidaste tu contraseña?",
+      "titleSent": "Revisa tu correo",
+      "subtitle": "Ingresa tu correo y te enviaremos un enlace de recuperación.",
+      "subtitleSent": "Si existe una cuenta para {{email}}, enviamos un enlace para elegir una nueva contraseña.",
+      "backToSignIn": "Volver a iniciar sesión",
+      "email": "Correo",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "submit": "Enviar enlace",
+      "submitting": "Enviando…",
+      "sendAnother": "Enviar otro correo"
+    },
+    "recovery": {
+      "eyebrow": "Restablecer contraseña",
+      "expiredTitle": "Enlace vencido o inválido",
+      "expiredSubtitle": "Solicita un nuevo correo de restablecimiento desde el inicio de sesión, o pide a soporte que te envíe uno.",
+      "requestNewLink": "Solicitar un nuevo enlace",
+      "backToSignIn": "Volver a iniciar sesión",
+      "title": "Elige una nueva contraseña",
+      "subtitle": "Entraste con un enlace de recuperación. Define una nueva contraseña para continuar.",
+      "newPassword": "Nueva contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "showPassword": "Mostrar contraseña",
+      "hidePassword": "Ocultar contraseña",
+      "submit": "Guardar contraseña y continuar",
+      "submitting": "Guardando…",
+      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+      "passwordsMismatch": "Las contraseñas no coinciden"
+    }
+  },
+  "landing": {
+    "nav": {
+      "features": "Funciones",
+      "how": "Cómo funciona",
+      "pricing": "Precios",
+      "faq": "Preguntas",
+      "openDashboard": "Abrir panel",
+      "signIn": "Iniciar sesión",
+      "getStarted": "Empezar"
+    },
+    "hero": {
+      "badge": "Estudio financiero moderno",
+      "titleBefore": "Presupuesta tu mes.",
+      "titleAccent": "Cumple cada meta.",
+      "subtitle": "Pivoa convierte tu ingreso mensual en un plan claro — topes por categoría, metas de ahorro y ritmo en tiempo real, con escaneo de recibos con IA incluido.",
+      "ctaLoggedIn": "Abrir tu panel",
+      "ctaGuest": "Empieza a presupuestar gratis",
+      "seeFeatures": "Ver funciones"
+    },
+    "features": {
+      "eyebrow": "Todo en un solo espacio",
+      "title": "Hecho para la disciplina mensual",
+      "items": {
+        "incomeCap": {
+          "title": "Tope de ingreso mensual",
+          "text": "Define lo que ganas — por ejemplo $3,000 — y Pivoa marca el ritmo diario con un gasto seguro por día."
+        },
+        "categoryBudgets": {
+          "title": "Presupuestos por categoría",
+          "text": "Dale a Comida, Vivienda o Compras su propio tope. Las tarjetas pasan a ámbar al 80% y a rojo si te pasas."
+        },
+        "savingsGoals": {
+          "title": "Metas de ahorro",
+          "text": "Sigue un fondo de emergencia o un viaje con fechas meta, el ritmo mensual que necesitas y aportes en un toque."
+        },
+        "receiptScanning": {
+          "title": "Escaneo de recibos con IA",
+          "text": "Toma foto de un recibo y el monto, comercio, fecha y categoría se llenan solos."
+        },
+        "cashFlow": {
+          "title": "Velocidad del flujo de caja",
+          "text": "Mira el gasto acumulado frente a tu ingreso, los días de mayor salida y las proyecciones a fin de mes."
+        },
+        "ledger": {
+          "title": "Libro de gastos buscable",
+          "text": "Filtra por fecha o categoría, busca comercios y notas, selecciona varios y exporta a CSV en un clic."
+        },
+        "multiCurrency": {
+          "title": "Multimoneda",
+          "text": "Registra gastos en cualquier moneda y mantén una sola moneda base para presupuestos, metas y totales."
+        },
+        "cycles": {
+          "title": "Ciclos de presupuesto a tu medida",
+          "text": "Reinicia cualquier día del mes — ventanas alineadas a tu pago, no solo al calendario."
+        },
+        "support": {
+          "title": "Soporte en la app",
+          "text": "Abre tickets desde la burbuja de ayuda. Pro recibe respuestas prioritarias cuando más las necesitas."
+        },
+        "languages": {
+          "title": "Inglés y español",
+          "text": "Usa Pivoa en inglés o español. El idioma sigue tu navegador por defecto y se sincroniza entre dispositivos."
+        },
+        "alerts": {
+          "title": "Alertas de presupuesto",
+          "text": "Recibe avisos cuando una categoría llega al 80% o cuando superas el tope mensual."
+        },
+        "security": {
+          "title": "Privado por diseño",
+          "text": "Entra con correo o Google. Tus datos financieros quedan detrás de seguridad a nivel de fila — solo tú los ves."
+        }
+      }
+    },
+    "deepDive": {
+      "eyebrow": "Por dentro",
+      "title": "Todas las herramientas para mantener el ritmo",
+      "items": {
+        "overview": {
+          "title": "Resumen en vivo",
+          "text": "Indicadores de metas, ingreso mensual, salidas y ahorro neto — más gráficos de flujo y vigilancia de presupuestos de un vistazo."
+        },
+        "transactions": {
+          "title": "Historial completo",
+          "text": "Busca comercios, filtra por categoría o fechas, edita o elimina en lote y mantén un libro limpio todo el ciclo."
+        },
+        "budgetsGoals": {
+          "title": "Presupuestos y metas juntos",
+          "text": "Topes por categoría y fondos de ahorro viven lado a lado para saber qué te queda por gastar y qué te falta por ahorrar."
+        },
+        "receipts": {
+          "title": "Del recibo al gasto",
+          "text": "Sube una foto, revisa el borrador de la IA y confirma — sin volver a teclear montos de recibos arrugados."
+        }
+      }
+    },
+    "how": {
+      "eyebrow": "Listo en minutos",
+      "title": "Cómo funciona Pivoa",
+      "steps": {
+        "1": {
+          "title": "Define tu presupuesto mensual",
+          "text": "Dile a Pivoa tu ingreso o techo de gasto en una configuración de dos minutos."
+        },
+        "2": {
+          "title": "Topa categorías y agrega metas",
+          "text": "Reparte tu tope entre categorías y crea tu primera meta de ahorro."
+        },
+        "3": {
+          "title": "Registra o escanea gastos",
+          "text": "Agrega movimientos a mano o escanea recibos — los paneles se actualizan al instante."
+        }
+      }
+    },
+    "plans": {
+      "eyebrow": "Precios simples",
+      "title": "Un plan que se ajusta a cómo gastas",
+      "subtitle": "Empieza gratis. Mejora cuando necesites más escaneos, monedas e historial ilimitado.",
+      "perMonth": "/mes",
+      "ctaFree": "Empezar gratis",
+      "ctaPlus": "Obtener Plus",
+      "ctaPro": "Obtener Pro",
+      "compare": "Ver precios completos",
+      "featured": "Más popular",
+      "free": {
+        "name": "Gratis",
+        "price": "$0",
+        "note": "Empieza a registrar",
+        "points": [
+          "Onboarding y 1 moneda",
+          "50 gastos por ciclo",
+          "1 meta de ahorro",
+          "Presupuestos y alertas",
+          "Inglés y español"
+        ]
+      },
+      "plus": {
+        "name": "Plus",
+        "price": "$7",
+        "note": "$59/año · prueba 14 días",
+        "points": [
+          "Gastos ilimitados",
+          "Cualquier moneda",
+          "Metas ilimitadas",
+          "40 escaneos de recibo por ciclo",
+          "Exportar CSV"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "$14",
+        "note": "$119/año",
+        "points": [
+          "Todo lo de Plus",
+          "200 escaneos de recibo por ciclo",
+          "Tickets de soporte prioritarios"
+        ]
+      }
+    },
+    "faq": {
+      "eyebrow": "Preguntas",
+      "title": "Preguntas frecuentes",
+      "items": {
+        "free": {
+          "q": "¿Pivoa es gratis?",
+          "a": "Sí. Gratis incluye onboarding, una moneda, 50 gastos por ciclo y una meta de ahorro — sin tarjeta."
+        },
+        "plans": {
+          "q": "¿Qué desbloquean Plus y Pro?",
+          "a": "Plus agrega gastos y metas ilimitados, multimoneda, exportar CSV y 40 escaneos por ciclo. Pro sube los escaneos a 200 y prioriza tus tickets de soporte."
+        },
+        "changeBudget": {
+          "q": "¿Puedo cambiar mi presupuesto mensual después?",
+          "a": "Cuando quieras. Tu tope de ingreso, topes por categoría y metas se editan en Configuración."
+        },
+        "receipts": {
+          "q": "¿Cómo funciona el escaneo de recibos?",
+          "a": "Sube una foto del recibo y Pivoa usa IA para extraer el monto, comercio, fecha y una categoría sugerida. Los escaneos van con Plus y Pro."
+        },
+        "privacy": {
+          "q": "¿Mis datos son privados?",
+          "a": "Tus datos están protegidos con seguridad a nivel de fila — solo tú puedes ver tus gastos, presupuestos y metas."
+        }
+      }
+    },
+    "cta": {
+      "title": "¿Listo para tomar el control de tu mes?",
+      "subtitle": "Arma tu presupuesto en dos minutos. Empieza gratis — mejora cuando necesites más.",
+      "loggedIn": "Ir al panel",
+      "guest": "Crear cuenta gratis"
+    },
+    "footer": {
+      "copyright": "© {{year}} Pivoa. Control inteligente de gastos."
+    },
+    "preview": {
+      "newExpense": "+ Nuevo gasto",
+      "overview": "Resumen",
+      "transactions": "Movimientos",
+      "budgets": "Presupuestos y metas",
+      "settings": "Configuración",
+      "cycleLabel": "Ciclo de octubre • Día 18 de 31",
+      "financialOverview": "Resumen financiero",
+      "savedInGoals": "Ahorrado en metas",
+      "monthlyIncome": "Ingreso mensual",
+      "monthlyOutflow": "Salidas del mes",
+      "netSavings": "Ahorro neto",
+      "cashFlow": "Flujo de caja y velocidad diaria",
+      "budgetWatch": "Vigilancia de presupuesto",
+      "food": "Comida",
+      "shopping": "Compras",
+      "entertainment": "Entretenimiento"
+    }
+  },
+  "pricing": {
+    "backToApp": "Volver a la app",
+    "signIn": "Iniciar sesión",
+    "eyebrow": "Precios",
+    "title": "Un plan que se ajusta a cómo gastas",
+    "perMonth": "/mes",
+    "currentPlan": "Plan actual",
+    "stayOnFree": "Quedarme en Gratis",
+    "createAccount": "Crear cuenta",
+    "monthly": "Mensual",
+    "yearly": "Anual",
+    "checkoutError": "No se pudo iniciar el pago",
+    "plans": {
+      "free": {
+        "name": "Gratis",
+        "price": "$0",
+        "note": "Empieza a registrar",
+        "points": [
+          "Onboarding y 1 moneda",
+          "50 gastos por ciclo",
+          "1 meta de ahorro",
+          "Sin escaneo de recibos"
+        ]
+      },
+      "plus": {
+        "name": "Plus",
+        "price": "$7",
+        "note": "$59/año",
+        "points": [
+          "Gastos ilimitados",
+          "Cualquier moneda",
+          "Metas ilimitadas",
+          "40 escaneos de recibo por ciclo",
+          "Exportar CSV",
+          "Prueba de 14 días"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "$14",
+        "note": "$119/año",
+        "points": [
+          "Todo lo de Plus",
+          "200 escaneos de recibo por ciclo",
+          "Tickets de soporte prioritarios"
+        ]
+      }
+    }
+  },
+  "onboarding": {
+    "signOut": "Cerrar sesión",
+    "setupStep": "Configuración • Paso {{current}} de {{total}}",
+    "title": "Armemos tu plan mensual",
+    "steps": {
+      "budget": "Presupuesto mensual",
+      "caps": "Topes por categoría",
+      "goal": "Meta de ahorro"
+    },
+    "income": {
+      "title": "¿Cuál es tu presupuesto mensual?",
+      "text": "Ingresa tu ingreso neto o el máximo que quieres gastar cada mes. Marcaremos el ritmo diario con eso.",
+      "currency": "Moneda",
+      "budgetResetsOn": "El presupuesto se reinicia el",
+      "theOrdinal": "El {{ordinal}}",
+      "currentWindow": "Ventana actual {{start}} – {{end}}",
+      "maxSpend": "Gasto máximo al mes",
+      "placeholder": "3000",
+      "dailyRunRate": "Ritmo diario",
+      "perDay": "{{amount}}/día",
+      "weeklyAllowance": "Asignación semanal",
+      "enterIncomeError": "Ingresa tu ingreso mensual o tope de presupuesto"
+    },
+    "caps": {
+      "title": "Define topes por categoría",
+      "text": "Opcional — pon un máximo por categoría. Puedes cambiarlos cuando quieras.",
+      "suggest": "Sugerir",
+      "allocatedOf": "{{allocated}} asignados de {{income}}",
+      "monthlyCapAria": "Tope mensual de {{name}}"
+    },
+    "goal": {
+      "title": "Define tu primera meta de ahorro",
+      "text": "Opcional — un fondo de emergencia es un buen comienzo.",
+      "name": "Nombre de la meta",
+      "namePlaceholder": "Reserva de emergencia",
+      "icon": "Ícono",
+      "targetAmount": "Monto objetivo",
+      "targetAmountPlaceholder": "10000",
+      "targetDate": "Fecha objetivo"
+    },
+    "done": {
+      "title": "¡Listo!",
+      "text": "Tu plan mensual de {{amount}} ya está activo. Abriendo tu resumen…"
+    },
+    "back": "Atrás",
+    "skip": "Omitir",
+    "continue": "Continuar",
+    "completeSetup": "Completar configuración",
+    "saving": "Guardando…",
+    "failedSetup": "No se pudo completar la configuración"
+  },
+  "overview": {
+    "eyebrow": "{{cycle}} • Día {{day}} de {{days}}",
+    "title": "Resumen financiero",
+    "manageBudgets": "Administrar presupuestos",
+    "quickAdd": "Agregar rápido",
+    "kpi": {
+      "savedInGoals": "Ahorrado en metas",
+      "goal_one": "{{count}} meta",
+      "goal_other": "{{count}} metas",
+      "acrossFunds": "en fondos de ahorro",
+      "monthlyIncome": "Ingreso mensual",
+      "perDay": "{{amount}}/día",
+      "budgetCeiling": "techo de presupuesto",
+      "monthlyOutflow": "Salidas del mes",
+      "cap": "Tope: {{amount}}",
+      "pctUsed": "{{pct}}% usado",
+      "netSavingsRate": "Tasa de ahorro neto",
+      "spendVsLastMo": "{{change}}% de gasto vs mes anterior",
+      "ofIncomeRetained": "del ingreso retenido"
+    },
+    "chart": {
+      "title": "Flujo de caja y velocidad diaria",
+      "subtitle": "Gasto acumulado de este ciclo frente a tu techo de ingreso",
+      "spendingTrack": "Rastro de gasto",
+      "baselineIncome": "Ingreso base ({{amount}}/día)",
+      "dailyAverage": "Promedio diario",
+      "peakOutflowDay": "Día de mayor salida",
+      "peakValue": "{{amount}} ({{label}})",
+      "bufferReserve": "Colchón reservado",
+      "tooltipTotal": "{{amount}} total",
+      "tooltipDaily": "+{{amount}} ese día"
+    },
+    "allocation": {
+      "title": "Asignación por categoría",
+      "subtitle": "Desglose de salidas de este ciclo",
+      "total": "Total",
+      "empty": "Aún no hay gastos registrados este mes."
+    },
+    "recent": {
+      "title": "Movimientos recientes",
+      "subtitle": "Últimos registros en todas las categorías",
+      "viewAll": "Ver todo el libro",
+      "colMerchant": "Contraparte / Comercio",
+      "colCategory": "Categoría",
+      "colDate": "Fecha",
+      "colAmount": "Monto neto",
+      "empty": "Aún no hay movimientos",
+      "logFirst": "Registra tu primer gasto",
+      "receiptAttached": "Recibo adjunto",
+      "manualEntry": "Registro manual"
+    },
+    "goals": {
+      "title": "Hitos de metas",
+      "active": "{{count}} ACTIVAS",
+      "addGoal": "Agrega una meta de ahorro para seguir hitos",
+      "pctFunded": "{{pct}}% financiado",
+      "targetPassed": "Fecha objetivo vencida",
+      "dueIn": "Vence en {{days}} días ({{date}})",
+      "budgetWatch": "Vigilancia de presupuesto"
+    },
+    "health": {
+      "title": "Pulso de salud del gasto",
+      "noCap": "SIN TOPE",
+      "overPace": "SOBRE RITMO",
+      "watch": "ATENCIÓN",
+      "optimal": "ÓPTIMO",
+      "pulseWithIncome": "Ahora estás preservando el {{rate}}% del ingreso mensual. Al ritmo de hoy gastarás {{projected}} a fin de mes — un ritmo seguro es {{daily}}/día.",
+      "pulseNoIncome": "Define tu tope de ingreso mensual en Configuración para desbloquear el ritmo.",
+      "burnMultiplier": "Multiplicador de quema",
+      "burnValue": "{{value}}x el límite",
+      "daysLeft": "Días restantes",
+      "daysValue": "{{count}} días"
+    }
+  },
+  "transactions": {
+    "eyebrow": "Libro de gastos • Movimientos {{cycle}}",
+    "title": "Movimientos",
+    "logTransaction": "Registrar movimiento",
+    "telemetry": {
+      "totalDisbursed": "Total desembolsado (mes a la fecha)",
+      "totalPostings": "{{count}} registros en total",
+      "averageTicket": "Ticket promedio",
+      "vsLastMo": "{{pct}}% vs mes anterior",
+      "budgetRemaining": "Presupuesto restante",
+      "daysLeft": "{{count}} días restantes en el ciclo",
+      "topCategory": "Categoría principal",
+      "noneYet": "Ninguna aún",
+      "logToSee": "Registra gastos para ver",
+      "categoryHint": "{{amount}} · {{pct}}%"
+    },
+    "filters": {
+      "searchPlaceholder": "Buscar comercio o notas…",
+      "category": "Categoría: {{name}}",
+      "all": "Todas",
+      "allCategories": "Todas las categorías",
+      "filterByCategory": "Filtrar por categoría",
+      "reset": "Restablecer",
+      "exportCsv": "Exportar CSV",
+      "selected": "{{selected}} de {{total}} seleccionados",
+      "exportSelected": "Exportar selección",
+      "deleteSelected": "Eliminar selección"
+    },
+    "table": {
+      "selectAll": "Seleccionar todo",
+      "date": "Fecha",
+      "merchant": "Comercio / Beneficiario",
+      "category": "Categoría",
+      "receipt": "Recibo",
+      "amount": "Monto",
+      "actions": "Acciones",
+      "emptyFilteredTitle": "No hay movimientos que coincidan",
+      "emptyFilteredText": "Prueba ampliar el rango de fechas o limpiar los filtros.",
+      "emptyTitle": "Tu libro está vacío",
+      "emptyText": "Registra un gasto o escanea un recibo para empezar.",
+      "noNotes": "Sin notas",
+      "viewReceipt": "Ver recibo",
+      "noReceipt": "Sin recibo",
+      "editTransaction": "Editar movimiento"
+    },
+    "pagination": {
+      "activeTotals": "La vista activa suma {{amount}} gastados en {{count}} registros",
+      "show": "Mostrar",
+      "entries": "entradas"
+    },
+    "insights": {
+      "topCategoryShare": "Participación por categoría",
+      "noSpending": "Aún no hay gastos este mes.",
+      "receiptAudit": "Auditoría de recibos",
+      "receiptAuditText": "{{with}} de {{total}} registros en vista tienen un recibo escaneado adjunto.",
+      "monthlyCapUsage": "Uso del tope mensual",
+      "safeRunRate": "Ritmo seguro de {{amount}}/día para el resto de este ciclo."
+    },
+    "toasts": {
+      "deleted_one": "{{count}} movimiento eliminado",
+      "deleted_other": "{{count}} movimientos eliminados",
+      "deleteError": "No se pudieron eliminar los movimientos",
+      "csvPlusOnly": "La exportación CSV viene con Plus",
+      "nothingToExport": "No hay nada que exportar"
+    },
+    "csvHeaders": {
+      "date": "Fecha",
+      "merchant": "Comercio",
+      "category": "Categoría",
+      "originalAmount": "Monto original",
+      "originalCurrency": "Moneda original",
+      "baseAmount": "Monto base",
+      "baseCurrency": "Moneda base",
+      "notes": "Notas",
+      "receipt": "Recibo"
+    }
+  },
+  "budgets": {
+    "eyebrow": "Disciplina de portafolio • Ciclo {{cycle}}",
+    "title": "Presupuestos y metas financieras",
+    "newCategoryBudget": "Nuevo presupuesto por categoría",
+    "addSavingsGoal": "Agregar meta de ahorro",
+    "hero": {
+      "aggregateCap": "Tope mensual agregado",
+      "overallVelocity": "Velocidad general de gasto",
+      "daysLeft": "{{count}} días restantes en el ciclo",
+      "consumedOf": "consumidos de",
+      "totalLimit": "límite total",
+      "base": "$0.00 base",
+      "overCeiling": "{{amount}} sobre el techo",
+      "cushionRemaining": "{{amount}} de colchón restante",
+      "ceiling": "Techo {{amount}}",
+      "safeDaily": "Ritmo diario seguro",
+      "perDay": "{{amount}}/día",
+      "meanBurn": "Quema media real",
+      "monthEnd": "Proyección a fin de mes",
+      "overBudget": "Sobre presupuesto",
+      "onBudget": "Dentro del presupuesto"
+    },
+    "composition": {
+      "title": "Composición de buckets",
+      "subtitle": "Cómo está asignado tu tope de {{amount}}",
+      "active": "Activos",
+      "caps": "{{count}} topes",
+      "unallocated": "Sin asignar"
+    },
+    "allocations": {
+      "eyebrow": "Asignaciones por categoría",
+      "title": "Topes de gasto por categoría",
+      "sortUtilization": "Mayor uso",
+      "sortAlpha": "Alfabético",
+      "addTitle": "Agregar presupuesto por categoría",
+      "addSubtitle": "Define un tope mensual para cualquier categoría"
+    },
+    "card": {
+      "monthlyCap": "Tope mensual",
+      "over": "Sobre",
+      "spent": "Gastado",
+      "paced": "Al ritmo",
+      "status": "{{pct}}% {{status}}",
+      "exceededBy": "Excedido por {{amount}}",
+      "ofCap": "de tope {{amount}}",
+      "noRoom": "Sin margen este ciclo",
+      "remaining": "{{amount}} restantes",
+      "log": "Registrar",
+      "adjust": "Ajustar"
+    },
+    "goals": {
+      "eyebrow": "Acumulación de capital",
+      "title": "Metas y fondos dedicados",
+      "vaultTotal": "Capital total en bóveda:",
+      "addTitle": "Agregar meta de ahorro",
+      "addSubtitle": "Fondo de emergencia, viaje, un carro nuevo…",
+      "settingsHint": "Administra tu tope de ingreso mensual cuando quieras en",
+      "settingsLink": "Configuración",
+      "target": "Meta {{date}}",
+      "openEnded": "Fondo sin fecha",
+      "targetLabel": "Objetivo: {{amount}}",
+      "pctFunded": "{{pct}}% financiado",
+      "goalReached": "Meta alcanzada",
+      "needed": "Faltan {{amount}}",
+      "requiredPace": "Ritmo requerido",
+      "projFulfillment": "Cumplimiento proy.",
+      "complete": "Completa",
+      "perMonth": "{{amount}}/mes",
+      "noDeadline": "Sin fecha límite",
+      "flexibleTimeline": "Plazo flexible",
+      "quickBoost": "Aporte rápido"
+    }
+  },
+  "settings": {
+    "eyebrow": "Preferencias del espacio • Controles de presupuesto",
+    "title": "Configuración",
+    "income": {
+      "eyebrow": "Tope mensual agregado",
+      "title": "Ingreso y presupuesto mensual",
+      "maxSpend": "Gasto máximo al mes",
+      "placeholder": "3000.00",
+      "saveCap": "Guardar tope",
+      "saving": "Guardando…",
+      "monthlyCap": "Tope mensual",
+      "allocated": "Asignado a categorías",
+      "unallocated": "Sin asignar"
+    },
+    "currencyCycle": {
+      "eyebrow": "Moneda y ciclo",
+      "title": "Cómo funcionan el dinero y los meses",
+      "baseCurrency": "Moneda base",
+      "currencyHint": "Al cambiarla se convierten tu tope de ingreso, presupuestos, metas y totales de gastos.",
+      "multiCurrencyLocked": "En Gratis se mantiene la moneda que elegiste al configurar. Mejora a Plus para cambiarla.",
+      "budgetResetsOn": "El presupuesto se reinicia el",
+      "dayOption": "El {{ordinal}} de cada mes",
+      "save": "Guardar",
+      "currentWindow": "Ventana actual: {{range}}"
+    },
+    "categoryBudgets": {
+      "title": "Presupuestos por categoría",
+      "subtitle": "Edita un tope en línea y pulsa Enter para guardar.",
+      "addBudget": "Agregar presupuesto",
+      "empty": "Aún no hay topes por categoría — agrega uno para mantener el gasto bajo control.",
+      "spentPct": "{{spent}} gastados · {{pct}}%",
+      "monthlyLimitAria": "Límite mensual de {{name}}",
+      "save": "Guardar",
+      "moreOptions": "Más opciones"
+    },
+    "savingsGoals": {
+      "title": "Metas de ahorro",
+      "subtitle": "Actualiza objetivos, plazos o agrega fondos.",
+      "newGoal": "Nueva meta",
+      "empty": "Aún no hay metas de ahorro — ¿para qué estás ahorrando?",
+      "target": "Meta {{date}}",
+      "noDeadline": "Sin fecha límite",
+      "funded": "{{pct}}% financiado",
+      "meta": "{{deadline}} · {{pct}}% financiado",
+      "addFunds": "Agregar fondos",
+      "editGoal": "Editar meta"
+    },
+    "account": {
+      "title": "Cuenta",
+      "currency": "Moneda",
+      "memberSince": "Miembro desde",
+      "signOut": "Cerrar sesión"
+    },
+    "tip": {
+      "title": "Consejo de presupuesto",
+      "text": "Prueba asignar cerca del 80% de tu tope mensual entre categorías y deja el resto como colchón para imprevistos. Recibirás alertas cuando una categoría pase el 80% de su tope."
+    },
+    "currencyModal": {
+      "eyebrow": "Convertir saldos",
+      "title": "Cambiar a {{currency}}",
+      "description": "El ingreso, topes por categoría, metas y totales de gastos se convertirán al tipo de cambio de hoy. Los montos originales de cada gasto se quedan en la moneda en que se registraron.",
+      "cancel": "Cancelar",
+      "converting": "Convirtiendo…",
+      "convert": "Convertir y cambiar",
+      "monthlyCap": "Tope mensual"
+    },
+    "toasts": {
+      "subscriptionUpdated": "Suscripción actualizada",
+      "paypalConfirmError": "No se pudo confirmar PayPal",
+      "invalidAmount": "Ingresa un monto mensual válido",
+      "budgetUpdated": "Presupuesto mensual actualizado",
+      "budgetUpdateError": "No se pudo actualizar el presupuesto",
+      "resetDayUpdated": "Día de reinicio actualizado",
+      "resetDayError": "No se pudo actualizar el día de reinicio",
+      "currencySwitched": "Moneda cambiada a {{currency}}",
+      "currencyError": "No se pudo convertir la moneda",
+      "limitError": "Ingresa un límite mayor que cero",
+      "capUpdated": "Tope de {{name}} actualizado",
+      "updateError": "No se pudo actualizar"
+    }
+  },
+  "billing": {
+    "planBilling": "Plan y facturación",
+    "plan": "Plan",
+    "free": "Gratis",
+    "plus": "Plus",
+    "pro": "Pro",
+    "complimentary": "Acceso de cortesía.",
+    "accessUntil": "Acceso hasta {{date}}.",
+    "expensesWithLimit": "{{used}} de {{limit}} gastos este ciclo.",
+    "expensesNoLimit": "{{used}} gastos este ciclo.",
+    "scansUsed": "{{used}} de {{limit}} escaneos de recibo usados.",
+    "scansUnlock": "Los escaneos de recibo se desbloquean con Plus.",
+    "plusPrice": "Plus · $7/mes",
+    "proPrice": "Pro · $14/mes",
+    "upgradeToPro": "Mejorar a Pro",
+    "cancelPlan": "Cancelar plan",
+    "comparePlans": "Comparar planes",
+    "checkoutError": "No se pudo iniciar el pago",
+    "cancelSuccess": "Renovación detenida. El acceso dura hasta que termine el período pagado.",
+    "cancelError": "No se pudo cancelar",
+    "status": {
+      "active": "Activa",
+      "trialing": "En prueba",
+      "past_due": "Vencida",
+      "canceled": "Cancelada",
+      "none": "Ninguna"
+    }
+  },
+  "support": {
+    "eyebrow": "Ayuda",
+    "title": "Soporte",
+    "loading": "Cargando…",
+    "empty": "Aún no hay tickets. Usa el botón de ayuda para enviar uno.",
+    "selectTicket": "Selecciona un ticket para leer el hilo.",
+    "meta": "{{status}} · {{category}}",
+    "metaFull": "{{status}} · {{category}} · {{priority}}",
+    "replyPlaceholder": "Responder",
+    "reply": "Responder",
+    "sending": "Enviando…",
+    "replyError": "No se pudo enviar la respuesta",
+    "help": {
+      "title": "Ayuda",
+      "close": "Cerrar ayuda",
+      "open": "Abrir ayuda",
+      "ticket": "Ticket",
+      "chat": "Chat",
+      "comingSoon": "Pronto",
+      "chatUnavailable": "El chat en vivo aún no está disponible. Envía un ticket y te responderemos ahí.",
+      "subject": "Asunto",
+      "whatHappened": "¿Qué pasó?",
+      "sendTicket": "Enviar ticket",
+      "sending": "Enviando…",
+      "sent": "Ticket enviado. Te responderemos en Soporte.",
+      "sendError": "No se pudo enviar el ticket",
+      "categories": {
+        "bug": "Error",
+        "account": "Cuenta",
+        "billing": "Facturación",
+        "other": "Otro"
+      }
+    }
+  },
+  "admin": {
+    "nav": {
+      "section": "Admin",
+      "overview": "Resumen",
+      "users": "Usuarios",
+      "tickets": "Tickets",
+      "backToApp": "Volver a la app",
+      "signOut": "Cerrar sesión"
+    },
+    "home": {
+      "eyebrow": "Empresa",
+      "title": "Admin",
+      "users": "Usuarios",
+      "openTickets": "Tickets abiertos",
+      "paid": "Plus y Pro",
+      "pastDue": "Vencidos"
+    },
+    "users": {
+      "eyebrow": "Directorio",
+      "title": "Usuarios",
+      "searchPlaceholder": "Buscar correo o nombre",
+      "allPlans": "Todos los planes",
+      "free": "Gratis",
+      "plus": "Plus",
+      "pro": "Pro",
+      "onboarding": "Onboarding",
+      "completed": "Completado",
+      "notFinished": "Sin terminar",
+      "colUser": "Usuario",
+      "colPlan": "Plan",
+      "colStatus": "Estado",
+      "colOnboarding": "Onboarding",
+      "colLastSignIn": "Último acceso",
+      "loading": "Cargando…",
+      "done": "Listo",
+      "pending": "Pendiente"
+    },
+    "user": {
+      "loading": "Cargando…",
+      "notFound": "Usuario no encontrado",
+      "eyebrow": "Soporte",
+      "account": "Cuenta",
+      "created": "Creada {{date}}",
+      "lastSignIn": "Último acceso {{date}}",
+      "providers": "Proveedores: {{providers}}",
+      "emailProvider": "correo",
+      "emailConfirmed": "Correo confirmado: {{value}}",
+      "bannedUntil": "Bloqueado hasta: {{value}}",
+      "notBanned": "no bloqueado",
+      "onboarding": "Onboarding: {{value}}",
+      "complete": "completo",
+      "incomplete": "incompleto",
+      "moneyPlan": "Dinero y plan",
+      "moneyMeta": "{{currency}} · reinicia el día {{day}} · tope {{cap}}",
+      "planLine": "Plan {{plan}}{{complimentary}} · {{status}}",
+      "complimentary": " (cortesía)",
+      "periodEnd": "Fin del período: {{date}}",
+      "paypalPayer": "Pagador PayPal: {{id}}",
+      "paypalSubscription": "Suscripción PayPal: {{id}}",
+      "usage": "Uso: {{expenses}} gastos · {{goals}} metas · {{budgets}} presupuestos · {{scansUsed}}/{{scansLimit}} escaneos",
+      "supportActions": "Acciones de soporte",
+      "sendPasswordReset": "Enviar correo de restablecimiento",
+      "confirmEmail": "Confirmar correo",
+      "disableUser": "Deshabilitar usuario",
+      "enableUser": "Habilitar usuario",
+      "markOnboardingIncomplete": "Marcar onboarding incompleto",
+      "markOnboardingComplete": "Marcar onboarding completo",
+      "cancelRenewal": "Cancelar renovación",
+      "cancelHint": "Cancelar detiene los cargos futuros de PayPal. El acceso dura hasta que termine el período pagado.",
+      "free": "Gratis",
+      "plusComplimentary": "Plus de cortesía",
+      "proComplimentary": "Pro de cortesía",
+      "grantPlan": "Otorgar plan",
+      "recentTickets": "Tickets recientes",
+      "none": "Ninguno",
+      "toasts": {
+        "actionFailed": "La acción falló",
+        "passwordResetSent": "Correo de restablecimiento enviado",
+        "emailConfirmed": "Correo confirmado",
+        "userDisabled": "Usuario deshabilitado",
+        "userEnabled": "Usuario habilitado",
+        "onboardingUpdated": "Onboarding actualizado",
+        "renewalStopped": "Renovación detenida. El acceso dura hasta que termine el período pagado.",
+        "planUpdated": "Plan actualizado"
+      }
+    },
+    "tickets": {
+      "eyebrow": "Bandeja",
+      "title": "Tickets",
+      "allStatuses": "Todos los estados",
+      "open": "Abierto",
+      "pending": "Pendiente",
+      "resolved": "Resuelto",
+      "closed": "Cerrado",
+      "allCategories": "Todas las categorías",
+      "bug": "Error",
+      "account": "Cuenta",
+      "billing": "Facturación",
+      "other": "Otro",
+      "loading": "Cargando…",
+      "meta": "{{email}} · {{status}} · {{priority}} · {{category}}"
+    },
+    "ticket": {
+      "loading": "Cargando…",
+      "notFound": "Ticket no encontrado",
+      "eyebrowFallback": "Ticket",
+      "meta": "{{status}} · {{priority}} · {{category}}",
+      "openUser": "Abrir usuario",
+      "keepStatus": "Mantener estado",
+      "open": "Abierto",
+      "pending": "Pendiente",
+      "resolved": "Resuelto",
+      "closed": "Cerrado",
+      "replyPlaceholder": "Responder al usuario",
+      "update": "Actualizar ticket",
+      "saving": "Guardando…",
+      "updated": "Ticket actualizado",
+      "updateError": "No se pudo actualizar el ticket"
+    }
+  },
+  "modals": {
+    "expense": {
+      "editEyebrow": "Editar registro",
+      "addEyebrow": "Agregar rápido",
+      "editTitle": "Editar movimiento",
+      "addTitle": "Registrar un movimiento",
+      "delete": "Eliminar",
+      "cancel": "Cancelar",
+      "saving": "Guardando…",
+      "saveChanges": "Guardar cambios",
+      "logExpense": "Registrar gasto",
+      "amount": "Monto",
+      "amountPlaceholder": "0.00",
+      "converted": "= {{amount}} {{currency}}",
+      "currency": "Moneda",
+      "multiCurrencyHint": "Otras monedas son una función de Plus.",
+      "date": "Fecha",
+      "category": "Categoría",
+      "select": "Seleccionar…",
+      "merchant": "Comercio / Beneficiario",
+      "merchantPlaceholder": "p. ej. Supermercado La Colonia",
+      "notes": "Notas",
+      "notesPlaceholder": "Memo opcional",
+      "receiptAttached": "Recibo adjunto",
+      "amountError": "Ingresa un monto mayor que cero",
+      "categoryError": "Elige una categoría",
+      "updated": "Movimiento actualizado",
+      "logged": "Gasto registrado",
+      "saveError": "No se pudo guardar el gasto",
+      "deleted": "Movimiento eliminado",
+      "deleteError": "No se pudo eliminar"
+    },
+    "receipt": {
+      "selectImageError": "Selecciona un archivo de imagen",
+      "sizeError": "El archivo debe ser menor a 10 MB",
+      "scanned": "Recibo escaneado — datos rellenados",
+      "scanError": "No se pudo escanear el recibo",
+      "title": "Escanear un recibo con IA",
+      "hint": "Foto o imagen · PNG, JPG, HEIC hasta 10 MB",
+      "previewAlt": "Vista previa del recibo",
+      "extracting": "Extrayendo monto, comercio y fecha…",
+      "ready": "Listo para analizar",
+      "scan": "Escanear",
+      "scanning": "Escaneando"
+    },
+    "budget": {
+      "eyebrow": "Asignación por categoría",
+      "editTitle": "Ajustar tope de {{name}}",
+      "newTitle": "Nuevo presupuesto por categoría",
+      "remove": "Quitar",
+      "cancel": "Cancelar",
+      "saving": "Guardando…",
+      "saveCap": "Guardar tope",
+      "create": "Crear presupuesto",
+      "category": "Categoría",
+      "selectCategory": "Selecciona una categoría…",
+      "allHaveBudget": "Todas las categorías ya tienen presupuesto",
+      "monthlyLimit": "Límite mensual",
+      "limitPlaceholder": "0.00",
+      "unallocatedOf": "Sin asignar del tope {{amount}}",
+      "limitError": "Ingresa un límite mensual mayor que cero",
+      "categoryError": "Elige una categoría",
+      "updated": "Presupuesto actualizado",
+      "created": "Presupuesto por categoría creado",
+      "saveError": "No se pudo guardar el presupuesto",
+      "removed": "Presupuesto eliminado",
+      "deleteError": "No se pudo eliminar el presupuesto"
+    },
+    "goal": {
+      "eyebrow": "Acumulación de capital",
+      "editTitle": "Editar meta de ahorro",
+      "addTitle": "Agregar meta de ahorro",
+      "delete": "Eliminar",
+      "cancel": "Cancelar",
+      "saving": "Guardando…",
+      "saveGoal": "Guardar meta",
+      "createGoal": "Crear meta",
+      "name": "Nombre de la meta",
+      "namePlaceholder": "p. ej. Reserva de emergencia",
+      "icon": "Ícono",
+      "targetAmount": "Monto objetivo",
+      "savedSoFar": "Ahorrado hasta ahora",
+      "amountPlaceholder": "0.00",
+      "targetDate": "Fecha objetivo (opcional)",
+      "nameError": "Ponle un nombre a tu meta",
+      "targetError": "Ingresa un monto objetivo",
+      "updated": "Meta actualizada",
+      "created": "Meta de ahorro creada",
+      "saveError": "No se pudo guardar la meta",
+      "deleted": "Meta eliminada",
+      "deleteError": "No se pudo eliminar la meta",
+      "icons": {
+        "savings": "Ahorro",
+        "emergency": "Emergencia",
+        "travel": "Viaje",
+        "home": "Hogar",
+        "vehicle": "Vehículo",
+        "education": "Educación",
+        "tech": "Tecnología",
+        "gift": "Regalo"
+      }
+    },
+    "deposit": {
+      "eyebrow": "Aporte rápido",
+      "title": "Fondear {{name}}",
+      "titleFallback": "Fondear meta",
+      "description": "Aún faltan {{remaining}} para llegar a {{target}}",
+      "cancel": "Cancelar",
+      "adding": "Agregando…",
+      "addFunds": "Agregar fondos",
+      "amountPlaceholder": "0.00",
+      "quickAmount": "+${{amount}}",
+      "amountError": "Ingresa un monto mayor que cero",
+      "added": "{{amount}} agregados a {{name}}",
+      "addError": "No se pudieron agregar fondos"
+    }
+  }
+}

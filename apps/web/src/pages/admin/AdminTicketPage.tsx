@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import type { TicketStatus } from '@pivoa/shared'
 import { useAdminTicket, useUpdateAdminTicket } from '@/hooks/useTickets'
@@ -8,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 
 export default function AdminTicketPage() {
+  const { t } = useTranslation()
   const { id = '' } = useParams()
   const { data: ticket, isPending } = useAdminTicket(id)
   const update = useUpdateAdminTicket(id)
@@ -22,23 +24,36 @@ export default function AdminTicketPage() {
         reply: reply.trim() || undefined,
       })
       setReply('')
-      toast.success('Ticket updated')
+      toast.success(t('admin.ticket.updated'))
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not update ticket')
+      toast.error(err instanceof Error ? err.message : t('admin.ticket.updateError'))
     }
   }
 
-  if (isPending || !ticket) return <p className="font-body-md text-body-md text-outline">{isPending ? 'Loading…' : 'Ticket not found'}</p>
+  if (isPending || !ticket) {
+    return (
+      <p className="font-body-md text-body-md text-outline">
+        {isPending ? t('admin.ticket.loading') : t('admin.ticket.notFound')}
+      </p>
+    )
+  }
 
   return (
     <>
-      <PageHeader eyebrow={ticket.userEmail || 'Ticket'} title={ticket.subject} />
+      <PageHeader eyebrow={ticket.userEmail || t('admin.ticket.eyebrowFallback')} title={ticket.subject} />
       <p className="font-body-sm text-body-sm text-outline capitalize">
-        {ticket.status} · {ticket.priority} · {ticket.category}
+        {t('admin.ticket.meta', {
+          status: ticket.status,
+          priority: ticket.priority,
+          category: ticket.category,
+        })}
         {ticket.userId && (
           <>
             {' '}
-            · <Link to={`/admin/users/${ticket.userId}`} className="text-primary-container">Open user</Link>
+            ·{' '}
+            <Link to={`/admin/users/${ticket.userId}`} className="text-primary-container">
+              {t('admin.ticket.openUser')}
+            </Link>
           </>
         )}
       </p>
@@ -57,15 +72,15 @@ export default function AdminTicketPage() {
           onChange={(e) => setStatus(e.target.value as TicketStatus | '')}
           className="bg-surface-container-low rounded-lg px-space-md py-2 max-w-xs"
         >
-          <option value="">Keep status</option>
-          <option value="open">Open</option>
-          <option value="pending">Pending</option>
-          <option value="resolved">Resolved</option>
-          <option value="closed">Closed</option>
+          <option value="">{t('admin.ticket.keepStatus')}</option>
+          <option value="open">{t('admin.ticket.open')}</option>
+          <option value="pending">{t('admin.ticket.pending')}</option>
+          <option value="resolved">{t('admin.ticket.resolved')}</option>
+          <option value="closed">{t('admin.ticket.closed')}</option>
         </select>
-        <Textarea value={reply} onChange={(e) => setReply(e.target.value)} placeholder="Reply to the user" />
+        <Textarea value={reply} onChange={(e) => setReply(e.target.value)} placeholder={t('admin.ticket.replyPlaceholder')} />
         <Button type="submit" disabled={update.isPending} className="self-start">
-          {update.isPending ? 'Saving…' : 'Update ticket'}
+          {update.isPending ? t('admin.ticket.saving') : t('admin.ticket.update')}
         </Button>
       </form>
     </>

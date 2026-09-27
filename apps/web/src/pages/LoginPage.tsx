@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,6 +10,7 @@ import { AuthError, AuthLayout } from '@/components/auth/AuthLayout'
 import { GoogleButton } from '@/components/auth/GoogleButton'
 
 export default function LoginPage() {
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -39,14 +41,14 @@ export default function LoginPage() {
 
   return (
     <AuthLayout
-      eyebrow="Welcome back"
-      title="Sign in to Pivoa"
-      subtitle="Pick up right where your budget left off."
+      eyebrow={t('auth.login.eyebrow')}
+      title={t('auth.login.title')}
+      subtitle={t('auth.login.subtitle')}
       footer={
         <>
-          New to Pivoa?{' '}
+          {t('auth.login.footerNew')}{' '}
           <Link to="/register" className="text-primary-container font-semibold hover:text-primary">
-            Create an account
+            {t('auth.login.createAccount')}
           </Link>
         </>
       }
@@ -62,14 +64,14 @@ export default function LoginPage() {
       />
       <form onSubmit={handleSubmit} className="flex flex-col gap-space-md">
         <div>
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" autoFocus />
+          <Label htmlFor="email">{t('auth.login.email')}</Label>
+          <Input id="email" type="email" placeholder={t('auth.login.emailPlaceholder')} value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" autoFocus />
         </div>
         <div>
           <div className="flex items-center justify-between gap-space-sm">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('auth.login.password')}</Label>
             <Link to="/forgot-password" className="font-body-sm text-body-sm text-primary-container font-semibold hover:text-primary">
-              Forgot password?
+              {t('auth.login.forgotPassword')}
             </Link>
           </div>
           <div className="relative">
@@ -87,14 +89,14 @@ export default function LoginPage() {
               type="button"
               onClick={() => setShowPassword((s) => !s)}
               className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-outline hover:text-on-surface"
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              aria-label={showPassword ? t('auth.login.hidePassword') : t('auth.login.showPassword')}
             >
               <Icon name={showPassword ? 'visibility_off' : 'visibility'} className="text-[18px]" />
             </button>
           </div>
         </div>
         <Button type="submit" size="lg" className="w-full mt-space-xs" disabled={loading}>
-          {loading ? 'Signing in…' : 'Sign in'}
+          {loading ? t('auth.login.submitting') : t('auth.login.submit')}
           {!loading && <Icon name="arrow_forward" className="text-[18px]" />}
         </Button>
       </form>

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import type { ExpenseWithCategory } from '@pivoa/shared'
 import { useExpenses, useDeleteExpense } from '@/hooks/useExpenses'
@@ -17,6 +18,7 @@ import { cn } from '@/lib/utils'
 const PAGE_SIZES = [10, 20, 50]
 
 export default function TransactionsPage() {
+  const { t } = useTranslation()
   const { openExpense } = useAppShell()
   const navigate = useNavigate()
   const { data: me } = useMe()
@@ -33,14 +35,14 @@ export default function TransactionsPage() {
   useEffect(() => setSearchDraft(search), [search])
 
   useEffect(() => {
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       if (searchDraft.trim() === search) return
       const next = new URLSearchParams(params)
       if (searchDraft.trim()) next.set('search', searchDraft.trim())
       else next.delete('search')
       setParams(next, { replace: true })
     }, 350)
-    return () => clearTimeout(t)
+    return () => clearTimeout(timer)
   }, [searchDraft, search, params, setParams])
 
   useEffect(() => {
@@ -94,24 +96,35 @@ export default function TransactionsPage() {
     const ids = [...selected]
     try {
       await Promise.all(ids.map((id) => deleteExpense.mutateAsync(id)))
-      toast.success(`${ids.length} transaction${ids.length > 1 ? 's' : ''} deleted`)
+      toast.success(t('transactions.toasts.deleted', { count: ids.length }))
       setSelected(new Set())
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not delete transactions')
+      toast.error(err instanceof Error ? err.message : t('transactions.toasts.deleteError'))
     }
   }
 
   const exportCsv = () => {
     if (me && !me.csvExport) {
-      toast.error('CSV export is included with Plus')
+      toast.error(t('transactions.toasts.csvPlusOnly'))
       navigate('/pricing')
       return
     }
     const source = selected.size ? rows.filter((r) => selected.has(r.id)) : rows
-    if (!source.length) return toast.error('Nothing to export')
+    if (!source.length) return toast.error(t('transactions.toasts.nothingToExport'))
     const escape = (v: string) => `"${v.replace(/"/g, '""')}"`
+    const headers = t('transactions.csvHeaders', { returnObjects: true }) as Record<string, string>
     const lines = [
-      ['Date', 'Merchant', 'Category', 'Original Amount', 'Original Currency', 'Base Amount', 'Base Currency', 'Notes', 'Receipt'].join(','),
+      [
+        headers.date,
+        headers.merchant,
+        headers.category,
+        headers.originalAmount,
+        headers.originalCurrency,
+        headers.baseAmount,
+        headers.baseCurrency,
+        headers.notes,
+        headers.receipt,
+      ].join(','),
       ...source.map((e) =>
         [
           e.date.slice(0, 10),
@@ -147,15 +160,15 @@ export default function TransactionsPage() {
   return (
     <>
       <PageHeader
-        eyebrow={`Expense Ledger • ${formatCycleRange(overview?.cycleStart, overview?.cycleEnd)} Postings`}
-        title="Transactions"
+        eyebrow={t('transactions.eyebrow', { cycle: formatCycleRange(overview?.cycleStart, overview?.cycleEnd) })}
+        title={t('transactions.title')}
         actions={
           <button
             type="button"
             onClick={() => openExpense()}
             className="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-primary-container text-on-primary hover:bg-primary transition-colors shadow-sm font-body-md text-body-md font-semibold"
           >
-            <Icon name="add" className="text-[18px]" /> Log Transaction
+            <Icon name="add" className="text-[18px]" /> {t('transactions.logTransaction')}
           </button>
         }
       />
@@ -163,16 +176,16 @@ export default function TransactionsPage() {
       {/* Telemetry strip */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
         <TelemetryCard
-          label="Total Disbursed (M-T-D)"
+          label={t('transactions.telemetry.totalDisbursed')}
           value={summary ? `-${formatCurrency(summary.totalSpent)}` : null}
           valueClass="text-tertiary-container"
           icon="arrow_upward_alt"
           iconClass="text-tertiary-container"
-          hint={<><Icon name="receipt" className="text-[14px]" /> {summary?.transactionCount ?? 0} total postings</>}
+          hint={<><Icon name="receipt" className="text-[14px]" /> {t('transactions.telemetry.totalPostings', { count: summary?.transactionCount ?? 0 })}</>}
           hintClass="text-outline"
         />
         <TelemetryCard
-          label="Average Ticket"
+          label={t('transactions.telemetry.averageTicket')}
           value={summary ? formatCurrency(summary.averageTransaction) : null}
           valueClass="text-primary-container"
           icon="receipt_long"
@@ -180,27 +193,37 @@ export default function TransactionsPage() {
           hint={
             <>
               <Icon name={(summary?.changePercent ?? 0) > 0 ? 'trending_up' : 'trending_down'} className="text-[14px]" />
-              {Math.abs(summary?.changePercent ?? 0).toFixed(1)}% vs last mo
+              {t('transactions.telemetry.vsLastMo', { pct: Math.abs(summary?.changePercent ?? 0).toFixed(1) })}
             </>
           }
           hintClass={(summary?.changePercent ?? 0) > 0 ? 'text-tertiary-container' : 'text-secondary'}
         />
         <TelemetryCard
-          label="Budget Remaining"
+          label={t('transactions.telemetry.budgetRemaining')}
           value={overview ? formatCurrency(overview.budgetRemaining) : null}
           valueClass={overview?.isOverBudget ? 'text-tertiary-container' : 'text-secondary'}
           icon="account_balance_wallet"
           iconClass="text-secondary"
-          hint={<><Icon name="schedule" className="text-[14px]" /> {overview?.daysRemaining ?? 0} days left in cycle</>}
+          hint={<><Icon name="schedule" className="text-[14px]" /> {t('transactions.telemetry.daysLeft', { count: overview?.daysRemaining ?? 0 })}</>}
           hintClass="text-secondary"
         />
         <TelemetryCard
-          label="Top Category"
-          value={topCategory ? topCategory.categoryName : summary ? 'None yet' : null}
+          label={t('transactions.telemetry.topCategory')}
+          value={topCategory ? topCategory.categoryName : summary ? t('transactions.telemetry.noneYet') : null}
           valueClass="text-on-surface"
           icon={categoryIcon(topCategory?.categoryIcon, topCategory?.categoryName)}
           iconClass="text-outline"
-          hint={<><Icon name="pie_chart" className="text-[14px]" /> {topCategory ? `${formatCurrency(topCategory.total)} · ${Math.round(topCategory.percentage)}%` : 'Log expenses to see'}</>}
+          hint={
+            <>
+              <Icon name="pie_chart" className="text-[14px]" />{' '}
+              {topCategory
+                ? t('transactions.telemetry.categoryHint', {
+                    amount: formatCurrency(topCategory.total),
+                    pct: Math.round(topCategory.percentage),
+                  })
+                : t('transactions.telemetry.logToSee')}
+            </>
+          }
           hintClass="text-outline"
         />
       </div>
@@ -214,7 +237,7 @@ export default function TransactionsPage() {
               value={searchDraft}
               onChange={(e) => setSearchDraft(e.target.value)}
               className="w-full bg-transparent font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none py-1"
-              placeholder="Search merchant or notes..."
+              placeholder={t('transactions.filters.searchPlaceholder')}
               type="text"
             />
             {isFetching && !isPending && <Icon name="progress_activity" className="animate-spin text-outline text-[16px]" />}
@@ -242,15 +265,17 @@ export default function TransactionsPage() {
 
             <label className="relative flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container transition-colors cursor-pointer">
               <Icon name="category" className="text-outline text-[18px]" />
-              <span className="font-body-sm text-body-sm font-medium">Category: {activeCategory?.name ?? 'All'}</span>
+              <span className="font-body-sm text-body-sm font-medium">
+                {t('transactions.filters.category', { name: activeCategory?.name ?? t('transactions.filters.all') })}
+              </span>
               <Icon name="expand_more" className="text-outline text-[16px]" />
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
                 className="absolute inset-0 opacity-0 cursor-pointer"
-                aria-label="Filter by category"
+                aria-label={t('transactions.filters.filterByCategory')}
               >
-                <option value="">All categories</option>
+                <option value="">{t('transactions.filters.allCategories')}</option>
                 {categories.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -265,7 +290,7 @@ export default function TransactionsPage() {
                 onClick={resetFilters}
                 className="text-primary-container hover:text-primary font-body-sm text-body-sm font-semibold flex items-center gap-1 px-space-xs"
               >
-                <Icon name="restart_alt" className="text-[16px]" /> Reset
+                <Icon name="restart_alt" className="text-[16px]" /> {t('transactions.filters.reset')}
               </button>
             )}
 
@@ -277,7 +302,7 @@ export default function TransactionsPage() {
               className="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-primary-container text-on-primary hover:bg-primary transition-colors shadow-sm"
             >
               <Icon name="download" className="text-[18px]" />
-              <span className="font-body-sm text-body-sm font-semibold">Export CSV</span>
+              <span className="font-body-sm text-body-sm font-semibold">{t('transactions.filters.exportCsv')}</span>
             </button>
           </div>
         </div>
@@ -286,7 +311,7 @@ export default function TransactionsPage() {
           <div className="flex items-center justify-between bg-surface-container-high px-space-md py-space-sm rounded-lg animate-fade-in">
             <div className="flex items-center gap-space-md">
               <span className="font-label-numeric-sm text-label-numeric-sm font-medium text-on-surface">
-                {selected.size} of {rows.length} selected
+                {t('transactions.filters.selected', { selected: selected.size, total: rows.length })}
               </span>
               <div className="h-4 w-px bg-outline-variant" />
               <button
@@ -294,7 +319,7 @@ export default function TransactionsPage() {
                 onClick={exportCsv}
                 className="flex items-center gap-1 px-space-sm py-1 rounded bg-surface-container-lowest hover:bg-surface-container text-on-surface font-body-sm text-body-sm font-medium shadow-sm transition-colors"
               >
-                <Icon name="download" className="text-[16px] text-primary-container" /> Export Selected
+                <Icon name="download" className="text-[16px] text-primary-container" /> {t('transactions.filters.exportSelected')}
               </button>
             </div>
             <button
@@ -303,7 +328,7 @@ export default function TransactionsPage() {
               disabled={deleteExpense.isPending}
               className="flex items-center gap-1 px-space-sm py-1 rounded hover:bg-surface-container text-tertiary-container font-body-sm text-body-sm font-medium transition-colors"
             >
-              <Icon name="delete_sweep" className="text-[16px]" /> Delete Selected
+              <Icon name="delete_sweep" className="text-[16px]" /> {t('transactions.filters.deleteSelected')}
             </button>
           </div>
         )}
@@ -321,16 +346,16 @@ export default function TransactionsPage() {
                     checked={allSelected}
                     onChange={() => setSelected(allSelected ? new Set() : new Set(rows.map((r) => r.id)))}
                     className="w-4 h-4 rounded accent-primary-container cursor-pointer"
-                    aria-label="Select all"
+                    aria-label={t('transactions.table.selectAll')}
                   />
                 </th>
-                <th className="py-space-sm px-space-md">Date</th>
-                <th className="py-space-sm px-space-md">Merchant / Payee</th>
-                <th className="py-space-sm px-space-md">Category</th>
-                <th className="py-space-sm px-space-md">Receipt</th>
-                <th className="py-space-sm px-space-md text-right">Amount</th>
+                <th className="py-space-sm px-space-md">{t('transactions.table.date')}</th>
+                <th className="py-space-sm px-space-md">{t('transactions.table.merchant')}</th>
+                <th className="py-space-sm px-space-md">{t('transactions.table.category')}</th>
+                <th className="py-space-sm px-space-md">{t('transactions.table.receipt')}</th>
+                <th className="py-space-sm px-space-md text-right">{t('transactions.table.amount')}</th>
                 <th className="py-space-sm px-space-md w-12 text-center">
-                  <span className="sr-only">Actions</span>
+                  <span className="sr-only">{t('transactions.table.actions')}</span>
                 </th>
               </tr>
             </thead>
@@ -350,10 +375,10 @@ export default function TransactionsPage() {
                       <Icon name={hasFilters ? 'search_off' : 'receipt_long'} className="text-[26px]" />
                     </div>
                     <p className="font-headline-sm text-headline-sm text-on-surface mt-space-sm">
-                      {hasFilters ? 'No matching transactions' : 'Your ledger is empty'}
+                      {hasFilters ? t('transactions.table.emptyFilteredTitle') : t('transactions.table.emptyTitle')}
                     </p>
                     <p className="font-body-sm text-body-sm text-on-surface-variant">
-                      {hasFilters ? 'Try widening the date range or clearing filters.' : 'Log an expense or scan a receipt to get started.'}
+                      {hasFilters ? t('transactions.table.emptyFilteredText') : t('transactions.table.emptyText')}
                     </p>
                   </td>
                 </tr>
@@ -374,12 +399,13 @@ export default function TransactionsPage() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-space-md px-space-lg py-space-md bg-surface-container-low/60">
           <div className="flex items-center gap-space-lg">
             <span className="font-body-sm text-body-sm text-on-surface-variant">
-              Active view totals{' '}
-              <span className="font-label-numeric-md text-label-numeric-md font-semibold text-on-surface">{formatCurrency(viewTotal)}</span> spent across{' '}
-              <span className="font-semibold text-on-surface">{total}</span> records
+              {t('transactions.pagination.activeTotals', {
+                amount: formatCurrency(viewTotal),
+                count: total,
+              })}
             </span>
             <label className="flex items-center gap-space-xs font-body-sm text-body-sm text-on-surface-variant">
-              Show
+              {t('transactions.pagination.show')}
               <select
                 value={pageSize}
                 onChange={(e) => setPageSize(Number(e.target.value))}
@@ -391,7 +417,7 @@ export default function TransactionsPage() {
                   </option>
                 ))}
               </select>
-              entries
+              {t('transactions.pagination.entries')}
             </label>
           </div>
           <div className="flex items-center gap-1">
@@ -420,7 +446,7 @@ export default function TransactionsPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
         <div className="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
           <div className="flex items-center justify-between">
-            <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">Top Category Share</span>
+            <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('transactions.insights.topCategoryShare')}</span>
             <Icon name="donut_small" className="text-[18px] text-primary-container" />
           </div>
           {byCategory.slice(0, 3).map((c, i) => (
@@ -434,19 +460,19 @@ export default function TransactionsPage() {
               </div>
             </div>
           ))}
-          {byCategory.length === 0 && <p className="font-body-sm text-body-sm text-outline">No spending this month yet.</p>}
+          {byCategory.length === 0 && <p className="font-body-sm text-body-sm text-outline">{t('transactions.insights.noSpending')}</p>}
         </div>
 
         <div className="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-sm">
           <div className="flex items-center justify-between">
-            <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">Receipt Audit</span>
+            <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('transactions.insights.receiptAudit')}</span>
             <Icon name="document_scanner" className="text-[18px] text-secondary" />
           </div>
           <span className="font-label-numeric-lg text-label-numeric-lg text-on-surface">
             {rows.length ? Math.round((withReceipts / rows.length) * 100) : 0}%
           </span>
           <p className="font-body-sm text-body-sm text-on-surface-variant">
-            {withReceipts} of {rows.length} postings in view have a scanned receipt attached.
+            {t('transactions.insights.receiptAuditText', { with: withReceipts, total: rows.length })}
           </p>
           <div className="w-full bg-surface-container h-1.5 rounded-full overflow-hidden mt-auto">
             <div className="h-full rounded-full bg-secondary" style={{ width: `${rows.length ? (withReceipts / rows.length) * 100 : 0}%` }} />
@@ -455,7 +481,7 @@ export default function TransactionsPage() {
 
         <div className="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-sm">
           <div className="flex items-center justify-between">
-            <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">Monthly Cap Usage</span>
+            <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('transactions.insights.monthlyCapUsage')}</span>
             <Icon name="speed" className="text-[18px] text-tertiary-container" />
           </div>
           <span className="font-label-numeric-lg text-label-numeric-lg text-on-surface">
@@ -463,7 +489,7 @@ export default function TransactionsPage() {
             <span className="font-label-numeric-sm text-label-numeric-sm text-outline"> / {formatCurrency(overview?.monthlyIncome)}</span>
           </span>
           <p className="font-body-sm text-body-sm text-on-surface-variant">
-            Safe run rate of <span className="font-semibold text-on-surface">{formatCurrency(overview?.dailyBudget)}/day</span> for the rest of this cycle.
+            {t('transactions.insights.safeRunRate', { amount: formatCurrency(overview?.dailyBudget) })}
           </p>
           <div className="w-full bg-surface-container h-1.5 rounded-full overflow-hidden mt-auto">
             <div
@@ -488,6 +514,7 @@ function LedgerRow({
   onToggle: () => void
   onOpen: () => void
 }) {
+  const { t } = useTranslation()
   const tone = categoryTone(expense.category?.name)
   const weekday = parseLocalDate(expense.date).toLocaleDateString('en-US', { weekday: 'long' })
 
@@ -508,14 +535,18 @@ function LedgerRow({
             <Icon name={categoryIcon(expense.category?.icon, expense.category?.name)} className="text-[19px]" />
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="font-body-md text-body-md font-semibold text-on-surface truncate">{expense.vendor || expense.category?.name || 'Expense'}</span>
-            <span className="font-body-sm text-body-sm text-outline truncate max-w-[280px]">{expense.notes || 'No notes'}</span>
+            <span className="font-body-md text-body-md font-semibold text-on-surface truncate">
+              {expense.vendor || expense.category?.name || t('common.expense')}
+            </span>
+            <span className="font-body-sm text-body-sm text-outline truncate max-w-[280px]">
+              {expense.notes || t('transactions.table.noNotes')}
+            </span>
           </div>
         </div>
       </td>
       <td className="py-3 px-space-md whitespace-nowrap">
         <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-body-sm text-body-sm font-semibold', tone.pill)}>
-          <span className={cn('w-1.5 h-1.5 rounded-full', tone.dot)} /> {expense.category?.name ?? 'Other'}
+          <span className={cn('w-1.5 h-1.5 rounded-full', tone.dot)} /> {expense.category?.name ?? t('common.other')}
         </span>
       </td>
       <td className="py-3 px-space-md whitespace-nowrap">
@@ -525,13 +556,13 @@ function LedgerRow({
             target="_blank"
             rel="noreferrer"
             className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container-highest transition-colors"
-            title="View receipt"
+            title={t('transactions.table.viewReceipt')}
           >
             <Icon name="receipt_long" className="text-primary-container text-[18px]" />
             <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-secondary ring-2 ring-surface-container-lowest" />
           </a>
         ) : (
-          <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container-low text-outline-variant" title="No receipt">
+          <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container-low text-outline-variant" title={t('transactions.table.noReceipt')}>
             <Icon name="hide_image" className="text-[18px]" />
           </span>
         )}
@@ -549,7 +580,7 @@ function LedgerRow({
           type="button"
           onClick={onOpen}
           className="opacity-0 group-hover:opacity-100 focus:opacity-100 p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface transition-all"
-          title="Edit transaction"
+          title={t('transactions.table.editTransaction')}
         >
           <Icon name="more_horiz" className="text-[18px]" />
         </button>

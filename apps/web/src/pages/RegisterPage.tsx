@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -9,6 +10,7 @@ import { AuthError, AuthLayout } from '@/components/auth/AuthLayout'
 import { GoogleButton } from '@/components/auth/GoogleButton'
 
 export default function RegisterPage() {
+  const { t } = useTranslation()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -24,8 +26,8 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
-    if (password !== confirmPassword) return setError('Passwords do not match')
-    if (password.length < 6) return setError('Password must be at least 6 characters')
+    if (password !== confirmPassword) return setError(t('auth.register.passwordsMismatch'))
+    if (password.length < 6) return setError(t('auth.register.passwordTooShort'))
 
     setLoading(true)
     const { error } = await signUp(email, password, fullName || undefined)
@@ -39,14 +41,14 @@ export default function RegisterPage() {
 
   return (
     <AuthLayout
-      eyebrow="Get started • Free"
-      title="Create your account"
-      subtitle="Two minutes to set up your monthly budget and first goal."
+      eyebrow={t('auth.register.eyebrow')}
+      title={t('auth.register.title')}
+      subtitle={t('auth.register.subtitle')}
       footer={
         <>
-          Already have an account?{' '}
+          {t('auth.register.footerHaveAccount')}{' '}
           <Link to="/login" className="text-primary-container font-semibold hover:text-primary">
-            Sign in
+            {t('auth.register.signIn')}
           </Link>
         </>
       }
@@ -62,26 +64,26 @@ export default function RegisterPage() {
       />
       <form onSubmit={handleSubmit} className="flex flex-col gap-space-md">
         <div>
-          <Label htmlFor="fullName">Full name</Label>
-          <Input id="fullName" placeholder="Alex Morgan" value={fullName} onChange={(e) => setFullName(e.target.value)} autoComplete="name" autoFocus />
+          <Label htmlFor="fullName">{t('auth.register.fullName')}</Label>
+          <Input id="fullName" placeholder={t('auth.register.fullNamePlaceholder')} value={fullName} onChange={(e) => setFullName(e.target.value)} autoComplete="name" autoFocus />
         </div>
         <div>
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+          <Label htmlFor="email">{t('auth.register.email')}</Label>
+          <Input id="email" type="email" placeholder={t('auth.register.emailPlaceholder')} value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
         </div>
         <div className="grid grid-cols-2 gap-space-md">
           <div>
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('auth.register.password')}</Label>
             <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="new-password" />
           </div>
           <div>
-            <Label htmlFor="confirmPassword">Confirm</Label>
+            <Label htmlFor="confirmPassword">{t('auth.register.confirm')}</Label>
             <Input id="confirmPassword" type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required autoComplete="new-password" />
           </div>
         </div>
-        <p className="font-body-sm text-body-sm text-outline -mt-space-xs">At least 6 characters.</p>
+        <p className="font-body-sm text-body-sm text-outline -mt-space-xs">{t('auth.register.passwordHint')}</p>
         <Button type="submit" size="lg" className="w-full" disabled={loading}>
-          {loading ? 'Creating account…' : 'Create account'}
+          {loading ? t('auth.register.submitting') : t('auth.register.submit')}
           {!loading && <Icon name="arrow_forward" className="text-[18px]" />}
         </Button>
       </form>

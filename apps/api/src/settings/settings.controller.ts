@@ -15,6 +15,7 @@ import { CurrentUser } from '../auth/decorators/index.js';
 import { UpdateSettingsDto, CompleteOnboardingDto, ChangeCurrencyDto } from './dto/index.js';
 import type { ChangeCurrencyResult, UserSettings } from '@pivoa/shared';
 import { CurrencyService } from '../currency/currency.service.js';
+import { EntitlementsService } from '../billing/entitlements.service.js';
 import { mapSettings, roundMoney } from '../common/money.js';
 
 @Controller('settings')
@@ -22,6 +23,7 @@ export class SettingsController {
   constructor(
     @Inject(SUPABASE_CLIENT) private readonly supabase: SupabaseClient,
     private readonly currency: CurrencyService,
+    private readonly entitlements: EntitlementsService,
   ) {}
 
   @Get()
@@ -71,6 +73,9 @@ export class SettingsController {
     if (dto.cycleStartDay !== undefined) {
       updateData.cycle_start_day = dto.cycleStartDay;
     }
+    if (dto.language !== undefined) {
+      updateData.language = dto.language;
+    }
 
     if (Object.keys(updateData).length === 0) {
       return this.getSettings(user);
@@ -109,6 +114,9 @@ export class SettingsController {
     if (dto.cycleStartDay !== undefined) {
       updateData.cycle_start_day = dto.cycleStartDay;
     }
+    if (dto.language !== undefined) {
+      updateData.language = dto.language;
+    }
 
     const { data, error } = await this.supabase
       .from('user_settings')
@@ -132,6 +140,7 @@ export class SettingsController {
     @CurrentUser() user: User,
     @Body() dto: ChangeCurrencyDto,
   ): Promise<ChangeCurrencyResult> {
+    await this.entitlements.assertCanChangeCurrency(user.id);
     const nextCurrency = this.currency.normalize(dto.currency);
     const settings = await this.getSettings(user);
     const previousCurrency = this.currency.normalize(settings.currency);

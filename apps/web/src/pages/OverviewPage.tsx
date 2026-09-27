@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { Area, AreaChart, CartesianGrid, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { useOverview } from '@/hooks/useOverview'
 import { useCategorySpending, useSpendingTrend, type TrendDataPoint } from '@/hooks/useAnalytics'
@@ -14,6 +15,7 @@ import { formatCompact, formatCurrency, formatCycleRange, formatDate, parseLocal
 import { cn } from '@/lib/utils'
 
 export default function OverviewPage() {
+  const { t } = useTranslation()
   const { openExpense } = useAppShell()
   const today = new Date()
 
@@ -33,7 +35,7 @@ export default function OverviewPage() {
 
   const chartData = buildChartData(trend, overview?.cycleStart, dailyIncome)
 
-  const peakDay = chartData.reduce((max, d) => (d.daily > max.daily ? d : max), { label: '—', daily: 0 } as { label: string; daily: number })
+  const peakDay = chartData.reduce((max, d) => (d.daily > max.daily ? d : max), { label: t('common.emDash'), daily: 0 } as { label: string; daily: number })
   const dailyAverage = dayOfCycle ? spent / dayOfCycle : 0
   const bufferReserve = income - (overview?.projectedMonthEnd ?? 0)
 
@@ -42,10 +44,10 @@ export default function OverviewPage() {
 
   const burnMultiplier = income ? (overview?.projectedMonthEnd ?? 0) / income : 0
   const health =
-    !income ? { label: 'NO CAP SET', tone: 'text-outline' }
-    : burnMultiplier > 1 ? { label: 'OVER PACE', tone: 'text-tertiary-container' }
-    : burnMultiplier > 0.85 ? { label: 'WATCH', tone: 'text-primary-container' }
-    : { label: 'OPTIMAL', tone: 'text-secondary' }
+    !income ? { label: t('overview.health.noCap'), tone: 'text-outline' }
+    : burnMultiplier > 1 ? { label: t('overview.health.overPace'), tone: 'text-tertiary-container' }
+    : burnMultiplier > 0.85 ? { label: t('overview.health.watch'), tone: 'text-primary-container' }
+    : { label: t('overview.health.optimal'), tone: 'text-secondary' }
 
   const milestones = goals
     .filter((g) => g.percentage < 100)
@@ -57,22 +59,22 @@ export default function OverviewPage() {
   return (
     <>
       <PageHeader
-        eyebrow={`${cycleLabel} • Day ${dayOfCycle} of ${daysInMonth}`}
-        title="Financial Overview"
+        eyebrow={t('overview.eyebrow', { cycle: cycleLabel, day: dayOfCycle, days: daysInMonth })}
+        title={t('overview.title')}
         actions={
           <>
             <Link
               to="/budgets"
               className="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-lowest text-on-surface shadow-sm hover:bg-surface-container-low transition-colors font-body-md text-body-md font-medium"
             >
-              <Icon name="track_changes" className="text-[18px]" /> Manage Budgets
+              <Icon name="track_changes" className="text-[18px]" /> {t('overview.manageBudgets')}
             </Link>
             <button
               type="button"
               onClick={() => openExpense()}
               className="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-primary-container text-on-primary hover:bg-primary transition-colors shadow-sm font-body-md text-body-md font-semibold"
             >
-              <Icon name="bolt" className="text-[18px]" /> Quick Add
+              <Icon name="bolt" className="text-[18px]" /> {t('overview.quickAdd')}
             </button>
           </>
         }
@@ -81,33 +83,33 @@ export default function OverviewPage() {
       {/* KPI row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-lg">
         <KpiCard
-          label="Saved in Goals"
+          label={t('overview.kpi.savedInGoals')}
           icon="account_balance"
           iconClass="bg-primary-fixed text-primary"
           value={overview ? formatCurrency(overview.totalBalance) : null}
           circle="bg-primary/5"
         >
           <span className="px-2 py-0.5 rounded bg-primary-fixed/60 text-on-primary-fixed-variant font-label-numeric-sm text-label-numeric-sm">
-            {goals.length} {goals.length === 1 ? 'goal' : 'goals'}
+            {t('overview.kpi.goal', { count: goals.length })}
           </span>
-          <span className="font-body-sm text-body-sm text-on-surface-variant">across savings funds</span>
+          <span className="font-body-sm text-body-sm text-on-surface-variant">{t('overview.kpi.acrossFunds')}</span>
         </KpiCard>
 
         <KpiCard
-          label="Monthly Income"
+          label={t('overview.kpi.monthlyIncome')}
           icon="south_west"
           iconClass="bg-secondary-container/40 text-secondary"
           value={overview ? formatCurrency(income) : null}
           circle="bg-secondary/5"
         >
           <span className="px-2 py-0.5 rounded bg-secondary-fixed/30 text-on-secondary-container font-label-numeric-sm text-label-numeric-sm">
-            {formatCurrency(dailyIncome)}/d
+            {t('overview.kpi.perDay', { amount: formatCurrency(dailyIncome) })}
           </span>
-          <span className="font-body-sm text-body-sm text-on-surface-variant">budget ceiling</span>
+          <span className="font-body-sm text-body-sm text-on-surface-variant">{t('overview.kpi.budgetCeiling')}</span>
         </KpiCard>
 
         <KpiCard
-          label="Monthly Outflow"
+          label={t('overview.kpi.monthlyOutflow')}
           icon="north_east"
           iconClass="bg-tertiary-fixed text-tertiary-container"
           value={overview ? formatCurrency(spent) : null}
@@ -115,9 +117,9 @@ export default function OverviewPage() {
         >
           <div className="w-full flex flex-col gap-1">
             <div className="flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant">
-              <span>Cap: {formatCurrency(income)}</span>
+              <span>{t('overview.kpi.cap', { amount: formatCurrency(income) })}</span>
               <span className={cn('font-label-numeric-sm text-label-numeric-sm', overview?.isOverBudget && 'text-tertiary-container')}>
-                {Math.round(overview?.budgetPercentage ?? 0)}% Used
+                {t('overview.kpi.pctUsed', { pct: Math.round(overview?.budgetPercentage ?? 0) })}
               </span>
             </div>
             <div className="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
@@ -130,7 +132,7 @@ export default function OverviewPage() {
         </KpiCard>
 
         <KpiCard
-          label="Net Savings Rate"
+          label={t('overview.kpi.netSavingsRate')}
           icon="savings"
           iconClass="bg-primary-fixed text-primary"
           value={overview ? `${overview.netSavings >= 0 ? '+' : '-'}${formatCurrency(Math.abs(overview.netSavings))}` : null}
@@ -147,8 +149,10 @@ export default function OverviewPage() {
           </span>
           <span className="font-body-sm text-body-sm text-on-surface-variant">
             {overview?.changeFromLastMonth
-              ? `${overview.changeFromLastMonth > 0 ? '+' : ''}${overview.changeFromLastMonth}% spend vs last mo`
-              : 'of income retained'}
+              ? t('overview.kpi.spendVsLastMo', {
+                  change: `${overview.changeFromLastMonth > 0 ? '+' : ''}${overview.changeFromLastMonth}`,
+                })
+              : t('overview.kpi.ofIncomeRetained')}
           </span>
         </KpiCard>
       </div>
@@ -158,17 +162,19 @@ export default function OverviewPage() {
         <div className="lg:col-span-8 bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
             <div>
-              <div className="font-headline-sm text-headline-sm text-on-surface">Cash Flow &amp; Daily Velocity</div>
-              <div className="font-body-sm text-body-sm text-on-surface-variant">Cumulative spending this cycle against your income ceiling</div>
+              <div className="font-headline-sm text-headline-sm text-on-surface">{t('overview.chart.title')}</div>
+              <div className="font-body-sm text-body-sm text-on-surface-variant">{t('overview.chart.subtitle')}</div>
             </div>
             <div className="flex items-center gap-space-md">
               <div className="flex items-center gap-space-xs">
                 <span className="w-2.5 h-2.5 rounded-sm bg-primary" />
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Spending Track</span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">{t('overview.chart.spendingTrack')}</span>
               </div>
               <div className="flex items-center gap-space-xs">
                 <span className="w-2.5 h-1 border-b border-dashed border-secondary" />
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Baseline Income ({formatCurrency(dailyIncome).replace('.00', '')}/d)</span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">
+                  {t('overview.chart.baselineIncome', { amount: formatCurrency(dailyIncome).replace('.00', '') })}
+                </span>
               </div>
             </div>
           </div>
@@ -210,11 +216,15 @@ export default function OverviewPage() {
             )}
           </div>
           <div className="grid grid-cols-3 gap-space-md bg-surface-container-low p-space-md rounded-lg">
-            <Stat label="Daily Average" value={formatCurrency(dailyAverage)} />
-            <Stat label="Peak Outflow Day" value={peakDay.daily ? `${formatCompact(peakDay.daily)} (${peakDay.label})` : '—'} valueClass="text-tertiary" />
+            <Stat label={t('overview.chart.dailyAverage')} value={formatCurrency(dailyAverage)} />
             <Stat
-              label="Buffer Reserve"
-              value={income ? `${bufferReserve >= 0 ? '+' : '-'}${formatCompact(Math.abs(bufferReserve))}` : '—'}
+              label={t('overview.chart.peakOutflowDay')}
+              value={peakDay.daily ? t('overview.chart.peakValue', { amount: formatCompact(peakDay.daily), label: peakDay.label }) : t('common.emDash')}
+              valueClass="text-tertiary"
+            />
+            <Stat
+              label={t('overview.chart.bufferReserve')}
+              value={income ? `${bufferReserve >= 0 ? '+' : '-'}${formatCompact(Math.abs(bufferReserve))}` : t('common.emDash')}
               valueClass={bufferReserve >= 0 ? 'text-secondary' : 'text-tertiary-container'}
             />
           </div>
@@ -223,8 +233,8 @@ export default function OverviewPage() {
         <div className="lg:col-span-4 bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col justify-between gap-space-md">
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-headline-sm text-headline-sm text-on-surface">Category Allocation</div>
-              <div className="font-body-sm text-body-sm text-on-surface-variant">This cycle&apos;s outflow breakdown</div>
+              <div className="font-headline-sm text-headline-sm text-on-surface">{t('overview.allocation.title')}</div>
+              <div className="font-body-sm text-body-sm text-on-surface-variant">{t('overview.allocation.subtitle')}</div>
             </div>
             <Link to="/budgets" className="p-1 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface">
               <Icon name="more_vert" className="text-[18px]" />
@@ -233,13 +243,13 @@ export default function OverviewPage() {
           <div className="py-space-sm">
             <DonutChart
               segments={topCategories.map((c, i) => ({ value: c.total, color: chartColor(i) }))}
-              label="Total"
+              label={t('overview.allocation.total')}
               value={formatCompact(categoryTotal)}
             />
           </div>
           <div className="flex flex-col gap-space-sm">
             {topCategories.length === 0 && (
-              <p className="font-body-sm text-body-sm text-outline text-center">No spending logged this month yet.</p>
+              <p className="font-body-sm text-body-sm text-outline text-center">{t('overview.allocation.empty')}</p>
             )}
             {topCategories.map((c, i) => (
               <div key={c.categoryId} className="flex items-center justify-between">
@@ -262,11 +272,11 @@ export default function OverviewPage() {
         <div className="lg:col-span-8 bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
           <div className="flex items-center justify-between">
             <div>
-              <div className="font-headline-sm text-headline-sm text-on-surface">Recent Transactions</div>
-              <div className="font-body-sm text-body-sm text-on-surface-variant">Latest postings across all categories</div>
+              <div className="font-headline-sm text-headline-sm text-on-surface">{t('overview.recent.title')}</div>
+              <div className="font-body-sm text-body-sm text-on-surface-variant">{t('overview.recent.subtitle')}</div>
             </div>
             <Link to="/transactions" className="font-body-sm text-body-sm text-primary font-semibold hover:text-on-primary-fixed-variant flex items-center gap-1">
-              <span>View all ledger</span>
+              <span>{t('overview.recent.viewAll')}</span>
               <Icon name="arrow_forward" className="text-[16px]" />
             </Link>
           </div>
@@ -274,10 +284,10 @@ export default function OverviewPage() {
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-surface-container-low text-on-surface-variant font-label-caps text-label-caps uppercase tracking-wider">
-                  <th className="py-2.5 px-space-md rounded-l-lg">Counterparty / Merchant</th>
-                  <th className="py-2.5 px-space-md">Category</th>
-                  <th className="py-2.5 px-space-md">Date</th>
-                  <th className="py-2.5 px-space-md text-right rounded-r-lg">Net Amount</th>
+                  <th className="py-2.5 px-space-md rounded-l-lg">{t('overview.recent.colMerchant')}</th>
+                  <th className="py-2.5 px-space-md">{t('overview.recent.colCategory')}</th>
+                  <th className="py-2.5 px-space-md">{t('overview.recent.colDate')}</th>
+                  <th className="py-2.5 px-space-md text-right rounded-r-lg">{t('overview.recent.colAmount')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-surface-container-low">
@@ -293,9 +303,9 @@ export default function OverviewPage() {
                   <tr>
                     <td colSpan={4} className="py-space-xl text-center">
                       <Icon name="receipt_long" className="text-outline-variant text-[36px]" />
-                      <p className="font-body-md text-body-md text-on-surface-variant mt-1">No transactions yet</p>
+                      <p className="font-body-md text-body-md text-on-surface-variant mt-1">{t('overview.recent.empty')}</p>
                       <button type="button" onClick={() => openExpense()} className="font-body-sm text-body-sm text-primary-container font-semibold mt-1">
-                        Log your first expense
+                        {t('overview.recent.logFirst')}
                       </button>
                     </td>
                   </tr>
@@ -312,14 +322,18 @@ export default function OverviewPage() {
                           <Icon name={categoryIcon(expense.category?.icon, expense.category?.name)} className="text-[19px]" />
                         </div>
                         <div className="min-w-0">
-                          <div className="font-body-md text-body-md font-semibold text-on-surface truncate">{expense.vendor || expense.category?.name || 'Expense'}</div>
-                          <div className="font-body-sm text-body-sm text-on-surface-variant truncate">{expense.notes || (expense.receiptImageUrl ? 'Receipt attached' : 'Manual entry')}</div>
+                          <div className="font-body-md text-body-md font-semibold text-on-surface truncate">
+                            {expense.vendor || expense.category?.name || t('common.expense')}
+                          </div>
+                          <div className="font-body-sm text-body-sm text-on-surface-variant truncate">
+                            {expense.notes || (expense.receiptImageUrl ? t('overview.recent.receiptAttached') : t('overview.recent.manualEntry'))}
+                          </div>
                         </div>
                       </div>
                     </td>
                     <td className="py-3 px-space-md">
                       <span className="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-body-sm text-body-sm whitespace-nowrap">
-                        {expense.category?.name ?? 'Other'}
+                        {expense.category?.name ?? t('common.other')}
                       </span>
                     </td>
                     <td className="py-3 px-space-md font-label-numeric-sm text-label-numeric-sm text-on-surface-variant whitespace-nowrap">
@@ -340,16 +354,16 @@ export default function OverviewPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-space-xs">
                 <Icon name="event_upcoming" className="text-[20px] text-primary" />
-                <span className="font-headline-sm text-headline-sm text-on-surface">Goal Milestones</span>
+                <span className="font-headline-sm text-headline-sm text-on-surface">{t('overview.goals.title')}</span>
               </div>
               <span className="font-label-caps text-label-caps px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant">
-                {goals.length} ACTIVE
+                {t('overview.goals.active', { count: goals.length })}
               </span>
             </div>
             {milestones.length === 0 ? (
               <Link to="/budgets" className="flex items-center gap-space-sm bg-surface-container-low p-space-sm rounded-lg hover:bg-surface-container transition-colors">
                 <Icon name="flag" className="text-secondary" />
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Add a savings goal to track milestones</span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">{t('overview.goals.addGoal')}</span>
               </Link>
             ) : (
               <div className="flex flex-col gap-space-sm relative">
@@ -366,7 +380,14 @@ export default function OverviewPage() {
                         <div className="min-w-0">
                           <div className="font-body-sm text-body-sm font-semibold text-on-surface truncate">{goal.name}</div>
                           <div className={cn('font-label-numeric-sm text-label-numeric-sm font-medium', days !== null && days < 30 ? 'text-tertiary' : 'text-on-surface-variant')}>
-                            {days === null ? `${Math.round(goal.percentage)}% funded` : days < 0 ? 'Target date passed' : `Due in ${days} days (${formatDate(goal.targetDate!, { month: 'short', day: 'numeric' })})`}
+                            {days === null
+                              ? t('overview.goals.pctFunded', { pct: Math.round(goal.percentage) })
+                              : days < 0
+                                ? t('overview.goals.targetPassed')
+                                : t('overview.goals.dueIn', {
+                                    days,
+                                    date: formatDate(goal.targetDate!, { month: 'short', day: 'numeric' }),
+                                  })}
                           </div>
                         </div>
                         <span className="font-label-numeric-md text-label-numeric-md font-semibold text-on-surface whitespace-nowrap">{formatCompact(goal.remaining)}</span>
@@ -378,7 +399,7 @@ export default function OverviewPage() {
             )}
             {budgetWatch.length > 0 && (
               <div className="pt-space-sm flex flex-col gap-space-sm">
-                <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">Budget Watch</span>
+                <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('overview.goals.budgetWatch')}</span>
                 {budgetWatch.map((b) => (
                   <div key={b.id} className="flex flex-col gap-1">
                     <div className="flex items-center justify-between">
@@ -401,30 +422,32 @@ export default function OverviewPage() {
 
           <div className="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-sm">
             <div className="flex items-center justify-between">
-              <span className="font-headline-sm text-headline-sm text-on-surface">Spending Health Pulse</span>
+              <span className="font-headline-sm text-headline-sm text-on-surface">{t('overview.health.title')}</span>
               <span className={cn('font-label-caps text-label-caps font-bold', health.tone)}>{health.label}</span>
             </div>
             <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-              {income ? (
-                <>
-                  You are currently preserving <span className="font-semibold text-on-surface">{(overview?.savingsRate ?? 0).toFixed(1)}%</span> of monthly
-                  income. At today&apos;s pace you&apos;ll spend <span className="font-semibold text-on-surface">{formatCurrency(overview?.projectedMonthEnd)}</span> by
-                  month end — a safe run rate is <span className="font-semibold text-on-surface">{formatCurrency(overview?.dailyBudget)}/day</span>.
-                </>
-              ) : (
-                <>Set your monthly income cap in Settings to unlock pacing insights.</>
-              )}
+              {income
+                ? t('overview.health.pulseWithIncome', {
+                    rate: (overview?.savingsRate ?? 0).toFixed(1),
+                    projected: formatCurrency(overview?.projectedMonthEnd),
+                    daily: formatCurrency(overview?.dailyBudget),
+                  })
+                : t('overview.health.pulseNoIncome')}
             </p>
             <div className="pt-space-xs flex items-center gap-space-sm">
               <div className="flex-1 bg-surface-container-low p-space-sm rounded-lg">
-                <div className="font-label-caps text-label-caps uppercase text-on-surface-variant">Burn Multiplier</div>
+                <div className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('overview.health.burnMultiplier')}</div>
                 <div className={cn('font-label-numeric-md text-label-numeric-md font-semibold', burnMultiplier > 1 ? 'text-tertiary-container' : 'text-on-surface')}>
-                  {burnMultiplier.toFixed(2)}x Limit
+                  {t('overview.health.burnValue', { value: burnMultiplier.toFixed(2) })}
                 </div>
               </div>
               <div className="flex-1 bg-surface-container-low p-space-sm rounded-lg">
-                <div className="font-label-caps text-label-caps uppercase text-on-surface-variant">Days Left</div>
-                <div className="font-label-numeric-md text-label-numeric-md text-secondary font-semibold">{overview?.daysRemaining ?? '—'} Days</div>
+                <div className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('overview.health.daysLeft')}</div>
+                <div className="font-label-numeric-md text-label-numeric-md text-secondary font-semibold">
+                  {overview?.daysRemaining != null
+                    ? t('overview.health.daysValue', { count: overview.daysRemaining })
+                    : t('common.emDash')}
+                </div>
               </div>
             </div>
           </div>
@@ -435,7 +458,7 @@ export default function OverviewPage() {
 }
 
 function buildChartData(trend: TrendDataPoint[], cycleStart: string | undefined, dailyIncome: number) {
-  const byDate = new Map(trend.map((t) => [t.date.slice(0, 10), t.total]))
+  const byDate = new Map(trend.map((point) => [point.date.slice(0, 10), point.total]))
   const points = []
   let cumulative = 0
   const start = cycleStart ? parseLocalDate(cycleStart) : new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -504,13 +527,18 @@ interface TooltipPayload {
 }
 
 function ChartTooltip({ active, payload }: { active?: boolean; payload?: TooltipPayload[] }) {
+  const { t } = useTranslation()
   if (!active || !payload?.length) return null
   const point = payload[0].payload
   return (
     <div className="bg-inverse-surface text-inverse-on-surface rounded-lg px-space-md py-space-sm shadow-lg">
       <div className="font-label-caps text-label-caps uppercase opacity-70">{point.label}</div>
-      <div className="font-label-numeric-md text-label-numeric-md font-semibold">{formatCurrency(point.spending)} total</div>
-      <div className="font-label-numeric-sm text-label-numeric-sm opacity-80">+{formatCurrency(point.daily)} that day</div>
+      <div className="font-label-numeric-md text-label-numeric-md font-semibold">
+        {t('overview.chart.tooltipTotal', { amount: formatCurrency(point.spending) })}
+      </div>
+      <div className="font-label-numeric-sm text-label-numeric-sm opacity-80">
+        {t('overview.chart.tooltipDaily', { amount: formatCurrency(point.daily) })}
+      </div>
     </div>
   )
 }

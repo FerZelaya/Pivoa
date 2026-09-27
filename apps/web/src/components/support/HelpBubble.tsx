@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import type { TicketCategory } from '@pivoa/shared'
 import { useCreateTicket } from '@/hooks/useTickets'
@@ -10,14 +11,10 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 
-const CATEGORIES: { id: TicketCategory; label: string }[] = [
-  { id: 'bug', label: 'Bug' },
-  { id: 'account', label: 'Account' },
-  { id: 'billing', label: 'Billing' },
-  { id: 'other', label: 'Other' },
-]
+const CATEGORY_IDS: TicketCategory[] = ['bug', 'account', 'billing', 'other']
 
 export function HelpBubble() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState<'ticket' | 'chat'>('ticket')
   const [subject, setSubject] = useState('')
@@ -31,13 +28,13 @@ export function HelpBubble() {
     e.preventDefault()
     try {
       await createTicket.mutateAsync({ subject, category, body, priority: me?.highPriorityTickets ? 'high' : 'normal' })
-      toast.success('Ticket sent. We will reply in Support.')
+      toast.success(t('support.help.sent'))
       setSubject('')
       setBody('')
       setOpen(false)
       navigate('/support')
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not send ticket')
+      toast.error(err instanceof Error ? err.message : t('support.help.sendError'))
     }
   }
 
@@ -46,8 +43,8 @@ export function HelpBubble() {
       {open && (
         <div className="w-[min(100vw-2rem,360px)] bg-surface-container-lowest rounded-xl shadow-[0_20px_50px_-12px_rgba(11,28,48,0.25)] overflow-hidden animate-scale-in">
           <div className="flex items-center justify-between px-space-md py-space-sm bg-primary-container text-on-primary">
-            <p className="font-body-md text-body-md font-semibold">Help</p>
-            <button type="button" onClick={() => setOpen(false)} aria-label="Close help">
+            <p className="font-body-md text-body-md font-semibold">{t('support.help.title')}</p>
+            <button type="button" onClick={() => setOpen(false)} aria-label={t('support.help.close')}>
               <Icon name="close" className="text-[18px]" />
             </button>
           </div>
@@ -62,35 +59,40 @@ export function HelpBubble() {
                   tab === item ? 'text-primary-container border-b-2 border-primary-container' : 'text-outline'
                 )}
               >
-                {item === 'ticket' ? 'Ticket' : 'Chat'}
+                {item === 'ticket' ? t('support.help.ticket') : t('support.help.chat')}
               </button>
             ))}
           </div>
           {tab === 'chat' ? (
             <div className="p-space-lg text-center">
               <Icon name="forum" className="text-[32px] text-outline" />
-              <p className="font-headline-sm text-headline-sm text-on-surface mt-space-sm">Coming soon</p>
-              <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">
-                Live chat is not available yet. Send a ticket and we will reply there.
-              </p>
+              <p className="font-headline-sm text-headline-sm text-on-surface mt-space-sm">{t('support.help.comingSoon')}</p>
+              <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">{t('support.help.chatUnavailable')}</p>
             </div>
           ) : (
             <form onSubmit={submit} className="p-space-md flex flex-col gap-space-sm">
-              <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Subject" required minLength={3} />
+              <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder={t('support.help.subject')} required minLength={3} />
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as TicketCategory)}
                 className="bg-surface-container-low rounded-lg px-space-md py-2.5 font-body-md text-body-md"
               >
-                {CATEGORIES.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.label}
+                {CATEGORY_IDS.map((id) => (
+                  <option key={id} value={id}>
+                    {t(`support.help.categories.${id}`)}
                   </option>
                 ))}
               </select>
-              <Textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="What happened?" required minLength={10} className="min-h-[96px]" />
+              <Textarea
+                value={body}
+                onChange={(e) => setBody(e.target.value)}
+                placeholder={t('support.help.whatHappened')}
+                required
+                minLength={10}
+                className="min-h-[96px]"
+              />
               <Button type="submit" disabled={createTicket.isPending}>
-                {createTicket.isPending ? 'Sending…' : 'Send ticket'}
+                {createTicket.isPending ? t('support.help.sending') : t('support.help.sendTicket')}
               </Button>
             </form>
           )}
@@ -100,7 +102,7 @@ export function HelpBubble() {
         type="button"
         onClick={() => setOpen((value) => !value)}
         className="h-14 w-14 rounded-full bg-primary-container text-on-primary shadow-lg flex items-center justify-center hover:bg-primary"
-        aria-label="Open help"
+        aria-label={t('support.help.open')}
       >
         <Icon name={open ? 'close' : 'support_agent'} className="text-[28px]" />
       </button>

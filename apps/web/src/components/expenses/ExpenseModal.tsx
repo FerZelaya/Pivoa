@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import type { ExpenseWithCategory } from '@pivoa/shared'
 import { Modal } from '@/components/ui/dialog'
@@ -26,6 +27,7 @@ interface ExpenseModalProps {
 }
 
 export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: ExpenseModalProps) {
+  const { t } = useTranslation()
   const { data: categories = [] } = useCategories()
   const { data: settings } = useSettings()
   const baseCurrency = settings?.currency ?? getDisplayCurrency()
@@ -69,8 +71,8 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const value = parseFloat(amount)
-    if (!value || value <= 0) return toast.error('Enter an amount greater than zero')
-    if (!categoryId) return toast.error('Choose a category')
+    if (!value || value <= 0) return toast.error(t('modals.expense.amountError'))
+    if (!categoryId) return toast.error(t('modals.expense.categoryError'))
 
     const payload = {
       amount: value,
@@ -84,14 +86,14 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
     try {
       if (expense) {
         await updateExpense.mutateAsync({ id: expense.id, data: payload })
-        toast.success('Transaction updated')
+        toast.success(t('modals.expense.updated'))
       } else {
         await createExpense.mutateAsync(payload)
-        toast.success('Expense logged')
+        toast.success(t('modals.expense.logged'))
       }
       onClose()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not save expense')
+      toast.error(err instanceof Error ? err.message : t('modals.expense.saveError'))
     }
   }
 
@@ -99,10 +101,10 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
     if (!expense) return
     try {
       await deleteExpense.mutateAsync(expense.id)
-      toast.success('Transaction deleted')
+      toast.success(t('modals.expense.deleted'))
       onClose()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not delete')
+      toast.error(err instanceof Error ? err.message : t('modals.expense.deleteError'))
     }
   }
 
@@ -111,20 +113,20 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
       open={open}
       onClose={onClose}
       icon={isEdit ? 'edit_note' : 'add_card'}
-      eyebrow={isEdit ? 'Edit posting' : 'Quick add'}
-      title={isEdit ? 'Edit Transaction' : 'Log Single Transaction'}
+      eyebrow={isEdit ? t('modals.expense.editEyebrow') : t('modals.expense.addEyebrow')}
+      title={isEdit ? t('modals.expense.editTitle') : t('modals.expense.addTitle')}
       footer={
         <>
           {isEdit && (
             <Button type="button" variant="destructive-ghost" className="mr-auto" onClick={handleDelete} disabled={deleteExpense.isPending}>
-              <Icon name="delete" className="text-[18px]" /> Delete
+              <Icon name="delete" className="text-[18px]" /> {t('modals.expense.delete')}
             </Button>
           )}
           <Button type="button" variant="ghost" onClick={onClose}>
-            Cancel
+            {t('modals.expense.cancel')}
           </Button>
           <Button type="submit" form="expense-form" disabled={pending}>
-            {pending ? 'Saving…' : isEdit ? 'Save Changes' : 'Log Expense'}
+            {pending ? t('modals.expense.saving') : isEdit ? t('modals.expense.saveChanges') : t('modals.expense.logExpense')}
           </Button>
         </>
       }
@@ -134,33 +136,44 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-md min-w-0">
           <div className="min-w-0">
-            <Label htmlFor="amount">Amount</Label>
-            <MoneyInput id="amount" large currency={currency} placeholder="0.00" value={amount} onChange={(e) => setAmount(e.target.value)} autoFocus />
+            <Label htmlFor="amount">{t('modals.expense.amount')}</Label>
+            <MoneyInput
+              id="amount"
+              large
+              currency={currency}
+              placeholder={t('modals.expense.amountPlaceholder')}
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              autoFocus
+            />
             {currency !== baseCurrency && parseFloat(amount) > 0 && (
               <p className="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant mt-1 truncate">
-                = {formatMoney(convertWithRates(parseFloat(amount), currency, baseCurrency, rates) ?? 0, baseCurrency)} {baseCurrency}
+                {t('modals.expense.converted', {
+                  amount: formatMoney(convertWithRates(parseFloat(amount), currency, baseCurrency, rates) ?? 0, baseCurrency),
+                  currency: baseCurrency,
+                })}
               </p>
             )}
           </div>
           <div className="min-w-0">
-            <Label htmlFor="expense-currency">Currency</Label>
+            <Label htmlFor="expense-currency">{t('modals.expense.currency')}</Label>
             <CurrencySelect id="expense-currency" value={currency} onChange={setCurrency} disabled={me ? !me.multiCurrency : false} />
             {me && !me.multiCurrency && (
-              <p className="font-body-sm text-body-sm text-outline mt-1">Other currencies are a Plus feature.</p>
+              <p className="font-body-sm text-body-sm text-outline mt-1">{t('modals.expense.multiCurrencyHint')}</p>
             )}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-space-md min-w-0">
           <div className="min-w-0">
-            <Label htmlFor="date">Date</Label>
+            <Label htmlFor="date">{t('modals.expense.date')}</Label>
             <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required className="min-w-0" />
           </div>
           <div className="min-w-0">
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category">{t('modals.expense.category')}</Label>
             <NativeSelect id="category" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
               <option value="" disabled>
-                Select…
+                {t('modals.expense.select')}
               </option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -172,13 +185,24 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
         </div>
 
         <div>
-          <Label htmlFor="vendor">Merchant / Payee</Label>
-          <Input id="vendor" placeholder="e.g. Whole Foods Market" value={vendor} onChange={(e) => setVendor(e.target.value)} />
+          <Label htmlFor="vendor">{t('modals.expense.merchant')}</Label>
+          <Input
+            id="vendor"
+            placeholder={t('modals.expense.merchantPlaceholder')}
+            value={vendor}
+            onChange={(e) => setVendor(e.target.value)}
+          />
         </div>
 
         <div>
-          <Label htmlFor="notes">Notes</Label>
-          <Textarea id="notes" placeholder="Optional memo" value={notes} onChange={(e) => setNotes(e.target.value)} className="min-h-[64px]" />
+          <Label htmlFor="notes">{t('modals.expense.notes')}</Label>
+          <Textarea
+            id="notes"
+            placeholder={t('modals.expense.notesPlaceholder')}
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className="min-h-[64px]"
+          />
         </div>
 
         {receiptImageUrl && (
@@ -188,7 +212,7 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
             rel="noreferrer"
             className="flex items-center gap-space-xs font-body-sm text-body-sm text-secondary font-medium"
           >
-            <Icon name="attachment" className="text-[16px]" /> Receipt attached
+            <Icon name="attachment" className="text-[16px]" /> {t('modals.expense.receiptAttached')}
           </a>
         )}
       </form>

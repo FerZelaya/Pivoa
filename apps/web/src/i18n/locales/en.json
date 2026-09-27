@@ -1,0 +1,1060 @@
+{
+  "common": {
+    "appName": "Pivoa",
+    "defaultUserName": "Pivoa User",
+    "signOut": "Sign out",
+    "signIn": "Sign in",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving…",
+    "sending": "Sending…",
+    "loading": "Loading…",
+    "delete": "Delete",
+    "remove": "Remove",
+    "back": "Back",
+    "continue": "Continue",
+    "skip": "Skip",
+    "close": "Close",
+    "select": "Select…",
+    "none": "None",
+    "plan": "Plan",
+    "admin": "Admin",
+    "settings": "Settings",
+    "support": "Support",
+    "expense": "Expense",
+    "other": "Other",
+    "emDash": "—",
+    "copyright": "© {{year}} Pivoa. Smart expense tracking.",
+    "backToApp": "Back to app",
+    "actions": "Actions",
+    "yes": "yes",
+    "no": "no",
+    "language": "Language",
+    "langEn": "English",
+    "langEs": "Español"
+  },
+  "nav": {
+    "overview": "Overview",
+    "transactions": "Transactions",
+    "budgets": "Budgets & Goals",
+    "support": "Support",
+    "settings": "Settings",
+    "admin": "Admin",
+    "newExpense": "New Expense",
+    "leftThisMonth": "Left This Month",
+    "pctOfCap": "{{pct}}% of {{amount}} cap",
+    "setMonthlyCap": "Set a monthly cap",
+    "searchPlaceholder": "Search transactions, merchants...",
+    "budgetAlerts": "Budget Alerts",
+    "allBudgetsOnPace": "All budgets on pace",
+    "alertAtEighty": "We'll alert you at 80% of any cap.",
+    "overBudget": "{{category}} over budget",
+    "nearingCap": "{{category}} nearing cap",
+    "alertDetail": "{{spent}} of {{limit}} · {{pct}}%",
+    "monthlyCapExceeded": "Monthly cap exceeded",
+    "monthlyCapDetail": "{{spent}} spent of {{income}}",
+    "planLabel": "{{plan}} plan",
+    "signOut": "Sign out"
+  },
+  "auth": {
+    "layout": {
+      "tagline": "© {{year}} Pivoa. Smart expense tracking.",
+      "studioEyebrow": "Modern Financial Studio",
+      "studioTitle": "Every dollar, on pace.",
+      "studioSubtitle": "Set a monthly cap, give each category a budget, and watch your savings goals grow — all in one calm workspace.",
+      "monthlyOutflow": "Monthly Outflow",
+      "pctOfCap": "61% of $3,000 cap",
+      "netSavings": "Net Savings",
+      "retained": "38.6% retained",
+      "food": "Food",
+      "shopping": "Shopping",
+      "entertainment": "Entertainment",
+      "paced": "72% Paced",
+      "spent": "91% Spent",
+      "over": "108% Over"
+    },
+    "google": {
+      "continue": "Continue with Google",
+      "orEmail": "or email"
+    },
+    "login": {
+      "eyebrow": "Welcome back",
+      "title": "Sign in to Pivoa",
+      "subtitle": "Pick up right where your budget left off.",
+      "footerNew": "New to Pivoa?",
+      "createAccount": "Create an account",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "forgotPassword": "Forgot password?",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "submit": "Sign in",
+      "submitting": "Signing in…"
+    },
+    "register": {
+      "eyebrow": "Get started • Free",
+      "title": "Create your account",
+      "subtitle": "Two minutes to set up your monthly budget and first goal.",
+      "footerHaveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Alex Morgan",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "confirm": "Confirm",
+      "passwordHint": "At least 6 characters.",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "passwordsMismatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 6 characters"
+    },
+    "forgot": {
+      "eyebrow": "Reset password",
+      "title": "Forgot your password?",
+      "titleSent": "Check your email",
+      "subtitle": "Enter your email and we will send a recovery link.",
+      "subtitleSent": "If an account exists for {{email}}, we sent a link to choose a new password.",
+      "backToSignIn": "Back to sign in",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Send reset link",
+      "submitting": "Sending…",
+      "sendAnother": "Send another email"
+    },
+    "recovery": {
+      "eyebrow": "Reset password",
+      "expiredTitle": "Link expired or invalid",
+      "expiredSubtitle": "Request a new reset email from the sign-in page, or ask support to send one.",
+      "requestNewLink": "Request a new link",
+      "backToSignIn": "Back to sign in",
+      "title": "Choose a new password",
+      "subtitle": "You are signed in with a recovery link. Set a new password to continue.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "submit": "Save password and continue",
+      "submitting": "Saving…",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "passwordsMismatch": "Passwords do not match"
+    }
+  },
+  "landing": {
+    "nav": {
+      "features": "Features",
+      "how": "How it works",
+      "pricing": "Pricing",
+      "faq": "FAQ",
+      "openDashboard": "Open Dashboard",
+      "signIn": "Sign in",
+      "getStarted": "Get started"
+    },
+    "hero": {
+      "badge": "Modern Financial Studio",
+      "titleBefore": "Budget your month.",
+      "titleAccent": "Hit every goal.",
+      "subtitle": "Pivoa turns your monthly income into a clear plan — category caps, savings goals and real-time pacing, with AI receipt scanning built in.",
+      "ctaLoggedIn": "Open your dashboard",
+      "ctaGuest": "Start budgeting free",
+      "seeFeatures": "See features"
+    },
+    "features": {
+      "eyebrow": "Everything in one workspace",
+      "title": "Built for monthly discipline",
+      "items": {
+        "incomeCap": {
+          "title": "Monthly income cap",
+          "text": "Set what you earn — say $3,000 — and Pivoa paces every day against it with a safe daily run rate."
+        },
+        "categoryBudgets": {
+          "title": "Category budgets",
+          "text": "Give Food, Housing or Shopping their own cap. Cards turn amber at 80% and red once you go over."
+        },
+        "savingsGoals": {
+          "title": "Savings goals",
+          "text": "Track an emergency fund or a trip with target dates, the monthly pace you need, and one-tap boosts."
+        },
+        "receiptScanning": {
+          "title": "AI receipt scanning",
+          "text": "Snap a receipt and the amount, merchant, date and category are filled in for you automatically."
+        },
+        "cashFlow": {
+          "title": "Cash-flow velocity",
+          "text": "See cumulative spending against your income baseline, peak outflow days and month-end projections."
+        },
+        "ledger": {
+          "title": "Searchable ledger",
+          "text": "Filter by date or category, search merchants and notes, bulk-select, and export to CSV in a click."
+        },
+        "multiCurrency": {
+          "title": "Multi-currency",
+          "text": "Log expenses in any currency and keep a single base currency for budgets, goals and totals."
+        },
+        "cycles": {
+          "title": "Custom budget cycles",
+          "text": "Reset on any day of the month — payday-aligned windows, not just calendar months."
+        },
+        "support": {
+          "title": "In-app support",
+          "text": "Open tickets from the help bubble. Pro gets high-priority responses when you need them most."
+        },
+        "languages": {
+          "title": "English & Spanish",
+          "text": "Use Pivoa in English or Español. Language follows your browser by default and stays in sync across devices."
+        },
+        "alerts": {
+          "title": "Budget alerts",
+          "text": "Get notified when a category hits 80% or when your monthly cap is exceeded."
+        },
+        "security": {
+          "title": "Private by design",
+          "text": "Sign in with email or Google. Your money data stays behind row-level security — only you can see it."
+        }
+      }
+    },
+    "deepDive": {
+      "eyebrow": "Under the hood",
+      "title": "Every tool you need to stay on pace",
+      "items": {
+        "overview": {
+          "title": "Live overview",
+          "text": "KPIs for saved goals, monthly income, outflow and net savings — plus cash-flow charts and budget watch at a glance."
+        },
+        "transactions": {
+          "title": "Full transaction history",
+          "text": "Search merchants, filter by category or date range, edit or delete in bulk, and keep a clean ledger all cycle."
+        },
+        "budgetsGoals": {
+          "title": "Budgets & goals together",
+          "text": "Category caps and savings funds live side by side so you know what is left to spend and what is left to save."
+        },
+        "receipts": {
+          "title": "Receipt to expense",
+          "text": "Upload a photo, review the AI draft, and confirm — no retyping amounts from crumpled receipts."
+        }
+      }
+    },
+    "how": {
+      "eyebrow": "Up and running in minutes",
+      "title": "How Pivoa works",
+      "steps": {
+        "1": {
+          "title": "Set your monthly budget",
+          "text": "Tell Pivoa your income or spending ceiling during a two-minute setup."
+        },
+        "2": {
+          "title": "Cap categories & add goals",
+          "text": "Split your cap across categories and create your first savings goal."
+        },
+        "3": {
+          "title": "Log or scan expenses",
+          "text": "Add transactions manually or scan receipts — dashboards update instantly."
+        }
+      }
+    },
+    "plans": {
+      "eyebrow": "Simple pricing",
+      "title": "A plan that matches how you spend",
+      "subtitle": "Start free. Upgrade when you need more scans, currencies and unlimited history.",
+      "perMonth": "/mo",
+      "ctaFree": "Start free",
+      "ctaPlus": "Get Plus",
+      "ctaPro": "Get Pro",
+      "compare": "See full pricing",
+      "featured": "Most popular",
+      "free": {
+        "name": "Free",
+        "price": "$0",
+        "note": "Start tracking",
+        "points": [
+          "Onboarding and 1 currency",
+          "50 expenses per cycle",
+          "1 savings goal",
+          "Category budgets & alerts",
+          "English & Spanish"
+        ]
+      },
+      "plus": {
+        "name": "Plus",
+        "price": "$7",
+        "note": "$59/year · 14-day trial",
+        "points": [
+          "Unlimited expenses",
+          "Any currency",
+          "Unlimited goals",
+          "40 receipt scans per cycle",
+          "CSV export"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "$14",
+        "note": "$119/year",
+        "points": [
+          "Everything in Plus",
+          "200 receipt scans per cycle",
+          "High-priority support tickets"
+        ]
+      }
+    },
+    "faq": {
+      "eyebrow": "Questions",
+      "title": "Frequently asked",
+      "items": {
+        "free": {
+          "q": "Is Pivoa free?",
+          "a": "Yes. Free includes onboarding, one currency, 50 expenses per cycle and one savings goal — no card required."
+        },
+        "plans": {
+          "q": "What do Plus and Pro unlock?",
+          "a": "Plus adds unlimited expenses and goals, multi-currency, CSV export and 40 receipt scans per cycle. Pro raises scans to 200 and prioritizes your support tickets."
+        },
+        "changeBudget": {
+          "q": "Can I change my monthly budget later?",
+          "a": "Anytime. Your income cap, category caps and goals are all editable in Settings."
+        },
+        "receipts": {
+          "q": "How does receipt scanning work?",
+          "a": "Upload a photo of a receipt and Pivoa uses AI to extract the amount, merchant, date and a suggested category. Scans are included with Plus and Pro."
+        },
+        "privacy": {
+          "q": "Is my data private?",
+          "a": "Your data is protected with row-level security — only you can read your expenses, budgets and goals."
+        }
+      }
+    },
+    "cta": {
+      "title": "Ready to take control of your month?",
+      "subtitle": "Set your budget in two minutes. Free forever to start — upgrade when you need more.",
+      "loggedIn": "Go to dashboard",
+      "guest": "Create free account"
+    },
+    "footer": {
+      "copyright": "© {{year}} Pivoa. Smart expense tracking."
+    },
+    "preview": {
+      "newExpense": "+ New Expense",
+      "overview": "Overview",
+      "transactions": "Transactions",
+      "budgets": "Budgets & Goals",
+      "settings": "Settings",
+      "cycleLabel": "October Cycle • Day 18 of 31",
+      "financialOverview": "Financial Overview",
+      "savedInGoals": "Saved in Goals",
+      "monthlyIncome": "Monthly Income",
+      "monthlyOutflow": "Monthly Outflow",
+      "netSavings": "Net Savings",
+      "cashFlow": "Cash Flow & Daily Velocity",
+      "budgetWatch": "Budget Watch",
+      "food": "Food",
+      "shopping": "Shopping",
+      "entertainment": "Entertainment"
+    }
+  },
+  "pricing": {
+    "backToApp": "Back to app",
+    "signIn": "Sign in",
+    "eyebrow": "Pricing",
+    "title": "A plan that matches how you spend",
+    "perMonth": "/mo",
+    "currentPlan": "Current plan",
+    "stayOnFree": "Stay on Free",
+    "createAccount": "Create account",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "checkoutError": "Could not start checkout",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "price": "$0",
+        "note": "Start tracking",
+        "points": [
+          "Onboarding and 1 currency",
+          "50 expenses per cycle",
+          "1 savings goal",
+          "No receipt scanning"
+        ]
+      },
+      "plus": {
+        "name": "Plus",
+        "price": "$7",
+        "note": "$59/year",
+        "points": [
+          "Unlimited expenses",
+          "Any currency",
+          "Unlimited goals",
+          "40 receipt scans per cycle",
+          "CSV export",
+          "14-day trial"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "$14",
+        "note": "$119/year",
+        "points": [
+          "Everything in Plus",
+          "200 receipt scans per cycle",
+          "High-priority support tickets"
+        ]
+      }
+    }
+  },
+  "onboarding": {
+    "signOut": "Sign out",
+    "setupStep": "Setup • Step {{current}} of {{total}}",
+    "title": "Let's build your monthly plan",
+    "steps": {
+      "budget": "Monthly Budget",
+      "caps": "Category Caps",
+      "goal": "Savings Goal"
+    },
+    "income": {
+      "title": "What's your monthly budget?",
+      "text": "Enter your take-home income or the most you want to spend each month. We'll pace every day against it.",
+      "currency": "Currency",
+      "budgetResetsOn": "Budget resets on",
+      "theOrdinal": "The {{ordinal}}",
+      "currentWindow": "Current window {{start}} – {{end}}",
+      "maxSpend": "Max spend per month",
+      "placeholder": "3000",
+      "dailyRunRate": "Daily run rate",
+      "perDay": "{{amount}}/d",
+      "weeklyAllowance": "Weekly allowance",
+      "enterIncomeError": "Enter your monthly income or budget cap"
+    },
+    "caps": {
+      "title": "Cap your categories",
+      "text": "Optional — set a max per category. You can change these anytime.",
+      "suggest": "Suggest",
+      "allocatedOf": "{{allocated}} allocated of {{income}}",
+      "monthlyCapAria": "{{name}} monthly cap"
+    },
+    "goal": {
+      "title": "Set your first savings goal",
+      "text": "Optional — an emergency fund is a great place to start.",
+      "name": "Goal name",
+      "namePlaceholder": "Emergency Reserve",
+      "icon": "Icon",
+      "targetAmount": "Target amount",
+      "targetAmountPlaceholder": "10000",
+      "targetDate": "Target date"
+    },
+    "done": {
+      "title": "You're all set!",
+      "text": "Your {{amount}} monthly plan is live. Opening your overview…"
+    },
+    "back": "Back",
+    "skip": "Skip",
+    "continue": "Continue",
+    "completeSetup": "Complete Setup",
+    "saving": "Saving…",
+    "failedSetup": "Failed to complete setup"
+  },
+  "overview": {
+    "eyebrow": "{{cycle}} • Day {{day}} of {{days}}",
+    "title": "Financial Overview",
+    "manageBudgets": "Manage Budgets",
+    "quickAdd": "Quick Add",
+    "kpi": {
+      "savedInGoals": "Saved in Goals",
+      "goal_one": "{{count}} goal",
+      "goal_other": "{{count}} goals",
+      "acrossFunds": "across savings funds",
+      "monthlyIncome": "Monthly Income",
+      "perDay": "{{amount}}/d",
+      "budgetCeiling": "budget ceiling",
+      "monthlyOutflow": "Monthly Outflow",
+      "cap": "Cap: {{amount}}",
+      "pctUsed": "{{pct}}% Used",
+      "netSavingsRate": "Net Savings Rate",
+      "spendVsLastMo": "{{change}}% spend vs last mo",
+      "ofIncomeRetained": "of income retained"
+    },
+    "chart": {
+      "title": "Cash Flow & Daily Velocity",
+      "subtitle": "Cumulative spending this cycle against your income ceiling",
+      "spendingTrack": "Spending Track",
+      "baselineIncome": "Baseline Income ({{amount}}/d)",
+      "dailyAverage": "Daily Average",
+      "peakOutflowDay": "Peak Outflow Day",
+      "peakValue": "{{amount}} ({{label}})",
+      "bufferReserve": "Buffer Reserve",
+      "tooltipTotal": "{{amount}} total",
+      "tooltipDaily": "+{{amount}} that day"
+    },
+    "allocation": {
+      "title": "Category Allocation",
+      "subtitle": "This cycle's outflow breakdown",
+      "total": "Total",
+      "empty": "No spending logged this month yet."
+    },
+    "recent": {
+      "title": "Recent Transactions",
+      "subtitle": "Latest postings across all categories",
+      "viewAll": "View all ledger",
+      "colMerchant": "Counterparty / Merchant",
+      "colCategory": "Category",
+      "colDate": "Date",
+      "colAmount": "Net Amount",
+      "empty": "No transactions yet",
+      "logFirst": "Log your first expense",
+      "receiptAttached": "Receipt attached",
+      "manualEntry": "Manual entry"
+    },
+    "goals": {
+      "title": "Goal Milestones",
+      "active": "{{count}} ACTIVE",
+      "addGoal": "Add a savings goal to track milestones",
+      "pctFunded": "{{pct}}% funded",
+      "targetPassed": "Target date passed",
+      "dueIn": "Due in {{days}} days ({{date}})",
+      "budgetWatch": "Budget Watch"
+    },
+    "health": {
+      "title": "Spending Health Pulse",
+      "noCap": "NO CAP SET",
+      "overPace": "OVER PACE",
+      "watch": "WATCH",
+      "optimal": "OPTIMAL",
+      "pulseWithIncome": "You are currently preserving {{rate}}% of monthly income. At today's pace you'll spend {{projected}} by month end — a safe run rate is {{daily}}/day.",
+      "pulseNoIncome": "Set your monthly income cap in Settings to unlock pacing insights.",
+      "burnMultiplier": "Burn Multiplier",
+      "burnValue": "{{value}}x Limit",
+      "daysLeft": "Days Left",
+      "daysValue": "{{count}} Days"
+    }
+  },
+  "transactions": {
+    "eyebrow": "Expense Ledger • {{cycle}} Postings",
+    "title": "Transactions",
+    "logTransaction": "Log Transaction",
+    "telemetry": {
+      "totalDisbursed": "Total Disbursed (M-T-D)",
+      "totalPostings": "{{count}} total postings",
+      "averageTicket": "Average Ticket",
+      "vsLastMo": "{{pct}}% vs last mo",
+      "budgetRemaining": "Budget Remaining",
+      "daysLeft": "{{count}} days left in cycle",
+      "topCategory": "Top Category",
+      "noneYet": "None yet",
+      "logToSee": "Log expenses to see",
+      "categoryHint": "{{amount}} · {{pct}}%"
+    },
+    "filters": {
+      "searchPlaceholder": "Search merchant or notes...",
+      "category": "Category: {{name}}",
+      "all": "All",
+      "allCategories": "All categories",
+      "filterByCategory": "Filter by category",
+      "reset": "Reset",
+      "exportCsv": "Export CSV",
+      "selected": "{{selected}} of {{total}} selected",
+      "exportSelected": "Export Selected",
+      "deleteSelected": "Delete Selected"
+    },
+    "table": {
+      "selectAll": "Select all",
+      "date": "Date",
+      "merchant": "Merchant / Payee",
+      "category": "Category",
+      "receipt": "Receipt",
+      "amount": "Amount",
+      "actions": "Actions",
+      "emptyFilteredTitle": "No matching transactions",
+      "emptyFilteredText": "Try widening the date range or clearing filters.",
+      "emptyTitle": "Your ledger is empty",
+      "emptyText": "Log an expense or scan a receipt to get started.",
+      "noNotes": "No notes",
+      "viewReceipt": "View receipt",
+      "noReceipt": "No receipt",
+      "editTransaction": "Edit transaction"
+    },
+    "pagination": {
+      "activeTotals": "Active view totals {{amount}} spent across {{count}} records",
+      "show": "Show",
+      "entries": "entries"
+    },
+    "insights": {
+      "topCategoryShare": "Top Category Share",
+      "noSpending": "No spending this month yet.",
+      "receiptAudit": "Receipt Audit",
+      "receiptAuditText": "{{with}} of {{total}} postings in view have a scanned receipt attached.",
+      "monthlyCapUsage": "Monthly Cap Usage",
+      "safeRunRate": "Safe run rate of {{amount}}/day for the rest of this cycle."
+    },
+    "toasts": {
+      "deleted_one": "{{count}} transaction deleted",
+      "deleted_other": "{{count}} transactions deleted",
+      "deleteError": "Could not delete transactions",
+      "csvPlusOnly": "CSV export is included with Plus",
+      "nothingToExport": "Nothing to export"
+    },
+    "csvHeaders": {
+      "date": "Date",
+      "merchant": "Merchant",
+      "category": "Category",
+      "originalAmount": "Original Amount",
+      "originalCurrency": "Original Currency",
+      "baseAmount": "Base Amount",
+      "baseCurrency": "Base Currency",
+      "notes": "Notes",
+      "receipt": "Receipt"
+    }
+  },
+  "budgets": {
+    "eyebrow": "Portfolio Discipline • {{cycle}} Cycle",
+    "title": "Budgets & Financial Targets",
+    "newCategoryBudget": "New Category Budget",
+    "addSavingsGoal": "Add Savings Goal",
+    "hero": {
+      "aggregateCap": "Aggregate Monthly Cap",
+      "overallVelocity": "Overall Spend Velocity",
+      "daysLeft": "{{count}} days left in cycle",
+      "consumedOf": "consumed of",
+      "totalLimit": "total limit",
+      "base": "$0.00 base",
+      "overCeiling": "{{amount}} over ceiling",
+      "cushionRemaining": "{{amount}} cushion remaining",
+      "ceiling": "{{amount}} ceiling",
+      "safeDaily": "Safe Daily Run Rate",
+      "perDay": "{{amount}}/d",
+      "meanBurn": "Actual Mean Burn",
+      "monthEnd": "Month-End Projection",
+      "overBudget": "Over-Budget",
+      "onBudget": "On-Budget"
+    },
+    "composition": {
+      "title": "Bucket Composition",
+      "subtitle": "How your {{amount}} cap is allocated",
+      "active": "Active",
+      "caps": "{{count}} Caps",
+      "unallocated": "Unallocated"
+    },
+    "allocations": {
+      "eyebrow": "Category Allocations",
+      "title": "Spending Caps by Category",
+      "sortUtilization": "Highest Utilization",
+      "sortAlpha": "Alphabetical",
+      "addTitle": "Add category budget",
+      "addSubtitle": "Set a monthly cap for any category"
+    },
+    "card": {
+      "monthlyCap": "Monthly cap",
+      "over": "Over",
+      "spent": "Spent",
+      "paced": "Paced",
+      "status": "{{pct}}% {{status}}",
+      "exceededBy": "Exceeded by {{amount}}",
+      "ofCap": "of {{amount}} cap",
+      "noRoom": "No room left this cycle",
+      "remaining": "{{amount}} remaining",
+      "log": "Log",
+      "adjust": "Adjust"
+    },
+    "goals": {
+      "eyebrow": "Capital Accumulation",
+      "title": "Target Goals & Dedicated Sinking Funds",
+      "vaultTotal": "Total Vault Capital:",
+      "addTitle": "Add savings goal",
+      "addSubtitle": "Emergency fund, travel, a new car…",
+      "settingsHint": "Manage your monthly income cap anytime in",
+      "settingsLink": "Settings",
+      "target": "Target {{date}}",
+      "openEnded": "Open-ended fund",
+      "targetLabel": "Target: {{amount}}",
+      "pctFunded": "{{pct}}% Funded",
+      "goalReached": "Goal reached",
+      "needed": "{{amount}} needed",
+      "requiredPace": "Required Pace",
+      "projFulfillment": "Proj. Fulfillment",
+      "complete": "Complete",
+      "perMonth": "{{amount}}/mo",
+      "noDeadline": "No deadline",
+      "flexibleTimeline": "Flexible timeline",
+      "quickBoost": "Quick Boost"
+    }
+  },
+  "settings": {
+    "eyebrow": "Workspace Preferences • Budget Controls",
+    "title": "Settings",
+    "income": {
+      "eyebrow": "Aggregate Monthly Cap",
+      "title": "Monthly Income & Budget",
+      "maxSpend": "Max spend per month",
+      "placeholder": "3000.00",
+      "saveCap": "Save Cap",
+      "saving": "Saving…",
+      "monthlyCap": "Monthly Cap",
+      "allocated": "Allocated to Categories",
+      "unallocated": "Unallocated"
+    },
+    "currencyCycle": {
+      "eyebrow": "Currency & Cycle",
+      "title": "How money and months work",
+      "baseCurrency": "Base currency",
+      "currencyHint": "Changing this converts your income cap, budgets, goals and expense totals.",
+      "multiCurrencyLocked": "Free keeps the currency you chose at setup. Upgrade to Plus to change it.",
+      "budgetResetsOn": "Budget resets on",
+      "dayOption": "The {{ordinal}} of each month",
+      "save": "Save",
+      "currentWindow": "Current window: {{range}}"
+    },
+    "categoryBudgets": {
+      "title": "Category Budgets",
+      "subtitle": "Edit a cap inline and press Enter to save.",
+      "addBudget": "Add Budget",
+      "empty": "No category caps yet — add one to keep spending on track.",
+      "spentPct": "{{spent}} spent · {{pct}}%",
+      "monthlyLimitAria": "{{name}} monthly limit",
+      "save": "Save",
+      "moreOptions": "More options"
+    },
+    "savingsGoals": {
+      "title": "Savings Goals",
+      "subtitle": "Update targets, deadlines or add funds.",
+      "newGoal": "New Goal",
+      "empty": "No savings goals yet — what are you saving for?",
+      "target": "Target {{date}}",
+      "noDeadline": "No deadline",
+      "funded": "{{pct}}% funded",
+      "meta": "{{deadline}} · {{pct}}% funded",
+      "addFunds": "Add funds",
+      "editGoal": "Edit goal"
+    },
+    "account": {
+      "title": "Account",
+      "currency": "Currency",
+      "memberSince": "Member Since",
+      "signOut": "Sign out"
+    },
+    "tip": {
+      "title": "Budgeting tip",
+      "text": "Try allocating about 80% of your monthly cap across categories and keep the rest as a buffer for surprises. You'll get alerts once any category passes 80% of its cap."
+    },
+    "currencyModal": {
+      "eyebrow": "Convert balances",
+      "title": "Switch to {{currency}}",
+      "description": "Income, category caps, goals and expense totals will be converted at today's rate. Original expense amounts stay in the currency they were logged.",
+      "cancel": "Cancel",
+      "converting": "Converting…",
+      "convert": "Convert & switch",
+      "monthlyCap": "Monthly cap"
+    },
+    "toasts": {
+      "subscriptionUpdated": "Subscription updated",
+      "paypalConfirmError": "Could not confirm PayPal",
+      "invalidAmount": "Enter a valid monthly amount",
+      "budgetUpdated": "Monthly budget updated",
+      "budgetUpdateError": "Could not update budget",
+      "resetDayUpdated": "Budget reset day updated",
+      "resetDayError": "Could not update reset day",
+      "currencySwitched": "Currency switched to {{currency}}",
+      "currencyError": "Could not convert currency",
+      "limitError": "Enter a limit greater than zero",
+      "capUpdated": "{{name}} cap updated",
+      "updateError": "Could not update"
+    }
+  },
+  "billing": {
+    "planBilling": "Plan & billing",
+    "plan": "Plan",
+    "free": "Free",
+    "plus": "Plus",
+    "pro": "Pro",
+    "complimentary": "Complimentary access.",
+    "accessUntil": "Access until {{date}}.",
+    "expensesWithLimit": "{{used}} of {{limit}} expenses this cycle.",
+    "expensesNoLimit": "{{used}} expenses this cycle.",
+    "scansUsed": "{{used}} of {{limit}} receipt scans used.",
+    "scansUnlock": "Receipt scans unlock on Plus.",
+    "plusPrice": "Plus · $7/mo",
+    "proPrice": "Pro · $14/mo",
+    "upgradeToPro": "Upgrade to Pro",
+    "cancelPlan": "Cancel plan",
+    "comparePlans": "Compare plans",
+    "checkoutError": "Could not start checkout",
+    "cancelSuccess": "Renewal stopped. Access lasts until the paid period ends.",
+    "cancelError": "Could not cancel",
+    "status": {
+      "active": "Active",
+      "trialing": "Trialing",
+      "past_due": "Past due",
+      "canceled": "Canceled",
+      "none": "None"
+    }
+  },
+  "support": {
+    "eyebrow": "Help",
+    "title": "Support",
+    "loading": "Loading…",
+    "empty": "No tickets yet. Use the help button to send one.",
+    "selectTicket": "Select a ticket to read the thread.",
+    "meta": "{{status}} · {{category}}",
+    "metaFull": "{{status}} · {{category}} · {{priority}}",
+    "replyPlaceholder": "Reply",
+    "reply": "Reply",
+    "sending": "Sending…",
+    "replyError": "Could not send reply",
+    "help": {
+      "title": "Help",
+      "close": "Close help",
+      "open": "Open help",
+      "ticket": "Ticket",
+      "chat": "Chat",
+      "comingSoon": "Coming soon",
+      "chatUnavailable": "Live chat is not available yet. Send a ticket and we will reply there.",
+      "subject": "Subject",
+      "whatHappened": "What happened?",
+      "sendTicket": "Send ticket",
+      "sending": "Sending…",
+      "sent": "Ticket sent. We will reply in Support.",
+      "sendError": "Could not send ticket",
+      "categories": {
+        "bug": "Bug",
+        "account": "Account",
+        "billing": "Billing",
+        "other": "Other"
+      }
+    }
+  },
+  "admin": {
+    "nav": {
+      "section": "Admin",
+      "overview": "Overview",
+      "users": "Users",
+      "tickets": "Tickets",
+      "backToApp": "Back to app",
+      "signOut": "Sign out"
+    },
+    "home": {
+      "eyebrow": "Company",
+      "title": "Admin",
+      "users": "Users",
+      "openTickets": "Open tickets",
+      "paid": "Plus & Pro",
+      "pastDue": "Past due"
+    },
+    "users": {
+      "eyebrow": "Directory",
+      "title": "Users",
+      "searchPlaceholder": "Search email or name",
+      "allPlans": "All plans",
+      "free": "Free",
+      "plus": "Plus",
+      "pro": "Pro",
+      "onboarding": "Onboarding",
+      "completed": "Completed",
+      "notFinished": "Not finished",
+      "colUser": "User",
+      "colPlan": "Plan",
+      "colStatus": "Status",
+      "colOnboarding": "Onboarding",
+      "colLastSignIn": "Last sign-in",
+      "loading": "Loading…",
+      "done": "Done",
+      "pending": "Pending"
+    },
+    "user": {
+      "loading": "Loading…",
+      "notFound": "User not found",
+      "eyebrow": "Support",
+      "account": "Account",
+      "created": "Created {{date}}",
+      "lastSignIn": "Last sign-in {{date}}",
+      "providers": "Providers: {{providers}}",
+      "emailProvider": "email",
+      "emailConfirmed": "Email confirmed: {{value}}",
+      "bannedUntil": "Banned until: {{value}}",
+      "notBanned": "not banned",
+      "onboarding": "Onboarding: {{value}}",
+      "complete": "complete",
+      "incomplete": "incomplete",
+      "moneyPlan": "Money & plan",
+      "moneyMeta": "{{currency}} · resets on day {{day}} · cap {{cap}}",
+      "planLine": "Plan {{plan}}{{complimentary}} · {{status}}",
+      "complimentary": " (complimentary)",
+      "periodEnd": "Period end: {{date}}",
+      "paypalPayer": "PayPal payer: {{id}}",
+      "paypalSubscription": "PayPal subscription: {{id}}",
+      "usage": "Usage: {{expenses}} expenses · {{goals}} goals · {{budgets}} budgets · {{scansUsed}}/{{scansLimit}} scans",
+      "supportActions": "Support actions",
+      "sendPasswordReset": "Send password reset email",
+      "confirmEmail": "Confirm email",
+      "disableUser": "Disable user",
+      "enableUser": "Enable user",
+      "markOnboardingIncomplete": "Mark onboarding incomplete",
+      "markOnboardingComplete": "Mark onboarding complete",
+      "cancelRenewal": "Cancel renewal",
+      "cancelHint": "Cancel stops future PayPal charges. Access lasts until the paid period ends.",
+      "free": "Free",
+      "plusComplimentary": "Plus complimentary",
+      "proComplimentary": "Pro complimentary",
+      "grantPlan": "Grant plan",
+      "recentTickets": "Recent tickets",
+      "none": "None",
+      "toasts": {
+        "actionFailed": "Action failed",
+        "passwordResetSent": "Password reset email sent",
+        "emailConfirmed": "Email confirmed",
+        "userDisabled": "User disabled",
+        "userEnabled": "User enabled",
+        "onboardingUpdated": "Onboarding updated",
+        "renewalStopped": "Renewal stopped. Access lasts until the paid period ends.",
+        "planUpdated": "Plan updated"
+      }
+    },
+    "tickets": {
+      "eyebrow": "Inbox",
+      "title": "Tickets",
+      "allStatuses": "All statuses",
+      "open": "Open",
+      "pending": "Pending",
+      "resolved": "Resolved",
+      "closed": "Closed",
+      "allCategories": "All categories",
+      "bug": "Bug",
+      "account": "Account",
+      "billing": "Billing",
+      "other": "Other",
+      "loading": "Loading…",
+      "meta": "{{email}} · {{status}} · {{priority}} · {{category}}"
+    },
+    "ticket": {
+      "loading": "Loading…",
+      "notFound": "Ticket not found",
+      "eyebrowFallback": "Ticket",
+      "meta": "{{status}} · {{priority}} · {{category}}",
+      "openUser": "Open user",
+      "keepStatus": "Keep status",
+      "open": "Open",
+      "pending": "Pending",
+      "resolved": "Resolved",
+      "closed": "Closed",
+      "replyPlaceholder": "Reply to the user",
+      "update": "Update ticket",
+      "saving": "Saving…",
+      "updated": "Ticket updated",
+      "updateError": "Could not update ticket"
+    }
+  },
+  "modals": {
+    "expense": {
+      "editEyebrow": "Edit posting",
+      "addEyebrow": "Quick add",
+      "editTitle": "Edit Transaction",
+      "addTitle": "Log Single Transaction",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "saveChanges": "Save Changes",
+      "logExpense": "Log Expense",
+      "amount": "Amount",
+      "amountPlaceholder": "0.00",
+      "converted": "= {{amount}} {{currency}}",
+      "currency": "Currency",
+      "multiCurrencyHint": "Other currencies are a Plus feature.",
+      "date": "Date",
+      "category": "Category",
+      "select": "Select…",
+      "merchant": "Merchant / Payee",
+      "merchantPlaceholder": "e.g. Whole Foods Market",
+      "notes": "Notes",
+      "notesPlaceholder": "Optional memo",
+      "receiptAttached": "Receipt attached",
+      "amountError": "Enter an amount greater than zero",
+      "categoryError": "Choose a category",
+      "updated": "Transaction updated",
+      "logged": "Expense logged",
+      "saveError": "Could not save expense",
+      "deleted": "Transaction deleted",
+      "deleteError": "Could not delete"
+    },
+    "receipt": {
+      "selectImageError": "Please select an image file",
+      "sizeError": "File size must be less than 10MB",
+      "scanned": "Receipt scanned — details filled in",
+      "scanError": "Failed to scan receipt",
+      "title": "Scan a receipt with AI",
+      "hint": "Photo or image · PNG, JPG, HEIC up to 10MB",
+      "previewAlt": "Receipt preview",
+      "extracting": "Extracting amount, merchant and date…",
+      "ready": "Ready to analyze",
+      "scan": "Scan",
+      "scanning": "Scanning"
+    },
+    "budget": {
+      "eyebrow": "Category allocation",
+      "editTitle": "Adjust {{name}} Cap",
+      "newTitle": "New Category Budget",
+      "remove": "Remove",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "saveCap": "Save Cap",
+      "create": "Create Budget",
+      "category": "Category",
+      "selectCategory": "Select a category…",
+      "allHaveBudget": "All categories already have a budget",
+      "monthlyLimit": "Monthly limit",
+      "limitPlaceholder": "0.00",
+      "unallocatedOf": "Unallocated of {{amount}} cap",
+      "limitError": "Enter a monthly limit greater than zero",
+      "categoryError": "Choose a category",
+      "updated": "Budget updated",
+      "created": "Category budget created",
+      "saveError": "Could not save budget",
+      "removed": "Budget removed",
+      "deleteError": "Could not delete budget"
+    },
+    "goal": {
+      "eyebrow": "Capital accumulation",
+      "editTitle": "Edit Savings Goal",
+      "addTitle": "Add Savings Goal",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "saveGoal": "Save Goal",
+      "createGoal": "Create Goal",
+      "name": "Goal name",
+      "namePlaceholder": "e.g. Emergency Reserve",
+      "icon": "Icon",
+      "targetAmount": "Target amount",
+      "savedSoFar": "Saved so far",
+      "amountPlaceholder": "0.00",
+      "targetDate": "Target date (optional)",
+      "nameError": "Give your goal a name",
+      "targetError": "Enter a target amount",
+      "updated": "Goal updated",
+      "created": "Savings goal created",
+      "saveError": "Could not save goal",
+      "deleted": "Goal deleted",
+      "deleteError": "Could not delete goal",
+      "icons": {
+        "savings": "Savings",
+        "emergency": "Emergency",
+        "travel": "Travel",
+        "home": "Home",
+        "vehicle": "Vehicle",
+        "education": "Education",
+        "tech": "Tech",
+        "gift": "Gift"
+      }
+    },
+    "deposit": {
+      "eyebrow": "Quick boost",
+      "title": "Fund {{name}}",
+      "titleFallback": "Fund goal",
+      "description": "{{remaining}} still needed to reach {{target}}",
+      "cancel": "Cancel",
+      "adding": "Adding…",
+      "addFunds": "Add Funds",
+      "amountPlaceholder": "0.00",
+      "quickAmount": "+${{amount}}",
+      "amountError": "Enter an amount greater than zero",
+      "added": "{{amount}} added to {{name}}",
+      "addError": "Could not add funds"
+    }
+  }
+}

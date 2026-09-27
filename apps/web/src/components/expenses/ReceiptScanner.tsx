@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useScanReceipt, type ParsedReceipt } from '@/hooks/useScanReceipt'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/icon'
@@ -9,6 +10,7 @@ interface ReceiptScannerProps {
 }
 
 export function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) {
+  const { t } = useTranslation()
   const [preview, setPreview] = useState<string | null>(null)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -18,11 +20,11 @@ export function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) {
     const file = event.target.files?.[0]
     if (!file) return
     if (!file.type.startsWith('image/')) {
-      toast.error('Please select an image file')
+      toast.error(t('modals.receipt.selectImageError'))
       return
     }
     if (file.size > 10 * 1024 * 1024) {
-      toast.error('File size must be less than 10MB')
+      toast.error(t('modals.receipt.sizeError'))
       return
     }
     setSelectedFile(file)
@@ -36,9 +38,9 @@ export function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) {
     scanReceipt(selectedFile, {
       onSuccess: (result) => {
         onScanComplete(result)
-        toast.success('Receipt scanned — details filled in')
+        toast.success(t('modals.receipt.scanned'))
       },
-      onError: (err) => toast.error(err instanceof Error ? err.message : 'Failed to scan receipt'),
+      onError: (err) => toast.error(err instanceof Error ? err.message : t('modals.receipt.scanError')),
     })
   }
 
@@ -69,15 +71,15 @@ export function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) {
             <Icon name="document_scanner" className="text-[22px]" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-body-md text-body-md font-semibold text-on-surface">Scan a receipt with AI</p>
-            <p className="font-body-sm text-body-sm text-outline truncate">Photo or image · PNG, JPG, HEIC up to 10MB</p>
+            <p className="font-body-md text-body-md font-semibold text-on-surface">{t('modals.receipt.title')}</p>
+            <p className="font-body-sm text-body-sm text-outline truncate">{t('modals.receipt.hint')}</p>
           </div>
           <Icon name="upload" className="text-outline text-[20px]" />
         </button>
       ) : (
         <div className="flex items-center gap-space-md rounded-lg bg-surface-container-low p-space-sm">
           <div className="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-surface-container">
-            <img src={preview} alt="Receipt preview" className="w-full h-full object-cover" />
+            <img src={preview} alt={t('modals.receipt.previewAlt')} className="w-full h-full object-cover" />
             {isPending && (
               <div className="absolute inset-0 flex items-center justify-center bg-surface-container-lowest/70">
                 <Icon name="progress_activity" className="animate-spin text-primary-container" />
@@ -88,17 +90,17 @@ export function ReceiptScanner({ onScanComplete }: ReceiptScannerProps) {
             <p className="font-body-md text-body-md font-semibold text-on-surface truncate">{selectedFile?.name}</p>
             {isError ? (
               <p className="font-body-sm text-body-sm text-tertiary-container">
-                {error instanceof Error ? error.message : 'Failed to scan receipt'}
+                {error instanceof Error ? error.message : t('modals.receipt.scanError')}
               </p>
             ) : (
               <p className="font-body-sm text-body-sm text-outline">
-                {isPending ? 'Extracting amount, merchant and date…' : 'Ready to analyze'}
+                {isPending ? t('modals.receipt.extracting') : t('modals.receipt.ready')}
               </p>
             )}
           </div>
           <Button type="button" size="sm" onClick={handleScan} disabled={isPending}>
             <Icon name="auto_awesome" className="text-[16px]" />
-            {isPending ? 'Scanning' : 'Scan'}
+            {isPending ? t('modals.receipt.scanning') : t('modals.receipt.scan')}
           </Button>
           <button
             type="button"

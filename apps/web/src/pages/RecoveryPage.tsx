@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -16,6 +17,7 @@ function hashIsRecovery() {
 }
 
 export default function RecoveryPage() {
+  const { t } = useTranslation()
   const { user, loading: authLoading, updatePassword } = useAuth()
   const navigate = useNavigate()
   const [fromLink] = useState(() => hashIsRecovery())
@@ -53,17 +55,17 @@ export default function RecoveryPage() {
   if (!user || !recoveryReady) {
     return (
       <AuthLayout
-        eyebrow="Reset password"
-        title="Link expired or invalid"
-        subtitle="Request a new reset email from the sign-in page, or ask support to send one."
+        eyebrow={t('auth.recovery.eyebrow')}
+        title={t('auth.recovery.expiredTitle')}
+        subtitle={t('auth.recovery.expiredSubtitle')}
         footer={
           <Link to="/login" className="text-primary-container font-semibold hover:text-primary">
-            Back to sign in
+            {t('auth.recovery.backToSignIn')}
           </Link>
         }
       >
         <Button type="button" size="lg" className="w-full" onClick={() => navigate('/forgot-password')}>
-          Request a new link
+          {t('auth.recovery.requestNewLink')}
         </Button>
       </AuthLayout>
     )
@@ -72,8 +74,8 @@ export default function RecoveryPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
-    if (password.length < 6) return setError('Password must be at least 6 characters')
-    if (password !== confirmPassword) return setError('Passwords do not match')
+    if (password.length < 6) return setError(t('auth.recovery.passwordTooShort'))
+    if (password !== confirmPassword) return setError(t('auth.recovery.passwordsMismatch'))
 
     setLoading(true)
     const { error } = await updatePassword(password)
@@ -88,19 +90,19 @@ export default function RecoveryPage() {
 
   return (
     <AuthLayout
-      eyebrow="Reset password"
-      title="Choose a new password"
-      subtitle="You are signed in with a recovery link. Set a new password to continue."
+      eyebrow={t('auth.recovery.eyebrow')}
+      title={t('auth.recovery.title')}
+      subtitle={t('auth.recovery.subtitle')}
       footer={
         <Link to="/login" className="text-primary-container font-semibold hover:text-primary">
-          Back to sign in
+          {t('auth.recovery.backToSignIn')}
         </Link>
       }
     >
       {error && <AuthError message={error} />}
       <form onSubmit={handleSubmit} className="flex flex-col gap-space-md">
         <div>
-          <Label htmlFor="password">New password</Label>
+          <Label htmlFor="password">{t('auth.recovery.newPassword')}</Label>
           <div className="relative">
             <Input
               id="password"
@@ -117,14 +119,14 @@ export default function RecoveryPage() {
               type="button"
               onClick={() => setShowPassword((s) => !s)}
               className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-outline hover:text-on-surface"
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              aria-label={showPassword ? t('auth.recovery.hidePassword') : t('auth.recovery.showPassword')}
             >
               <Icon name={showPassword ? 'visibility_off' : 'visibility'} className="text-[18px]" />
             </button>
           </div>
         </div>
         <div>
-          <Label htmlFor="confirm">Confirm password</Label>
+          <Label htmlFor="confirm">{t('auth.recovery.confirmPassword')}</Label>
           <Input
             id="confirm"
             type={showPassword ? 'text' : 'password'}
@@ -136,7 +138,7 @@ export default function RecoveryPage() {
           />
         </div>
         <Button type="submit" size="lg" className="w-full mt-space-xs" disabled={loading}>
-          {loading ? 'Saving…' : 'Save password and continue'}
+          {loading ? t('auth.recovery.submitting') : t('auth.recovery.submit')}
           {!loading && <Icon name="arrow_forward" className="text-[18px]" />}
         </Button>
       </form>

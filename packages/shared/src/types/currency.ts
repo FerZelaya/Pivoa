@@ -1,3 +1,5 @@
+import type { UserSettings } from './settings.js';
+
 export interface ExchangeRates {
   base: string;
   /** Rate to multiply an amount in `base` by, to get the quoted currency. */
@@ -17,15 +19,7 @@ export interface ChangeCurrencyDto {
 }
 
 export interface ChangeCurrencyResult {
-  settings: {
-    userId: string;
-    monthlyIncomeCap: number;
-    currency: string;
-    cycleStartDay: number;
-    onboardingCompleted: boolean;
-    createdAt: string;
-    updatedAt: string;
-  };
+  settings: UserSettings;
   previousCurrency: string;
   rate: number;
   converted: {

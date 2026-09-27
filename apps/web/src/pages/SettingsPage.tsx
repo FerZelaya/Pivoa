@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import type { CategoryBudgetWithSpent, SavingsGoalWithProgress } from '@pivoa/shared'
 import { useAuth } from '@/contexts/AuthContext'
@@ -21,9 +22,13 @@ import { categoryIcon, categoryTone } from '@/lib/categories'
 import { cn } from '@/lib/utils'
 import { PlanCard } from '@/components/billing/PlanCard'
 import { useRefreshBilling, useSyncBilling } from '@/hooks/useBilling'
+import { useMe } from '@/hooks/useMe'
+import { LanguageSwitcher } from '@/i18n/LanguageSwitcher'
 
 export default function SettingsPage() {
+  const { t } = useTranslation()
   const { user, signOut } = useAuth()
+  const { data: me } = useMe()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const refreshBilling = useRefreshBilling()
@@ -56,38 +61,38 @@ export default function SettingsPage() {
     const subscriptionId = searchParams.get('subscription_id')
     if (subscriptionId) {
       syncBilling.mutate(subscriptionId, {
-        onSuccess: () => toast.success('Subscription updated'),
-        onError: (err) => toast.error(err instanceof Error ? err.message : 'Could not confirm PayPal'),
+        onSuccess: () => toast.success(t('settings.toasts.subscriptionUpdated')),
+        onError: (err) => toast.error(err instanceof Error ? err.message : t('settings.toasts.paypalConfirmError')),
       })
       return
     }
     refreshBilling()
-    toast.success('Subscription updated')
-  }, [searchParams, refreshBilling, syncBilling])
+    toast.success(t('settings.toasts.subscriptionUpdated'))
+  }, [searchParams, refreshBilling, syncBilling, t])
 
   const cap = settings?.monthlyIncomeCap ?? 0
   const allocated = budgets.reduce((sum, b) => sum + b.monthlyLimit, 0)
   const incomeDirty = settings ? parseFloat(income || '0') !== settings.monthlyIncomeCap : false
-  const fullName = (user?.user_metadata?.full_name as string | undefined) || user?.email?.split('@')[0] || 'Pivoa User'
+  const fullName = (user?.user_metadata?.full_name as string | undefined) || user?.email?.split('@')[0] || t('common.defaultUserName')
 
   const saveIncome = async (e: React.FormEvent) => {
     e.preventDefault()
     const value = parseFloat(income)
-    if (!Number.isFinite(value) || value < 0) return toast.error('Enter a valid monthly amount')
+    if (!Number.isFinite(value) || value < 0) return toast.error(t('settings.toasts.invalidAmount'))
     try {
       await updateSettings.mutateAsync({ monthlyIncomeCap: value })
-      toast.success('Monthly budget updated')
+      toast.success(t('settings.toasts.budgetUpdated'))
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not update budget')
+      toast.error(err instanceof Error ? err.message : t('settings.toasts.budgetUpdateError'))
     }
   }
 
   const saveCycle = async () => {
     try {
       await updateSettings.mutateAsync({ cycleStartDay })
-      toast.success('Budget reset day updated')
+      toast.success(t('settings.toasts.resetDayUpdated'))
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not update reset day')
+      toast.error(err instanceof Error ? err.message : t('settings.toasts.resetDayError'))
     }
   }
 
@@ -95,10 +100,10 @@ export default function SettingsPage() {
     if (!pendingCurrency) return
     try {
       await changeCurrency.mutateAsync({ currency: pendingCurrency })
-      toast.success(`Currency switched to ${pendingCurrency}`)
+      toast.success(t('settings.toasts.currencySwitched', { currency: pendingCurrency }))
       setPendingCurrency(null)
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not convert currency')
+      toast.error(err instanceof Error ? err.message : t('settings.toasts.currencyError'))
     }
   }
 
@@ -110,7 +115,7 @@ export default function SettingsPage() {
 
   return (
     <>
-      <PageHeader eyebrow="Workspace Preferences • Budget Controls" title="Settings" />
+      <PageHeader eyebrow={t('settings.eyebrow')} title={t('settings.title')} />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
         <div className="lg:col-span-8 flex flex-col gap-space-lg">
@@ -123,29 +128,29 @@ export default function SettingsPage() {
                 <Icon name="account_balance_wallet" className="text-[22px]" />
               </div>
               <div>
-                <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">Aggregate Monthly Cap</span>
-                <h2 className="font-headline-sm text-headline-sm text-on-surface">Monthly Income &amp; Budget</h2>
+                <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('settings.income.eyebrow')}</span>
+                <h2 className="font-headline-sm text-headline-sm text-on-surface">{t('settings.income.title')}</h2>
               </div>
             </div>
             <form onSubmit={saveIncome} className="relative flex flex-col sm:flex-row gap-space-md sm:items-end">
               <div className="flex-1">
                 <label htmlFor="income" className="block font-label-caps text-label-caps uppercase text-on-surface-variant mb-1.5">
-                  Max spend per month
+                  {t('settings.income.maxSpend')}
                 </label>
                 {settingsLoading ? (
                   <div className="skeleton h-[52px]" />
                 ) : (
-                  <MoneyInput id="income" large value={income} onChange={(e) => setIncome(e.target.value)} placeholder="3000.00" />
+                  <MoneyInput id="income" large value={income} onChange={(e) => setIncome(e.target.value)} placeholder={t('settings.income.placeholder')} />
                 )}
               </div>
               <Button type="submit" size="lg" disabled={!incomeDirty || updateSettings.isPending}>
-                {updateSettings.isPending ? 'Saving…' : 'Save Cap'}
+                {updateSettings.isPending ? t('settings.income.saving') : t('settings.income.saveCap')}
               </Button>
             </form>
             <div className="relative grid grid-cols-3 gap-space-md bg-surface-container-low p-space-md rounded-lg mt-space-lg">
-              <MiniStat label="Monthly Cap" value={formatCurrency(cap)} />
-              <MiniStat label="Allocated to Categories" value={formatCurrency(allocated)} valueClass={allocated > cap ? 'text-tertiary-container' : undefined} />
-              <MiniStat label="Unallocated" value={formatCurrency(cap - allocated)} valueClass={cap - allocated < 0 ? 'text-tertiary-container' : 'text-secondary'} />
+              <MiniStat label={t('settings.income.monthlyCap')} value={formatCurrency(cap)} />
+              <MiniStat label={t('settings.income.allocated')} value={formatCurrency(allocated)} valueClass={allocated > cap ? 'text-tertiary-container' : undefined} />
+              <MiniStat label={t('settings.income.unallocated')} value={formatCurrency(cap - allocated)} valueClass={cap - allocated < 0 ? 'text-tertiary-container' : 'text-secondary'} />
             </div>
           </section>
 
@@ -155,24 +160,30 @@ export default function SettingsPage() {
                 <Icon name="currency_exchange" className="text-[22px]" />
               </div>
               <div>
-                <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">Currency &amp; Cycle</span>
-                <h2 className="font-headline-sm text-headline-sm text-on-surface">How money and months work</h2>
+                <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('settings.currencyCycle.eyebrow')}</span>
+                <h2 className="font-headline-sm text-headline-sm text-on-surface">{t('settings.currencyCycle.title')}</h2>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
               <div>
-                <label className="block font-label-caps text-label-caps uppercase text-on-surface-variant mb-1.5">Base currency</label>
+                <label className="block font-label-caps text-label-caps uppercase text-on-surface-variant mb-1.5">{t('settings.currencyCycle.baseCurrency')}</label>
                 <CurrencySelect
                   value={settings?.currency ?? 'USD'}
+                  disabled={!me?.multiCurrency}
                   onChange={(code) => {
+                    if (!me?.multiCurrency) return
                     if (code !== settings?.currency) setPendingCurrency(code)
                   }}
                 />
-                <p className="font-body-sm text-body-sm text-outline mt-1.5">Changing this converts your income cap, budgets, goals and expense totals.</p>
+                <p className="font-body-sm text-body-sm text-outline mt-1.5">
+                  {me && !me.multiCurrency
+                    ? t('settings.currencyCycle.multiCurrencyLocked')
+                    : t('settings.currencyCycle.currencyHint')}
+                </p>
               </div>
               <div>
                 <label htmlFor="cycle-day" className="block font-label-caps text-label-caps uppercase text-on-surface-variant mb-1.5">
-                  Budget resets on
+                  {t('settings.currencyCycle.budgetResetsOn')}
                 </label>
                 <div className="flex items-center gap-space-sm">
                   <select
@@ -183,18 +194,33 @@ export default function SettingsPage() {
                   >
                     {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
                       <option key={day} value={day}>
-                        The {ordinal(day)} of each month
+                        {t('settings.currencyCycle.dayOption', { ordinal: ordinal(day) })}
                       </option>
                     ))}
                   </select>
                   <Button type="button" disabled={!cycleDirty || updateSettings.isPending} onClick={saveCycle}>
-                    Save
+                    {t('settings.currencyCycle.save')}
                   </Button>
                 </div>
                 <p className="font-body-sm text-body-sm text-outline mt-1.5">
-                  Current window: {formatCycleRange(cyclePreview.start, cyclePreview.end)}
+                  {t('settings.currencyCycle.currentWindow', { range: formatCycleRange(cyclePreview.start, cyclePreview.end) })}
                 </p>
               </div>
+            </div>
+          </section>
+
+          <section className="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+              <div className="flex items-center gap-space-sm">
+                <div className="w-10 h-10 rounded-lg bg-primary-fixed text-primary flex items-center justify-center">
+                  <Icon name="translate" className="text-[22px]" />
+                </div>
+                <div>
+                  <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('common.language')}</span>
+                  <h2 className="font-headline-sm text-headline-sm text-on-surface">{t('common.language')}</h2>
+                </div>
+              </div>
+              <LanguageSwitcher persist />
             </div>
           </section>
 
@@ -202,17 +228,17 @@ export default function SettingsPage() {
           <section className="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm">
             <div className="flex items-start justify-between gap-space-md mb-space-md">
               <div>
-                <h2 className="font-headline-sm text-headline-sm text-on-surface">Category Budgets</h2>
-                <p className="font-body-sm text-body-sm text-on-surface-variant">Edit a cap inline and press Enter to save.</p>
+                <h2 className="font-headline-sm text-headline-sm text-on-surface">{t('settings.categoryBudgets.title')}</h2>
+                <p className="font-body-sm text-body-sm text-on-surface-variant">{t('settings.categoryBudgets.subtitle')}</p>
               </div>
               <Button variant="tonal" size="sm" onClick={() => setBudgetModal({ open: true })}>
-                <Icon name="add" className="text-[18px]" /> Add Budget
+                <Icon name="add" className="text-[18px]" /> {t('settings.categoryBudgets.addBudget')}
               </Button>
             </div>
             <div className="flex flex-col divide-y divide-surface-container-low">
               {budgetsLoading && Array.from({ length: 3 }).map((_, i) => <div key={i} className="skeleton h-12 my-space-xs" />)}
               {!budgetsLoading && budgets.length === 0 && (
-                <EmptyRow icon="donut_small" text="No category caps yet — add one to keep spending on track." />
+                <EmptyRow icon="donut_small" text={t('settings.categoryBudgets.empty')} />
               )}
               {budgets.map((budget) => (
                 <BudgetRow key={budget.id} budget={budget} onMore={() => setBudgetModal({ open: true, budget })} />
@@ -224,16 +250,16 @@ export default function SettingsPage() {
           <section className="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm">
             <div className="flex items-start justify-between gap-space-md mb-space-md">
               <div>
-                <h2 className="font-headline-sm text-headline-sm text-on-surface">Savings Goals</h2>
-                <p className="font-body-sm text-body-sm text-on-surface-variant">Update targets, deadlines or add funds.</p>
+                <h2 className="font-headline-sm text-headline-sm text-on-surface">{t('settings.savingsGoals.title')}</h2>
+                <p className="font-body-sm text-body-sm text-on-surface-variant">{t('settings.savingsGoals.subtitle')}</p>
               </div>
               <Button size="sm" onClick={() => setGoalModal({ open: true })}>
-                <Icon name="add" className="text-[18px]" /> New Goal
+                <Icon name="add" className="text-[18px]" /> {t('settings.savingsGoals.newGoal')}
               </Button>
             </div>
             <div className="flex flex-col divide-y divide-surface-container-low">
               {goalsLoading && Array.from({ length: 2 }).map((_, i) => <div key={i} className="skeleton h-14 my-space-xs" />)}
-              {!goalsLoading && goals.length === 0 && <EmptyRow icon="flag" text="No savings goals yet — what are you saving for?" />}
+              {!goalsLoading && goals.length === 0 && <EmptyRow icon="flag" text={t('settings.savingsGoals.empty')} />}
               {goals.map((goal) => (
                 <div key={goal.id} className="flex items-center gap-space-md py-space-md">
                   <div className="w-9 h-9 rounded-lg bg-secondary-container/40 text-secondary flex items-center justify-center shrink-0">
@@ -250,12 +276,17 @@ export default function SettingsPage() {
                       <div className="h-full rounded-full bg-secondary" style={{ width: `${Math.min(100, goal.percentage)}%` }} />
                     </div>
                     <span className="font-body-sm text-body-sm text-outline">
-                      {goal.targetDate ? `Target ${formatDate(goal.targetDate)}` : 'No deadline'} · {goal.percentage.toFixed(0)}% funded
+                      {t('settings.savingsGoals.meta', {
+                        deadline: goal.targetDate
+                          ? t('settings.savingsGoals.target', { date: formatDate(goal.targetDate) })
+                          : t('settings.savingsGoals.noDeadline'),
+                        pct: goal.percentage.toFixed(0),
+                      })}
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <IconButton icon="add_card" title="Add funds" onClick={() => setDepositGoal(goal)} className="text-secondary" />
-                    <IconButton icon="edit" title="Edit goal" onClick={() => setGoalModal({ open: true, goal })} />
+                    <IconButton icon="add_card" title={t('settings.savingsGoals.addFunds')} onClick={() => setDepositGoal(goal)} className="text-secondary" />
+                    <IconButton icon="edit" title={t('settings.savingsGoals.editGoal')} onClick={() => setGoalModal({ open: true, goal })} />
                   </div>
                 </div>
               ))}
@@ -266,7 +297,7 @@ export default function SettingsPage() {
         {/* Account column */}
         <div className="lg:col-span-4 flex flex-col gap-space-lg">
           <section className="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
-            <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">Account</span>
+            <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('settings.account.title')}</span>
             <div className="flex items-center gap-space-md">
               <div className="w-12 h-12 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-headline-sm text-headline-sm">
                 {initials(fullName)}
@@ -278,13 +309,13 @@ export default function SettingsPage() {
             </div>
             <div className="grid grid-cols-2 gap-space-sm">
               <div className="bg-surface-container-low p-space-sm rounded-lg">
-                <div className="font-label-caps text-label-caps uppercase text-on-surface-variant">Currency</div>
+                <div className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('settings.account.currency')}</div>
                 <div className="font-label-numeric-md text-label-numeric-md font-semibold text-on-surface">{settings?.currency ?? 'USD'}</div>
               </div>
               <div className="bg-surface-container-low p-space-sm rounded-lg">
-                <div className="font-label-caps text-label-caps uppercase text-on-surface-variant">Member Since</div>
+                <div className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('settings.account.memberSince')}</div>
                 <div className="font-label-numeric-md text-label-numeric-md font-semibold text-on-surface">
-                  {user?.created_at ? formatDate(user.created_at, { month: 'short', year: 'numeric' }) : '—'}
+                  {user?.created_at ? formatDate(user.created_at, { month: 'short', year: 'numeric' }) : t('common.emDash')}
                 </div>
               </div>
             </div>
@@ -296,19 +327,16 @@ export default function SettingsPage() {
                 navigate('/login')
               }}
             >
-              <Icon name="logout" className="text-[18px]" /> Sign out
+              <Icon name="logout" className="text-[18px]" /> {t('settings.account.signOut')}
             </Button>
           </section>
 
           <section className="bg-surface-container-low p-space-lg rounded-xl flex flex-col gap-space-sm">
             <div className="flex items-center gap-space-xs">
               <Icon name="lightbulb" className="text-[20px] text-primary-container" />
-              <span className="font-headline-sm text-headline-sm text-on-surface">Budgeting tip</span>
+              <span className="font-headline-sm text-headline-sm text-on-surface">{t('settings.tip.title')}</span>
             </div>
-            <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-              Try allocating about 80% of your monthly cap across categories and keep the rest as a buffer for surprises. You&apos;ll get
-              alerts once any category passes 80% of its cap.
-            </p>
+            <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">{t('settings.tip.text')}</p>
           </section>
         </div>
       </div>
@@ -321,22 +349,22 @@ export default function SettingsPage() {
         open={Boolean(pendingCurrency)}
         onClose={() => setPendingCurrency(null)}
         icon="currency_exchange"
-        eyebrow="Convert balances"
-        title={`Switch to ${pendingCurrency ?? ''}`}
-        description="Income, category caps, goals and expense totals will be converted at today's rate. Original expense amounts stay in the currency they were logged."
+        eyebrow={t('settings.currencyModal.eyebrow')}
+        title={t('settings.currencyModal.title', { currency: pendingCurrency ?? '' })}
+        description={t('settings.currencyModal.description')}
         footer={
           <>
             <Button type="button" variant="ghost" onClick={() => setPendingCurrency(null)}>
-              Cancel
+              {t('settings.currencyModal.cancel')}
             </Button>
             <Button type="button" onClick={confirmCurrency} disabled={changeCurrency.isPending || previewConverted == null}>
-              {changeCurrency.isPending ? 'Converting…' : 'Convert & switch'}
+              {changeCurrency.isPending ? t('settings.currencyModal.converting') : t('settings.currencyModal.convert')}
             </Button>
           </>
         }
       >
         <div className="flex items-center justify-between bg-surface-container-low p-space-md rounded-lg">
-          <span className="font-body-md text-body-md text-on-surface-variant">Monthly cap</span>
+          <span className="font-body-md text-body-md text-on-surface-variant">{t('settings.currencyModal.monthlyCap')}</span>
           <span className="font-label-numeric-md text-label-numeric-md font-semibold text-on-surface">
             {formatCurrency(cap)} → {previewConverted == null ? '…' : formatMoney(previewConverted, pendingCurrency ?? 'USD')}
           </span>
@@ -347,6 +375,7 @@ export default function SettingsPage() {
 }
 
 function BudgetRow({ budget, onMore }: { budget: CategoryBudgetWithSpent; onMore: () => void }) {
+  const { t } = useTranslation()
   const updateBudget = useUpdateBudget()
   const [value, setValue] = useState(String(budget.monthlyLimit))
   const tone = categoryTone(budget.category.name)
@@ -357,12 +386,12 @@ function BudgetRow({ budget, onMore }: { budget: CategoryBudgetWithSpent; onMore
   const save = async (e: React.FormEvent) => {
     e.preventDefault()
     const limit = parseFloat(value)
-    if (!limit || limit <= 0) return toast.error('Enter a limit greater than zero')
+    if (!limit || limit <= 0) return toast.error(t('settings.toasts.limitError'))
     try {
       await updateBudget.mutateAsync({ id: budget.id, data: { monthlyLimit: limit } })
-      toast.success(`${budget.category.name} cap updated`)
+      toast.success(t('settings.toasts.capUpdated', { name: budget.category.name }))
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not update')
+      toast.error(err instanceof Error ? err.message : t('settings.toasts.updateError'))
     }
   }
 
@@ -374,16 +403,24 @@ function BudgetRow({ budget, onMore }: { budget: CategoryBudgetWithSpent; onMore
       <div className="flex-1 min-w-0">
         <p className="font-body-md text-body-md font-semibold text-on-surface truncate">{budget.category.name}</p>
         <p className={cn('font-label-numeric-sm text-label-numeric-sm', budget.percentage > 100 ? 'text-tertiary-container' : 'text-outline')}>
-          {formatCurrency(budget.spent)} spent · {Math.round(budget.percentage)}%
+          {t('settings.categoryBudgets.spentPct', {
+            spent: formatCurrency(budget.spent),
+            pct: Math.round(budget.percentage),
+          })}
         </p>
       </div>
       <div className="w-36">
-        <MoneyInput value={value} onChange={(e) => setValue(e.target.value)} className="py-2" aria-label={`${budget.category.name} monthly limit`} />
+        <MoneyInput
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          className="py-2"
+          aria-label={t('settings.categoryBudgets.monthlyLimitAria', { name: budget.category.name })}
+        />
       </div>
       {dirty ? (
-        <IconButton icon="check" title="Save" type="submit" className="text-secondary" disabled={updateBudget.isPending} />
+        <IconButton icon="check" title={t('settings.categoryBudgets.save')} type="submit" className="text-secondary" disabled={updateBudget.isPending} />
       ) : (
-        <IconButton icon="more_horiz" title="More options" onClick={onMore} />
+        <IconButton icon="more_horiz" title={t('settings.categoryBudgets.moreOptions')} onClick={onMore} />
       )}
     </form>
   )

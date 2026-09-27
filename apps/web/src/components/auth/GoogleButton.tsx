@@ -1,15 +1,18 @@
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 
 export function GoogleButton({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) {
+  const { t } = useTranslation()
+
   return (
     <div className="flex flex-col gap-space-md">
       <Button type="button" variant="outline" size="lg" className="w-full" onClick={onClick} disabled={disabled}>
         <GoogleMark />
-        Continue with Google
+        {t('auth.google.continue')}
       </Button>
       <div className="flex items-center gap-space-sm">
         <div className="h-px flex-1 bg-outline-variant" />
-        <span className="font-label-caps text-label-caps uppercase text-outline">or email</span>
+        <span className="font-label-caps text-label-caps uppercase text-outline">{t('auth.google.orEmail')}</span>
         <div className="h-px flex-1 bg-outline-variant" />
       </div>
     </div>

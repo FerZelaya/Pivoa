@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import type { CategoryBudgetWithSpent, SavingsGoalWithProgress } from '@pivoa/shared'
 import { useBudgets } from '@/hooks/useBudgets'
 import { useGoals } from '@/hooks/useGoals'
@@ -16,6 +17,7 @@ import { cn } from '@/lib/utils'
 type SortMode = 'utilization' | 'alpha'
 
 export default function BudgetsPage() {
+  const { t } = useTranslation()
   const { openExpense } = useAppShell()
   const { data: budgets = [], isPending: budgetsLoading } = useBudgets()
   const { data: goals = [], isPending: goalsLoading } = useGoals()
@@ -53,9 +55,9 @@ export default function BudgetsPage() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
         <div>
           <span className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">
-            Portfolio Discipline • {formatCycleRange(overview?.cycleStart, overview?.cycleEnd)} Cycle
+            {t('budgets.eyebrow', { cycle: formatCycleRange(overview?.cycleStart, overview?.cycleEnd) })}
           </span>
-          <h1 className="font-headline-lg text-headline-lg text-on-surface mt-0.5">Budgets &amp; Financial Targets</h1>
+          <h1 className="font-headline-lg text-headline-lg text-on-surface mt-0.5">{t('budgets.title')}</h1>
         </div>
         <div className="flex flex-wrap items-center gap-space-sm">
           <button
@@ -63,14 +65,14 @@ export default function BudgetsPage() {
             onClick={() => setBudgetModal({ open: true })}
             className="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors font-body-md text-body-md font-semibold"
           >
-            <Icon name="add_chart" className="text-[18px]" /> New Category Budget
+            <Icon name="add_chart" className="text-[18px]" /> {t('budgets.newCategoryBudget')}
           </button>
           <button
             type="button"
             onClick={() => setGoalModal({ open: true })}
             className="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-primary-container text-on-primary hover:bg-primary transition-colors shadow-sm font-body-md text-body-md font-semibold"
           >
-            <Icon name="add" className="text-[18px]" /> Add Savings Goal
+            <Icon name="add" className="text-[18px]" /> {t('budgets.addSavingsGoal')}
           </button>
         </div>
       </div>
@@ -85,12 +87,12 @@ export default function BudgetsPage() {
                 <Icon name="speed" className="text-[22px]" />
               </div>
               <div>
-                <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">Aggregate Monthly Cap</span>
-                <h2 className="font-headline-sm text-headline-sm text-on-surface">Overall Spend Velocity</h2>
+                <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('budgets.hero.aggregateCap')}</span>
+                <h2 className="font-headline-sm text-headline-sm text-on-surface">{t('budgets.hero.overallVelocity')}</h2>
               </div>
             </div>
             <span className="px-space-sm py-1 rounded-full bg-surface-container-low font-label-numeric-sm text-label-numeric-sm text-on-surface-variant whitespace-nowrap">
-              {overview?.daysRemaining ?? '—'} days left in cycle
+              {t('budgets.hero.daysLeft', { count: overview?.daysRemaining ?? t('common.emDash') })}
             </span>
           </div>
 
@@ -100,9 +102,9 @@ export default function BudgetsPage() {
             ) : (
               <div className="flex flex-wrap items-baseline gap-x-space-sm gap-y-1">
                 <span className="font-label-numeric-lg text-[34px] leading-[40px] font-semibold text-on-surface">{formatCurrency(spent)}</span>
-                <span className="font-body-md text-body-md text-on-surface-variant">consumed of</span>
+                <span className="font-body-md text-body-md text-on-surface-variant">{t('budgets.hero.consumedOf')}</span>
                 <span className="font-label-numeric-md text-label-numeric-md font-semibold text-on-surface">{formatCurrency(cap)}</span>
-                <span className="font-body-md text-body-md text-on-surface-variant">total limit</span>
+                <span className="font-body-md text-body-md text-on-surface-variant">{t('budgets.hero.totalLimit')}</span>
                 <span
                   className={cn(
                     'font-label-numeric-sm text-label-numeric-sm px-2 py-0.5 rounded',
@@ -123,22 +125,32 @@ export default function BudgetsPage() {
               />
             </div>
             <div className="flex items-center justify-between font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">
-              <span>$0.00 base</span>
+              <span>{t('budgets.hero.base')}</span>
               <span className={cn('font-semibold', pct > 100 ? 'text-tertiary-container' : 'text-secondary')}>
-                {pct > 100 ? `${formatCurrency(spent - cap)} over ceiling` : `${formatCurrency(cap - spent)} cushion remaining`}
+                {pct > 100
+                  ? t('budgets.hero.overCeiling', { amount: formatCurrency(spent - cap) })
+                  : t('budgets.hero.cushionRemaining', { amount: formatCurrency(cap - spent) })}
               </span>
-              <span>{formatCurrency(cap)} ceiling</span>
+              <span>{t('budgets.hero.ceiling', { amount: formatCurrency(cap) })}</span>
             </div>
           </div>
 
           <div className="relative grid grid-cols-1 sm:grid-cols-3 gap-space-md bg-surface-container-low p-space-md rounded-lg">
-            <HeroStat label="Safe Daily Run Rate" value={`${formatCurrency(overview?.dailyBudget)}/d`} valueClass="text-secondary" />
-            <HeroStat label="Actual Mean Burn" value={`${formatCurrency(meanBurn)}/d`} valueClass={meanBurn > cap / daysInMonth ? 'text-tertiary-container' : 'text-on-surface'} />
             <HeroStat
-              label="Month-End Projection"
+              label={t('budgets.hero.safeDaily')}
+              value={t('budgets.hero.perDay', { amount: formatCurrency(overview?.dailyBudget) })}
+              valueClass="text-secondary"
+            />
+            <HeroStat
+              label={t('budgets.hero.meanBurn')}
+              value={t('budgets.hero.perDay', { amount: formatCurrency(meanBurn) })}
+              valueClass={meanBurn > cap / daysInMonth ? 'text-tertiary-container' : 'text-on-surface'}
+            />
+            <HeroStat
+              label={t('budgets.hero.monthEnd')}
               value={formatCurrency(projection)}
               valueClass={projection > cap ? 'text-tertiary-container' : 'text-on-surface'}
-              badge={cap ? (projection > cap ? 'Over-Budget' : 'On-Budget') : undefined}
+              badge={cap ? (projection > cap ? t('budgets.hero.overBudget') : t('budgets.hero.onBudget')) : undefined}
               badgeClass={projection > cap ? 'bg-tertiary-fixed text-tertiary' : 'bg-secondary-container/40 text-on-secondary-container'}
             />
           </div>
@@ -146,16 +158,18 @@ export default function BudgetsPage() {
 
         <div className="lg:col-span-4 bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md">
           <div>
-            <div className="font-headline-sm text-headline-sm text-on-surface">Bucket Composition</div>
-            <div className="font-body-sm text-body-sm text-on-surface-variant">How your {formatCompact(cap)} cap is allocated</div>
+            <div className="font-headline-sm text-headline-sm text-on-surface">{t('budgets.composition.title')}</div>
+            <div className="font-body-sm text-body-sm text-on-surface-variant">
+              {t('budgets.composition.subtitle', { amount: formatCompact(cap) })}
+            </div>
           </div>
           <DonutChart
             segments={[
               ...composition.map((b, i) => ({ value: b.monthlyLimit, color: chartColor(i) })),
               ...(unallocated > 0 ? [{ value: unallocated, color: '#c7c4d8' }] : []),
             ]}
-            label="Active"
-            value={`${budgets.length} Caps`}
+            label={t('budgets.composition.active')}
+            value={t('budgets.composition.caps', { count: budgets.length })}
           />
           <div className="flex flex-col gap-space-sm">
             {composition.slice(0, 4).map((b, i) => (
@@ -170,7 +184,7 @@ export default function BudgetsPage() {
             <div className="flex items-center justify-between pt-space-xs">
               <div className="flex items-center gap-space-sm">
                 <span className="w-2.5 h-2.5 rounded-sm shrink-0 bg-outline-variant" />
-                <span className="font-body-sm text-body-sm text-on-surface-variant">Unallocated</span>
+                <span className="font-body-sm text-body-sm text-on-surface-variant">{t('budgets.composition.unallocated')}</span>
               </div>
               <span className="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">{formatCurrency(unallocated)}</span>
             </div>
@@ -183,9 +197,9 @@ export default function BudgetsPage() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-space-sm">
           <div>
             <span className="font-label-caps text-label-caps uppercase text-primary-container flex items-center gap-1">
-              <Icon name="donut_small" className="text-[14px]" /> Category Allocations
+              <Icon name="donut_small" className="text-[14px]" /> {t('budgets.allocations.eyebrow')}
             </span>
-            <h2 className="font-headline-md text-headline-md text-on-surface">Spending Caps by Category</h2>
+            <h2 className="font-headline-md text-headline-md text-on-surface">{t('budgets.allocations.title')}</h2>
           </div>
           <div className="flex bg-surface-container-lowest rounded-lg p-0.5 shadow-sm">
             {(['utilization', 'alpha'] as SortMode[]).map((mode) => (
@@ -198,7 +212,7 @@ export default function BudgetsPage() {
                   sort === mode ? 'bg-surface-container-high text-on-surface font-semibold' : 'text-on-surface-variant hover:text-on-surface'
                 )}
               >
-                {mode === 'utilization' ? 'Highest Utilization' : 'Alphabetical'}
+                {mode === 'utilization' ? t('budgets.allocations.sortUtilization') : t('budgets.allocations.sortAlpha')}
               </button>
             ))}
           </div>
@@ -221,8 +235,8 @@ export default function BudgetsPage() {
               className="min-h-56 rounded-xl border-2 border-dashed border-outline-variant/70 flex flex-col items-center justify-center gap-space-xs text-on-surface-variant hover:border-primary-container hover:text-primary-container hover:bg-primary-fixed/20 transition-colors"
             >
               <Icon name="add_circle" className="text-[28px]" />
-              <span className="font-body-md text-body-md font-semibold">Add category budget</span>
-              <span className="font-body-sm text-body-sm text-outline">Set a monthly cap for any category</span>
+              <span className="font-body-md text-body-md font-semibold">{t('budgets.allocations.addTitle')}</span>
+              <span className="font-body-sm text-body-sm text-outline">{t('budgets.allocations.addSubtitle')}</span>
             </button>
           )}
         </div>
@@ -233,12 +247,12 @@ export default function BudgetsPage() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-space-sm">
           <div>
             <span className="font-label-caps text-label-caps uppercase text-secondary flex items-center gap-1">
-              <Icon name="flag" className="text-[14px]" /> Capital Accumulation
+              <Icon name="flag" className="text-[14px]" /> {t('budgets.goals.eyebrow')}
             </span>
-            <h2 className="font-headline-md text-headline-md text-on-surface">Target Goals &amp; Dedicated Sinking Funds</h2>
+            <h2 className="font-headline-md text-headline-md text-on-surface">{t('budgets.goals.title')}</h2>
           </div>
           <div className="font-body-md text-body-md text-on-surface-variant">
-            Total Vault Capital:{' '}
+            {t('budgets.goals.vaultTotal')}{' '}
             <span className="font-label-numeric-md text-label-numeric-md font-semibold text-on-surface">{formatCurrency(vaultTotal)}</span>
           </div>
         </div>
@@ -261,15 +275,15 @@ export default function BudgetsPage() {
               className="min-h-72 rounded-xl border-2 border-dashed border-outline-variant/70 flex flex-col items-center justify-center gap-space-xs text-on-surface-variant hover:border-secondary hover:text-secondary hover:bg-secondary-container/10 transition-colors"
             >
               <Icon name="add_circle" className="text-[28px]" />
-              <span className="font-body-md text-body-md font-semibold">Add savings goal</span>
-              <span className="font-body-sm text-body-sm text-outline">Emergency fund, travel, a new car…</span>
+              <span className="font-body-md text-body-md font-semibold">{t('budgets.goals.addTitle')}</span>
+              <span className="font-body-sm text-body-sm text-outline">{t('budgets.goals.addSubtitle')}</span>
             </button>
           )}
         </div>
         <p className="font-body-sm text-body-sm text-outline">
-          Manage your monthly income cap anytime in{' '}
+          {t('budgets.goals.settingsHint')}{' '}
           <Link to="/settings" className="text-primary-container font-semibold hover:underline">
-            Settings
+            {t('budgets.goals.settingsLink')}
           </Link>
           .
         </p>
@@ -307,10 +321,12 @@ function HeroStat({
 }
 
 function BudgetCard({ budget, onEdit, onLog }: { budget: CategoryBudgetWithSpent; onEdit: () => void; onLog: () => void }) {
+  const { t } = useTranslation()
   const pct = budget.percentage
   const over = pct > 100
   const warn = pct >= 80 && !over
   const tone = categoryTone(budget.category.name)
+  const status = over ? t('budgets.card.over') : warn ? t('budgets.card.spent') : t('budgets.card.paced')
 
   return (
     <div className="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col gap-space-md hover:shadow-md transition-shadow">
@@ -321,7 +337,7 @@ function BudgetCard({ budget, onEdit, onLog }: { budget: CategoryBudgetWithSpent
           </div>
           <div className="min-w-0">
             <div className="font-body-lg text-body-lg font-semibold text-on-surface truncate">{budget.category.name}</div>
-            <div className="font-label-caps text-label-caps uppercase text-on-surface-variant">Monthly cap</div>
+            <div className="font-label-caps text-label-caps uppercase text-on-surface-variant">{t('budgets.card.monthlyCap')}</div>
           </div>
         </div>
         <span
@@ -330,7 +346,7 @@ function BudgetCard({ budget, onEdit, onLog }: { budget: CategoryBudgetWithSpent
             over ? 'bg-tertiary-container text-on-tertiary' : warn ? 'bg-primary-fixed text-primary' : 'bg-secondary/10 text-secondary'
           )}
         >
-          {Math.round(pct)}% {over ? 'Over' : warn ? 'Spent' : 'Paced'}
+          {t('budgets.card.status', { pct: Math.round(pct), status })}
         </span>
       </div>
 
@@ -338,7 +354,7 @@ function BudgetCard({ budget, onEdit, onLog }: { budget: CategoryBudgetWithSpent
         <div className="flex items-center gap-space-xs bg-error-container/40 px-space-sm py-1.5 rounded-lg">
           <Icon name="warning" className="text-[16px] text-tertiary-container" />
           <span className="font-body-sm text-body-sm text-tertiary-container font-medium">
-            Exceeded by {formatCurrency(budget.spent - budget.monthlyLimit)}
+            {t('budgets.card.exceededBy', { amount: formatCurrency(budget.spent - budget.monthlyLimit) })}
           </span>
         </div>
       )}
@@ -346,7 +362,9 @@ function BudgetCard({ budget, onEdit, onLog }: { budget: CategoryBudgetWithSpent
       <div className="flex flex-col gap-space-xs">
         <div className="flex items-baseline gap-space-xs">
           <span className="font-label-numeric-lg text-label-numeric-lg text-on-surface">{formatCurrency(budget.spent)}</span>
-          <span className="font-body-sm text-body-sm text-on-surface-variant">of {formatCurrency(budget.monthlyLimit)} cap</span>
+          <span className="font-body-sm text-body-sm text-on-surface-variant">
+            {t('budgets.card.ofCap', { amount: formatCurrency(budget.monthlyLimit) })}
+          </span>
         </div>
         <div className="w-full h-2 bg-surface-container rounded-full overflow-hidden">
           <div
@@ -358,14 +376,14 @@ function BudgetCard({ budget, onEdit, onLog }: { budget: CategoryBudgetWithSpent
 
       <div className="mt-auto bg-surface-container-low/50 -mx-space-lg -mb-space-lg p-space-md rounded-b-xl flex items-center justify-between">
         <span className={cn('font-body-sm text-body-sm', over ? 'text-tertiary-container font-medium' : 'text-on-surface-variant')}>
-          {over ? 'No room left this cycle' : `${formatCurrency(budget.remaining)} remaining`}
+          {over ? t('budgets.card.noRoom') : t('budgets.card.remaining', { amount: formatCurrency(budget.remaining) })}
         </span>
         <div className="flex items-center gap-space-sm">
           <button type="button" onClick={onLog} className="font-body-sm text-body-sm text-on-surface-variant hover:text-on-surface font-semibold flex items-center gap-0.5">
-            <Icon name="add" className="text-[16px]" /> Log
+            <Icon name="add" className="text-[16px]" /> {t('budgets.card.log')}
           </button>
           <button type="button" onClick={onEdit} className="font-body-sm text-body-sm text-primary-container hover:text-primary font-semibold flex items-center gap-0.5">
-            Adjust <Icon name="chevron_right" className="text-[16px]" />
+            {t('budgets.card.adjust')} <Icon name="chevron_right" className="text-[16px]" />
           </button>
         </div>
       </div>
@@ -390,6 +408,7 @@ function GoalCard({
   onEdit: () => void
   onBoost: () => void
 }) {
+  const { t } = useTranslation()
   const tone = GOAL_TONES[index % GOAL_TONES.length]
   const complete = goal.percentage >= 100
 
@@ -403,7 +422,9 @@ function GoalCard({
           <div className="min-w-0">
             <div className="font-headline-sm text-headline-sm text-on-surface truncate">{goal.name}</div>
             <div className="font-body-sm text-body-sm text-on-surface-variant">
-              {goal.targetDate ? `Target ${formatDate(goal.targetDate, { month: 'short', year: 'numeric' })}` : 'Open-ended fund'}
+              {goal.targetDate
+                ? t('budgets.goals.target', { date: formatDate(goal.targetDate, { month: 'short', year: 'numeric' }) })
+                : t('budgets.goals.openEnded')}
             </div>
           </div>
         </div>
@@ -414,7 +435,9 @@ function GoalCard({
 
       <div className="flex items-baseline justify-between gap-space-sm">
         <span className="font-label-numeric-lg text-label-numeric-lg text-on-surface">{formatCurrency(goal.currentAmount)}</span>
-        <span className="font-body-sm text-body-sm text-on-surface-variant">Target: {formatCurrency(goal.targetAmount)}</span>
+        <span className="font-body-sm text-body-sm text-on-surface-variant">
+          {t('budgets.goals.targetLabel', { amount: formatCurrency(goal.targetAmount) })}
+        </span>
       </div>
 
       <div className="flex flex-col gap-space-xs">
@@ -422,25 +445,31 @@ function GoalCard({
           <div className={cn('h-full rounded-full transition-all duration-700', tone.bar)} style={{ width: `${Math.min(100, goal.percentage)}%` }} />
         </div>
         <div className="flex items-center justify-between">
-          <span className={cn('font-label-numeric-sm text-label-numeric-sm font-semibold', tone.text)}>{goal.percentage.toFixed(1)}% Funded</span>
+          <span className={cn('font-label-numeric-sm text-label-numeric-sm font-semibold', tone.text)}>
+            {t('budgets.goals.pctFunded', { pct: goal.percentage.toFixed(1) })}
+          </span>
           <span className="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant">
-            {complete ? 'Goal reached' : `${formatCurrency(goal.remaining)} needed`}
+            {complete ? t('budgets.goals.goalReached') : t('budgets.goals.needed', { amount: formatCurrency(goal.remaining) })}
           </span>
         </div>
       </div>
 
       <div className="flex items-center justify-between bg-surface-container-low p-space-sm rounded-lg">
         <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">
-          {goal.monthlyRequired !== null ? 'Required Pace' : 'Proj. Fulfillment'}
+          {goal.monthlyRequired !== null ? t('budgets.goals.requiredPace') : t('budgets.goals.projFulfillment')}
         </span>
         <span className="font-label-numeric-sm text-label-numeric-sm font-semibold text-on-surface">
-          {complete ? 'Complete' : goal.monthlyRequired !== null ? `${formatCurrency(goal.monthlyRequired)}/mo` : 'No deadline'}
+          {complete
+            ? t('budgets.goals.complete')
+            : goal.monthlyRequired !== null
+              ? t('budgets.goals.perMonth', { amount: formatCurrency(goal.monthlyRequired) })
+              : t('budgets.goals.noDeadline')}
         </span>
       </div>
 
       <div className="mt-auto flex items-center justify-between">
         <span className="font-body-sm text-body-sm text-outline">
-          {goal.targetDate ? formatDate(goal.targetDate) : 'Flexible timeline'}
+          {goal.targetDate ? formatDate(goal.targetDate) : t('budgets.goals.flexibleTimeline')}
         </span>
         <button
           type="button"
@@ -448,7 +477,7 @@ function GoalCard({
           disabled={complete}
           className="flex items-center gap-1 px-space-sm py-1 rounded-lg bg-secondary-container/30 text-on-secondary-container hover:bg-secondary-container/50 font-body-sm text-body-sm font-semibold transition-colors disabled:opacity-50"
         >
-          <Icon name="add" className="text-[16px]" /> Quick Boost
+          <Icon name="add" className="text-[16px]" /> {t('budgets.goals.quickBoost')}
         </button>
       </div>
     </div>

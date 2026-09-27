@@ -1,6 +1,8 @@
 import { Link } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { Logo } from '@/components/ui/logo'
 import { Icon } from '@/components/ui/icon'
+import { LanguageSwitcher } from '@/i18n/LanguageSwitcher'
 
 interface AuthLayoutProps {
   eyebrow: string
@@ -11,12 +13,23 @@ interface AuthLayoutProps {
 }
 
 export function AuthLayout({ eyebrow, title, subtitle, children, footer }: AuthLayoutProps) {
+  const { t } = useTranslation()
+
+  const previewRows = [
+    { nameKey: 'auth.layout.food', icon: 'restaurant', pct: 72, bar: 'bg-secondary', labelKey: 'auth.layout.paced', badge: 'bg-secondary/10 text-secondary' },
+    { nameKey: 'auth.layout.shopping', icon: 'shopping_bag', pct: 91, bar: 'bg-primary-container', labelKey: 'auth.layout.spent', badge: 'bg-primary-fixed text-primary' },
+    { nameKey: 'auth.layout.entertainment', icon: 'movie', pct: 100, bar: 'bg-tertiary-container', labelKey: 'auth.layout.over', badge: 'bg-tertiary-container text-on-tertiary' },
+  ] as const
+
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-background">
       <div className="flex flex-col px-space-lg sm:px-space-xl py-space-lg">
-        <Link to="/" className="self-start">
-          <Logo className="h-10" />
-        </Link>
+        <div className="flex items-center justify-between gap-space-md">
+          <Link to="/" className="self-start">
+            <Logo className="h-10" />
+          </Link>
+          <LanguageSwitcher persist={false} compact />
+        </div>
         <div className="flex-1 flex items-center justify-center py-space-xl">
           <div className="w-full max-w-[400px] animate-scale-in">
             <span className="font-label-caps text-label-caps uppercase tracking-widest text-on-surface-variant">{eyebrow}</span>
@@ -26,7 +39,7 @@ export function AuthLayout({ eyebrow, title, subtitle, children, footer }: AuthL
             <div className="mt-space-lg text-center font-body-md text-body-md text-on-surface-variant">{footer}</div>
           </div>
         </div>
-        <p className="font-body-sm text-body-sm text-outline">© {new Date().getFullYear()} Pivoa. Smart expense tracking.</p>
+        <p className="font-body-sm text-body-sm text-outline">{t('auth.layout.tagline', { year: new Date().getFullYear() })}</p>
       </div>
 
       <div className="hidden lg:flex relative overflow-hidden bg-surface-container-low items-center justify-center p-space-xl">
@@ -34,41 +47,37 @@ export function AuthLayout({ eyebrow, title, subtitle, children, footer }: AuthL
         <div className="absolute -bottom-24 -left-16 w-80 h-80 rounded-full bg-secondary/10 blur-3xl" />
         <div className="relative w-full max-w-[460px] flex flex-col gap-space-lg">
           <div>
-            <span className="font-label-caps text-label-caps uppercase text-primary-container">Modern Financial Studio</span>
-            <h2 className="font-display text-display text-on-surface mt-1">Every dollar, on pace.</h2>
+            <span className="font-label-caps text-label-caps uppercase text-primary-container">{t('auth.layout.studioEyebrow')}</span>
+            <h2 className="font-display text-display text-on-surface mt-1">{t('auth.layout.studioTitle')}</h2>
             <p className="font-body-lg text-body-lg text-on-surface-variant mt-space-sm">
-              Set a monthly cap, give each category a budget, and watch your savings goals grow — all in one calm workspace.
+              {t('auth.layout.studioSubtitle')}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-space-md">
-            <PreviewKpi label="Monthly Outflow" value="$1,842.50" icon="north_east" iconClass="bg-tertiary-fixed text-tertiary-container">
+            <PreviewKpi label={t('auth.layout.monthlyOutflow')} value="$1,842.50" icon="north_east" iconClass="bg-tertiary-fixed text-tertiary-container">
               <div className="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden mt-2">
                 <div className="h-full w-[61%] rounded-full bg-primary-container" />
               </div>
-              <span className="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant mt-1 block">61% of $3,000 cap</span>
+              <span className="font-label-numeric-sm text-label-numeric-sm text-on-surface-variant mt-1 block">{t('auth.layout.pctOfCap')}</span>
             </PreviewKpi>
-            <PreviewKpi label="Net Savings" value="+$1,157.50" icon="savings" iconClass="bg-primary-fixed text-primary" valueClass="text-secondary">
+            <PreviewKpi label={t('auth.layout.netSavings')} value="+$1,157.50" icon="savings" iconClass="bg-primary-fixed text-primary" valueClass="text-secondary">
               <span className="inline-block mt-2 px-2 py-0.5 rounded bg-secondary-fixed/30 text-on-secondary-container font-label-numeric-sm text-label-numeric-sm">
-                38.6% retained
+                {t('auth.layout.retained')}
               </span>
             </PreviewKpi>
           </div>
 
           <div className="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg flex flex-col gap-space-md">
-            {[
-              { name: 'Food', icon: 'restaurant', pct: 72, bar: 'bg-secondary', label: '72% Paced', badge: 'bg-secondary/10 text-secondary' },
-              { name: 'Shopping', icon: 'shopping_bag', pct: 91, bar: 'bg-primary-container', label: '91% Spent', badge: 'bg-primary-fixed text-primary' },
-              { name: 'Entertainment', icon: 'movie', pct: 100, bar: 'bg-tertiary-container', label: '108% Over', badge: 'bg-tertiary-container text-on-tertiary' },
-            ].map((row) => (
-              <div key={row.name} className="flex items-center gap-space-sm">
+            {previewRows.map((row) => (
+              <div key={row.nameKey} className="flex items-center gap-space-sm">
                 <div className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant">
                   <Icon name={row.icon} className="text-[18px]" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-body-sm text-body-sm font-semibold text-on-surface">{row.name}</span>
-                    <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${row.badge}`}>{row.label}</span>
+                    <span className="font-body-sm text-body-sm font-semibold text-on-surface">{t(row.nameKey)}</span>
+                    <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded ${row.badge}`}>{t(row.labelKey)}</span>
                   </div>
                   <div className="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
                     <div className={`h-full rounded-full ${row.bar}`} style={{ width: `${row.pct}%` }} />

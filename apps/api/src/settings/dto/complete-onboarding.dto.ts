@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNumber, IsOptional, IsInt, Min, Max, MaxLength, Matches } from 'class-validator';
+import { IsNumber, IsOptional, IsInt, Min, Max, MaxLength, Matches, IsIn } from 'class-validator';
 
 export class CompleteOnboardingDto {
   @IsNumber()
@@ -17,4 +17,8 @@ export class CompleteOnboardingDto {
   @Min(1)
   @Max(31)
   cycleStartDay?: number;
+
+  @IsOptional()
+  @IsIn(['en', 'es'])
+  language?: 'en' | 'es';
 }

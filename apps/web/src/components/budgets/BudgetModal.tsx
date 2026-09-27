@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import type { CategoryBudgetWithSpent } from '@pivoa/shared'
 import { Modal } from '@/components/ui/dialog'
@@ -19,6 +20,7 @@ interface BudgetModalProps {
 }
 
 export function BudgetModal({ open, onClose, budget }: BudgetModalProps) {
+  const { t } = useTranslation()
   const { data: categories = [] } = useCategories()
   const { data: budgets = [] } = useBudgets()
   const { data: settings } = useSettings()
@@ -49,19 +51,19 @@ export function BudgetModal({ open, onClose, budget }: BudgetModalProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const value = parseFloat(limit)
-    if (!value || value <= 0) return toast.error('Enter a monthly limit greater than zero')
+    if (!value || value <= 0) return toast.error(t('modals.budget.limitError'))
     try {
       if (budget) {
         await updateBudget.mutateAsync({ id: budget.id, data: { monthlyLimit: value } })
-        toast.success('Budget updated')
+        toast.success(t('modals.budget.updated'))
       } else {
-        if (!categoryId) return toast.error('Choose a category')
+        if (!categoryId) return toast.error(t('modals.budget.categoryError'))
         await createBudget.mutateAsync({ categoryId, monthlyLimit: value })
-        toast.success('Category budget created')
+        toast.success(t('modals.budget.created'))
       }
       onClose()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not save budget')
+      toast.error(err instanceof Error ? err.message : t('modals.budget.saveError'))
     }
   }
 
@@ -69,10 +71,10 @@ export function BudgetModal({ open, onClose, budget }: BudgetModalProps) {
     if (!budget) return
     try {
       await deleteBudget.mutateAsync(budget.id)
-      toast.success('Budget removed')
+      toast.success(t('modals.budget.removed'))
       onClose()
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Could not delete budget')
+      toast.error(err instanceof Error ? err.message : t('modals.budget.deleteError'))
     }
   }
 
@@ -81,20 +83,20 @@ export function BudgetModal({ open, onClose, budget }: BudgetModalProps) {
       open={open}
       onClose={onClose}
       icon="donut_small"
-      eyebrow="Category allocation"
-      title={budget ? `Adjust ${budget.category.name} Cap` : 'New Category Budget'}
+      eyebrow={t('modals.budget.eyebrow')}
+      title={budget ? t('modals.budget.editTitle', { name: budget.category.name }) : t('modals.budget.newTitle')}
       footer={
         <>
           {budget && (
             <Button type="button" variant="destructive-ghost" className="mr-auto" onClick={handleDelete} disabled={deleteBudget.isPending}>
-              <Icon name="delete" className="text-[18px]" /> Remove
+              <Icon name="delete" className="text-[18px]" /> {t('modals.budget.remove')}
             </Button>
           )}
           <Button type="button" variant="ghost" onClick={onClose}>
-            Cancel
+            {t('modals.budget.cancel')}
           </Button>
           <Button type="submit" form="budget-form" disabled={pending}>
-            {pending ? 'Saving…' : budget ? 'Save Cap' : 'Create Budget'}
+            {pending ? t('modals.budget.saving') : budget ? t('modals.budget.saveCap') : t('modals.budget.create')}
           </Button>
         </>
       }
@@ -102,10 +104,10 @@ export function BudgetModal({ open, onClose, budget }: BudgetModalProps) {
       <form id="budget-form" onSubmit={handleSubmit} className="flex flex-col gap-space-md">
         {!budget && (
           <div>
-            <Label htmlFor="budget-category">Category</Label>
+            <Label htmlFor="budget-category">{t('modals.budget.category')}</Label>
             <NativeSelect id="budget-category" value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
               <option value="" disabled>
-                {available.length ? 'Select a category…' : 'All categories already have a budget'}
+                {available.length ? t('modals.budget.selectCategory') : t('modals.budget.allHaveBudget')}
               </option>
               {available.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -116,12 +118,21 @@ export function BudgetModal({ open, onClose, budget }: BudgetModalProps) {
           </div>
         )}
         <div>
-          <Label htmlFor="budget-limit">Monthly limit</Label>
-          <MoneyInput id="budget-limit" large placeholder="0.00" value={limit} onChange={(e) => setLimit(e.target.value)} autoFocus />
+          <Label htmlFor="budget-limit">{t('modals.budget.monthlyLimit')}</Label>
+          <MoneyInput
+            id="budget-limit"
+            large
+            placeholder={t('modals.budget.limitPlaceholder')}
+            value={limit}
+            onChange={(e) => setLimit(e.target.value)}
+            autoFocus
+          />
         </div>
         {cap > 0 && (
           <div className="flex items-center justify-between bg-surface-container-low p-space-md rounded-lg">
-            <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">Unallocated of {formatCurrency(cap)} cap</span>
+            <span className="font-label-caps text-label-caps uppercase text-on-surface-variant">
+              {t('modals.budget.unallocatedOf', { amount: formatCurrency(cap) })}
+            </span>
             <span className={`font-label-numeric-md text-label-numeric-md font-semibold ${unallocated < 0 ? 'text-tertiary-container' : 'text-secondary'}`}>
               {formatCurrency(unallocated)}
             </span>
