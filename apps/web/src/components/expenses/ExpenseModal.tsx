@@ -15,6 +15,7 @@ import { CurrencySelect } from '@/components/ui/currency-select'
 import { useSettings } from '@/hooks/useSettings'
 import { convertWithRates, useRates } from '@/hooks/useRates'
 import { formatMoney, getDisplayCurrency, toISODate } from '@/lib/format'
+import { useMe } from '@/hooks/useMe'
 import { ReceiptScanner } from './ReceiptScanner'
 
 interface ExpenseModalProps {
@@ -29,6 +30,7 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
   const { data: settings } = useSettings()
   const baseCurrency = settings?.currency ?? getDisplayCurrency()
   const { data: rates } = useRates(baseCurrency)
+  const { data: me } = useMe()
   const createExpense = useCreateExpense()
   const updateExpense = useUpdateExpense()
   const deleteExpense = useDeleteExpense()
@@ -142,7 +144,10 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
           </div>
           <div className="min-w-0">
             <Label htmlFor="expense-currency">Currency</Label>
-            <CurrencySelect id="expense-currency" value={currency} onChange={setCurrency} />
+            <CurrencySelect id="expense-currency" value={currency} onChange={setCurrency} disabled={me ? !me.multiCurrency : false} />
+            {me && !me.multiCurrency && (
+              <p className="font-body-sm text-body-sm text-outline mt-1">Other currencies are a Plus feature.</p>
+            )}
           </div>
         </div>
 

@@ -12,6 +12,17 @@ import TransactionsPage from '@/pages/TransactionsPage';
 import BudgetsPage from '@/pages/BudgetsPage';
 import SettingsPage from '@/pages/SettingsPage';
 import AuthCallbackPage from '@/pages/AuthCallbackPage';
+import RecoveryPage from '@/pages/RecoveryPage';
+import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
+import PricingPage from '@/pages/PricingPage';
+import SupportPage from '@/pages/SupportPage';
+import { AdminRoute } from '@/components/auth/AdminRoute';
+import { AdminLayout } from '@/components/admin/AdminLayout';
+import AdminHomePage from '@/pages/admin/AdminHomePage';
+import AdminUsersPage from '@/pages/admin/AdminUsersPage';
+import AdminUserPage from '@/pages/admin/AdminUserPage';
+import AdminTicketsPage from '@/pages/admin/AdminTicketsPage';
+import AdminTicketPage from '@/pages/admin/AdminTicketPage';
 
 function App() {
   return (
@@ -22,7 +33,10 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/health" element={<HealthPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
+        <Route path="/auth/recovery" element={<RecoveryPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
         {/* Onboarding route (protected but skips onboarding check) */}
         <Route
@@ -46,6 +60,25 @@ function App() {
           <Route path="/transactions" element={<TransactionsPage />} />
           <Route path="/budgets" element={<BudgetsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/support" element={<SupportPage />} />
+          <Route path="/support/:id" element={<SupportPage />} />
+        </Route>
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute skipOnboarding>
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminHomePage />} />
+          <Route path="users" element={<AdminUsersPage />} />
+          <Route path="users/:id" element={<AdminUserPage />} />
+          <Route path="tickets" element={<AdminTicketsPage />} />
+          <Route path="tickets/:id" element={<AdminTicketPage />} />
         </Route>
 
         {/* Legacy redirect */}

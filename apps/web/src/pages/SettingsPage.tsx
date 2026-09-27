@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { CategoryBudgetWithSpent, SavingsGoalWithProgress } from '@pivoa/shared'
 import { useAuth } from '@/contexts/AuthContext'
@@ -19,10 +19,16 @@ import { BudgetModal } from '@/components/budgets/BudgetModal'
 import { DepositModal, GoalModal } from '@/components/goals/GoalModal'
 import { categoryIcon, categoryTone } from '@/lib/categories'
 import { cn } from '@/lib/utils'
+import { PlanCard } from '@/components/billing/PlanCard'
+import { useRefreshBilling, useSyncBilling } from '@/hooks/useBilling'
 
 export default function SettingsPage() {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const refreshBilling = useRefreshBilling()
+  const syncBilling = useSyncBilling()
+  const billingSynced = useRef(false)
   const { data: settings, isPending: settingsLoading } = useSettings()
   const { data: budgets = [], isPending: budgetsLoading } = useBudgets()
   const { data: goals = [], isPending: goalsLoading } = useGoals()
@@ -43,6 +49,21 @@ export default function SettingsPage() {
       setCycleStartDay(settings.cycleStartDay ?? 1)
     }
   }, [settings])
+
+  useEffect(() => {
+    if (searchParams.get('billing') !== 'success' || billingSynced.current) return
+    billingSynced.current = true
+    const subscriptionId = searchParams.get('subscription_id')
+    if (subscriptionId) {
+      syncBilling.mutate(subscriptionId, {
+        onSuccess: () => toast.success('Subscription updated'),
+        onError: (err) => toast.error(err instanceof Error ? err.message : 'Could not confirm PayPal'),
+      })
+      return
+    }
+    refreshBilling()
+    toast.success('Subscription updated')
+  }, [searchParams, refreshBilling, syncBilling])
 
   const cap = settings?.monthlyIncomeCap ?? 0
   const allocated = budgets.reduce((sum, b) => sum + b.monthlyLimit, 0)
@@ -93,6 +114,7 @@ export default function SettingsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
         <div className="lg:col-span-8 flex flex-col gap-space-lg">
+          <PlanCard />
           {/* Monthly income cap */}
           <section className="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm relative overflow-hidden">
             <div className="absolute -right-10 -top-10 w-40 h-40 bg-primary/5 rounded-full blur-2xl pointer-events-none" />

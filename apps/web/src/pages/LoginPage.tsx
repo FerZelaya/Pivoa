@@ -66,7 +66,12 @@ export default function LoginPage() {
           <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" autoFocus />
         </div>
         <div>
-          <Label htmlFor="password">Password</Label>
+          <div className="flex items-center justify-between gap-space-sm">
+            <Label htmlFor="password">Password</Label>
+            <Link to="/forgot-password" className="font-body-sm text-body-sm text-primary-container font-semibold hover:text-primary">
+              Forgot password?
+            </Link>
+          </div>
           <div className="relative">
             <Input
               id="password"

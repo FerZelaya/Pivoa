@@ -14,6 +14,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import type { User } from '@supabase/supabase-js';
 import { SUPABASE_CLIENT } from '../supabase/supabase.module.js';
 import { CurrentUser } from '../auth/decorators/index.js';
+import { EntitlementsService } from '../billing/entitlements.service.js';
 import { CreateSavingsGoalDto, UpdateSavingsGoalDto, DepositToGoalDto } from './dto/index.js';
 import type { SavingsGoal, SavingsGoalWithProgress } from '@pivoa/shared';
 
@@ -21,6 +22,7 @@ import type { SavingsGoal, SavingsGoalWithProgress } from '@pivoa/shared';
 export class GoalsController {
   constructor(
     @Inject(SUPABASE_CLIENT) private readonly supabase: SupabaseClient,
+    private readonly entitlements: EntitlementsService,
   ) {}
 
   private calculateMonthlyRequired(
@@ -118,6 +120,7 @@ export class GoalsController {
     @CurrentUser() user: User,
     @Body() dto: CreateSavingsGoalDto,
   ): Promise<SavingsGoal> {
+    await this.entitlements.assertCanCreateGoal(user.id);
     const { data, error } = await this.supabase
       .from('savings_goals')
       .insert({

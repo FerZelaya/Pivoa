@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { BillingModule } from '../billing/billing.module.js';
 import { ConfigService } from '@nestjs/config';
 import { ReceiptsController } from './receipts.controller.js';
 import { RECEIPT_PARSER } from './interfaces/receipt-parser.interface.js';
@@ -7,6 +8,7 @@ import { GeminiReceiptParser } from './providers/gemini.provider.js';
 import { OpenAIReceiptParser } from './providers/openai.provider.js';
 
 @Module({
+  imports: [BillingModule],
   controllers: [ReceiptsController],
   providers: [
     {

@@ -10,6 +10,8 @@ import { ExpenseModal } from '@/components/expenses/ExpenseModal'
 import { formatCurrency, formatCycleRange, initials } from '@/lib/format'
 import { useDisplayCurrency } from '@/hooks/useDisplayCurrency'
 import { cn } from '@/lib/utils'
+import { HelpBubble } from '@/components/support/HelpBubble'
+import { useMe } from '@/hooks/useMe'
 
 interface AppShellContext {
   openExpense: (options?: { expense?: ExpenseWithCategory; categoryId?: string }) => void
@@ -23,11 +25,13 @@ const NAV_ITEMS = [
   { to: '/overview', label: 'Overview', icon: 'grid_view' },
   { to: '/transactions', label: 'Transactions', icon: 'receipt_long' },
   { to: '/budgets', label: 'Budgets & Goals', icon: 'track_changes' },
+  { to: '/support', label: 'Support', icon: 'support_agent' },
   { to: '/settings', label: 'Settings', icon: 'tune' },
 ]
 
 export function AppLayout() {
   const { user, signOut } = useAuth()
+  const { data: me } = useMe()
   const navigate = useNavigate()
   const location = useLocation()
   const { data: overview } = useOverview()
@@ -126,6 +130,28 @@ export function AppLayout() {
                 </NavLink>
               </li>
             ))}
+            {me?.isAdmin && (
+              <li>
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    cn(
+                      'flex items-center gap-space-md px-space-md py-space-sm rounded-lg transition-all duration-200 font-body-md text-body-md',
+                      isActive
+                        ? 'bg-surface-container-high text-on-surface font-semibold'
+                        : 'text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface'
+                    )
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      <Icon name="admin_panel_settings" filled={isActive} className="text-[22px]" />
+                      <span>Admin</span>
+                    </>
+                  )}
+                </NavLink>
+              </li>
+            )}
           </ul>
         </div>
 
@@ -184,7 +210,7 @@ export function AppLayout() {
 
           <div className="h-8 w-px bg-outline-variant/40 hidden sm:block" />
 
-          <ProfileMenu name={fullName} email={user?.email ?? ''} onSignOut={signOut} />
+          <ProfileMenu name={fullName} email={user?.email ?? ''} plan={me?.plan} isAdmin={Boolean(me?.isAdmin)} onSignOut={signOut} />
         </div>
       </header>
 
@@ -200,6 +226,7 @@ export function AppLayout() {
         defaultCategoryId={expenseModal.categoryId}
         onClose={() => setExpenseModal({ open: false })}
       />
+      <HelpBubble />
     </div>
   )
 }
@@ -286,7 +313,19 @@ function NotificationBell({ alerts }: { alerts: Alert[] }) {
   )
 }
 
-function ProfileMenu({ name, email, onSignOut }: { name: string; email: string; onSignOut: () => Promise<void> }) {
+function ProfileMenu({
+  name,
+  email,
+  plan,
+  isAdmin,
+  onSignOut,
+}: {
+  name: string
+  email: string
+  plan?: 'free' | 'plus' | 'pro'
+  isAdmin: boolean
+  onSignOut: () => Promise<void>
+}) {
   const [open, setOpen] = useState(false)
   const ref = useClickOutside(() => setOpen(false))
   const navigate = useNavigate()
@@ -303,7 +342,7 @@ function ProfileMenu({ name, email, onSignOut }: { name: string; email: string; 
         </div>
         <div className="hidden md:flex flex-col text-left">
           <span className="font-body-md text-body-md font-semibold text-on-surface leading-tight">{name}</span>
-          <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">Personal Plan</span>
+          <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">{plan ? `${plan} plan` : 'Plan'}</span>
         </div>
         <Icon name="expand_more" className="hidden md:inline-block text-[18px] text-outline" />
       </button>
@@ -323,6 +362,28 @@ function ProfileMenu({ name, email, onSignOut }: { name: string; email: string; 
           >
             <Icon name="tune" className="text-[18px] text-on-surface-variant" /> Settings
           </button>
+          <button
+            type="button"
+            onClick={() => {
+              setOpen(false)
+              navigate('/support')
+            }}
+            className="w-full flex items-center gap-space-sm px-space-md py-space-sm font-body-md text-body-md text-on-surface hover:bg-surface-container-low"
+          >
+            <Icon name="support_agent" className="text-[18px] text-on-surface-variant" /> Support
+          </button>
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false)
+                navigate('/admin')
+              }}
+              className="w-full flex items-center gap-space-sm px-space-md py-space-sm font-body-md text-body-md text-on-surface hover:bg-surface-container-low"
+            >
+              <Icon name="admin_panel_settings" className="text-[18px] text-on-surface-variant" /> Admin
+            </button>
+          )}
           <button
             type="button"
             onClick={async () => {

@@ -11,6 +11,10 @@ import { SettingsModule } from './settings/settings.module.js';
 import { BudgetsModule } from './budgets/budgets.module.js';
 import { GoalsModule } from './goals/goals.module.js';
 import { CurrencyModule } from './currency/currency.module.js';
+import { BillingModule } from './billing/billing.module.js';
+import { MeModule } from './me/me.module.js';
+import { TicketsModule } from './tickets/tickets.module.js';
+import { AdminModule } from './admin/admin.module.js';
 import { validate } from './config/env.validation.js';
 
 @Module({
@@ -30,6 +34,10 @@ import { validate } from './config/env.validation.js';
     BudgetsModule,
     GoalsModule,
     CurrencyModule,
+    BillingModule,
+    MeModule,
+    TicketsModule,
+    AdminModule,
   ],
 })
 export class AppModule {}

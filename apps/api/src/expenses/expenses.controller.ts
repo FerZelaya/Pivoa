@@ -18,6 +18,7 @@ import { CurrentUser } from '../auth/decorators/index.js';
 import { CreateExpenseDto, UpdateExpenseDto } from './dto/index.js';
 import type { Expense, ExpenseWithCategory, PaginatedResponse } from '@pivoa/shared';
 import { CurrencyService } from '../currency/currency.service.js';
+import { EntitlementsService } from '../billing/entitlements.service.js';
 import { mapExpense, mapExpenseWithCategory } from '../common/money.js';
 
 @Controller('expenses')
@@ -25,6 +26,7 @@ export class ExpensesController {
   constructor(
     @Inject(SUPABASE_CLIENT) private readonly supabase: SupabaseClient,
     private readonly currency: CurrencyService,
+    private readonly entitlements: EntitlementsService,
   ) {}
 
   @Get()
@@ -113,6 +115,7 @@ export class ExpensesController {
     @CurrentUser() user: User,
     @Body() dto: CreateExpenseDto,
   ): Promise<Expense> {
+    await this.entitlements.assertCanCreateExpense(user.id, dto.currency);
     const converted = await this.convertAmount(user.id, dto.amount, dto.currency);
 
     const { data, error } = await this.supabase
@@ -166,6 +169,7 @@ export class ExpensesController {
     const amount = dto.amount ?? parseFloat(String(existing.amount));
     const currency = dto.currency ?? existing.currency;
     if (dto.amount !== undefined || dto.currency !== undefined) {
+      if (dto.currency !== undefined) await this.entitlements.assertCanCreateExpense(user.id, dto.currency, false);
       const converted = await this.convertAmount(user.id, amount, currency);
       updateData.amount = amount;
       updateData.currency = converted.currency;

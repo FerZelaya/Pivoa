@@ -15,6 +15,17 @@ export const envSchema = z.object({
   GEMINI_API_KEY: z.string().optional(),
   OPENAI_API_KEY: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
+
+  ADMIN_EMAILS: z.string().optional().default(''),
+
+  PAYPAL_MODE: z.enum(['sandbox', 'live']).optional().default('sandbox'),
+  PAYPAL_CLIENT_ID: z.string().optional(),
+  PAYPAL_CLIENT_SECRET: z.string().optional(),
+  PAYPAL_WEBHOOK_ID: z.string().optional(),
+  PAYPAL_PLAN_PLUS_MONTHLY: z.string().optional(),
+  PAYPAL_PLAN_PLUS_YEARLY: z.string().optional(),
+  PAYPAL_PLAN_PRO_MONTHLY: z.string().optional(),
+  PAYPAL_PLAN_PRO_YEARLY: z.string().optional(),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

@@ -13,6 +13,7 @@ import 'multer';
 import { SUPABASE_CLIENT } from '../supabase/supabase.module.js';
 import { CurrentUser } from '../auth/decorators/index.js';
 import { RECEIPT_PARSER, type ReceiptParser, type ParsedReceipt } from './interfaces/receipt-parser.interface.js';
+import { EntitlementsService } from '../billing/entitlements.service.js';
 
 interface ScanResponse extends ParsedReceipt {
   imageUrl: string;
@@ -23,6 +24,7 @@ export class ReceiptsController {
   constructor(
     @Inject(SUPABASE_CLIENT) private readonly supabase: SupabaseClient,
     @Inject(RECEIPT_PARSER) private readonly receiptParser: ReceiptParser,
+    private readonly entitlements: EntitlementsService,
   ) {}
 
   @Post('scan')
@@ -48,6 +50,7 @@ export class ReceiptsController {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
+    await this.entitlements.assertCanScan(user.id);
 
     // Generate unique filename
     const ext = file.originalname.split('.').pop() || 'jpg';
@@ -77,7 +80,8 @@ export class ReceiptsController {
     // Parse receipt with AI
     try {
       const parsed = await this.receiptParser.parse(signedUrlData.signedUrl);
-      
+      await this.entitlements.recordScan(user.id);
+
       return {
         ...parsed,
         imageUrl: signedUrlData.signedUrl,
