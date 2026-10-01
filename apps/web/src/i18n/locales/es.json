@@ -145,7 +145,7 @@
     "nav": {
       "features": "Funciones",
       "how": "Cómo funciona",
-      "pricing": "Precios",
+      "pricing": "Gratis",
       "faq": "Preguntas",
       "openDashboard": "Abrir panel",
       "signIn": "Iniciar sesión",
@@ -196,9 +196,13 @@
           "title": "Ciclos de presupuesto a tu medida",
           "text": "Reinicia cualquier día del mes — ventanas alineadas a tu pago, no solo al calendario."
         },
+        "cards": {
+          "title": "Facturas de tarjeta",
+          "text": "Lleva el cierre, la fecha de pago y las recompensas. Las compras se quedan en la tarjeta hasta que registres el pago."
+        },
         "support": {
           "title": "Soporte en la app",
-          "text": "Abre tickets desde la burbuja de ayuda. Pro recibe respuestas prioritarias cuando más las necesitas."
+          "text": "Abre un ticket desde la burbuja de ayuda cuando algo necesite revisión."
         },
         "languages": {
           "title": "Inglés y español",
@@ -255,25 +259,38 @@
       }
     },
     "plans": {
-      "eyebrow": "Precios simples",
-      "title": "Un plan que se ajusta a cómo gastas",
-      "subtitle": "Empieza gratis. Mejora cuando necesites más escaneos, monedas e historial ilimitado.",
+      "eyebrow": "Gratis para siempre",
+      "title": "Todas las funciones, sin suscripción",
+      "subtitle": "Tarjetas, monedas, escaneos, CSV y gastos y metas ilimitados — para todos.",
       "perMonth": "/mes",
       "ctaFree": "Empezar gratis",
       "ctaPlus": "Obtener Plus",
       "ctaPro": "Obtener Pro",
       "compare": "Ver precios completos",
       "featured": "Más popular",
+      "points": [
+        "Gastos y metas de ahorro ilimitados",
+        "Presupuestos por categoría y alertas",
+        "Tarjetas, fechas de estado y recompensas",
+        "Cualquier moneda, con una moneda base",
+        "Escaneo de recibos con IA",
+        "Exportar CSV",
+        "Inglés y español",
+        "Soporte en la app"
+      ],
       "free": {
-        "name": "Gratis",
+        "name": "Gratis para siempre",
         "price": "$0",
-        "note": "Empieza a registrar",
+        "note": "Nada que mejorar. Todos tienen el producto completo.",
         "points": [
-          "Onboarding y 1 moneda",
-          "50 gastos por ciclo",
-          "1 meta de ahorro",
-          "Presupuestos y alertas",
-          "Inglés y español"
+          "Gastos y metas de ahorro ilimitados",
+          "Presupuestos por categoría y alertas",
+          "Tarjetas, fechas de estado y recompensas",
+          "Cualquier moneda, con una moneda base",
+          "Escaneo de recibos con IA",
+          "Exportar CSV",
+          "Inglés y español",
+          "Soporte en la app"
         ]
       },
       "plus": {
@@ -305,11 +322,11 @@
       "items": {
         "free": {
           "q": "¿Pivoa es gratis?",
-          "a": "Sí. Gratis incluye onboarding, una moneda, 50 gastos por ciclo y una meta de ahorro — sin tarjeta."
+          "a": "Sí. Todas las funciones son gratis: gastos, metas, monedas, escaneos, CSV y tarjetas. No hace falta una tarjeta de crédito."
         },
-        "plans": {
-          "q": "¿Qué desbloquean Plus y Pro?",
-          "a": "Plus agrega gastos y metas ilimitados, multimoneda, exportar CSV y 40 escaneos por ciclo. Pro sube los escaneos a 200 y prioriza tus tickets de soporte."
+        "cards": {
+          "q": "¿Cuándo entra el pago de la tarjeta en mi presupuesto?",
+          "a": "Las compras se quedan en el saldo de la tarjeta. Cuando registras un pago, ese gasto en efectivo cuenta en el ciclo que contiene la fecha del pago."
         },
         "changeBudget": {
           "q": "¿Puedo cambiar mi presupuesto mensual después?",
@@ -317,7 +334,7 @@
         },
         "receipts": {
           "q": "¿Cómo funciona el escaneo de recibos?",
-          "a": "Sube una foto del recibo y Pivoa usa IA para extraer el monto, comercio, fecha y una categoría sugerida. Los escaneos van con Plus y Pro."
+          "a": "Sube una foto del recibo y Pivoa usa IA para extraer el monto, comercio, fecha y una categoría sugerida."
         },
         "privacy": {
           "q": "¿Mis datos son privados?",
@@ -327,7 +344,7 @@
     },
     "cta": {
       "title": "¿Listo para tomar el control de tu mes?",
-      "subtitle": "Arma tu presupuesto en dos minutos. Empieza gratis — mejora cuando necesites más.",
+      "subtitle": "Arma tu presupuesto en dos minutos. Gratis para siempre.",
       "loggedIn": "Ir al panel",
       "guest": "Crear cuenta gratis"
     },
@@ -680,6 +697,7 @@
   "settings": {
     "eyebrow": "Preferencias del espacio • Controles de presupuesto",
     "title": "Configuración",
+    "showTutorial": "Ver tutorial",
     "income": {
       "eyebrow": "Tope mensual agregado",
       "title": "Ingreso y presupuesto mensual",
@@ -1055,6 +1073,78 @@
       "amountError": "Ingresa un monto mayor que cero",
       "added": "{{amount}} agregados a {{name}}",
       "addError": "No se pudieron agregar fondos"
+    }
+  },
+  "cards": {
+    "title": "Tarjetas de crédito",
+    "subtitle": "Los cargos quedan en la tarjeta. El pago sale como efectivo en la fecha de vencimiento, en ese ciclo de presupuesto.",
+    "add": "Agregar tarjeta",
+    "empty": "Aún no hay tarjetas. Agrega una para seguir el cierre, el vencimiento y las recompensas.",
+    "balance": "Saldo",
+    "closes": "Cierra {{date}}",
+    "due": "Vence {{date}}",
+    "rewards": "{{rate}}% {{type}}",
+    "pay": "Registrar pago",
+    "charge": "Agregar cargo",
+    "delete": "Quitar tarjeta",
+    "name": "Nombre de la tarjeta",
+    "closeDay": "Cierre de estado",
+    "dueDay": "Fecha de pago",
+    "rewardsType": "Recompensas",
+    "rewardsRate": "Tasa %",
+    "rewardsLabel": "Programa",
+    "types": { "none": "Ninguna", "cashback": "Cashback", "miles": "Millas", "points": "Puntos" },
+    "save": "Guardar tarjeta",
+    "saving": "Guardando…",
+    "amount": "Monto",
+    "paidOn": "Fecha del pago",
+    "paidOnHint": "Por defecto es el próximo vencimiento para que cuente en ese ciclo.",
+    "paySubmit": "Registrar pago",
+    "chargeSubmit": "Agregar a la tarjeta",
+    "saved": "Tarjeta guardada",
+    "paid": "Pago registrado el {{date}}",
+    "charged": "Cargo agregado a la tarjeta",
+    "removed": "Tarjeta eliminada",
+    "error": "No se pudo actualizar la tarjeta",
+    "payWithCard": "Cargar esto a una tarjeta",
+    "payWithCardHint": "Queda en el saldo de la tarjeta hasta que registres el pago.",
+    "selectCard": "Tarjeta",
+    "day": "Día {{day}}"
+  },
+  "tour": {
+    "next": "Siguiente",
+    "back": "Atrás",
+    "done": "Listo",
+    "skip": "Omitir",
+    "steps": {
+      "overview": {
+        "title": "Este es tu resumen",
+        "body": "El inicio muestra cómo va el ciclo de presupuesto actual. Vuelve aquí cuando quieras ver el panorama completo."
+      },
+      "cycle": {
+        "title": "Tu ciclo de presupuesto",
+        "body": "Los gastos cuentan dentro de esta ventana de fechas, no necesariamente un mes calendario. Puedes cambiar el día de inicio en Configuración."
+      },
+      "kpis": {
+        "title": "El ciclo de un vistazo",
+        "body": "Metas, tope de ingreso, salidas y lo que queda — todo del ciclo que se muestra arriba."
+      },
+      "expense": {
+        "title": "Agregar un gasto",
+        "body": "Registra aquí el gasto en efectivo. También puedes cargarlo a una tarjeta para que no entre al presupuesto hasta que pagues la tarjeta."
+      },
+      "transactions": {
+        "title": "Movimientos",
+        "body": "Busca, filtra y exporta cada gasto en efectivo desde esta página."
+      },
+      "budgets": {
+        "title": "Presupuestos y tarjetas",
+        "body": "Aquí están los topes por categoría y las metas de ahorro. Las compras con tarjeta se quedan en el saldo hasta que registras el pago, y ese pago cuenta en el ciclo de esa fecha."
+      },
+      "settings": {
+        "title": "Configuración",
+        "body": "Aquí están el ingreso, la moneda y el idioma. Puedes repetir este recorrido cuando quieras con Ver tutorial."
+      }
     }
   }
 }

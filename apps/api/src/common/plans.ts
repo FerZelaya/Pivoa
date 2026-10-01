@@ -9,31 +9,20 @@ export interface PlanLimits {
   highPriority: boolean;
 }
 
+const OPEN_ACCESS: PlanLimits = {
+  expensesPerCycle: null,
+  goals: null,
+  scansPerCycle: 1_000_000,
+  multiCurrency: true,
+  csv: true,
+  highPriority: true,
+};
+
+/** Subscriptions are gone. Every account has full access. */
 export const PLAN_LIMITS: Record<PlanId, PlanLimits> = {
-  free: {
-    expensesPerCycle: 50,
-    goals: 1,
-    scansPerCycle: 0,
-    multiCurrency: false,
-    csv: false,
-    highPriority: false,
-  },
-  plus: {
-    expensesPerCycle: null,
-    goals: null,
-    scansPerCycle: 40,
-    multiCurrency: true,
-    csv: true,
-    highPriority: false,
-  },
-  pro: {
-    expensesPerCycle: null,
-    goals: null,
-    scansPerCycle: 200,
-    multiCurrency: true,
-    csv: true,
-    highPriority: true,
-  },
+  free: OPEN_ACCESS,
+  plus: OPEN_ACCESS,
+  pro: OPEN_ACCESS,
 };
 
 const ENTITLED = new Set(['active', 'trialing', 'past_due']);

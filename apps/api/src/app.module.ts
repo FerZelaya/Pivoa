@@ -15,6 +15,7 @@ import { BillingModule } from './billing/billing.module.js';
 import { MeModule } from './me/me.module.js';
 import { TicketsModule } from './tickets/tickets.module.js';
 import { AdminModule } from './admin/admin.module.js';
+import { CreditCardsModule } from './credit-cards/credit-cards.module.js';
 import { validate } from './config/env.validation.js';
 
 @Module({
@@ -38,6 +39,7 @@ import { validate } from './config/env.validation.js';
     MeModule,
     TicketsModule,
     AdminModule,
+    CreditCardsModule,
   ],
 })
 export class AppModule {}

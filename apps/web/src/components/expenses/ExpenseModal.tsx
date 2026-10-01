@@ -16,7 +16,7 @@ import { CurrencySelect } from '@/components/ui/currency-select'
 import { useSettings } from '@/hooks/useSettings'
 import { convertWithRates, useRates } from '@/hooks/useRates'
 import { formatMoney, getDisplayCurrency, toISODate } from '@/lib/format'
-import { useMe } from '@/hooks/useMe'
+import { useCreateCardCharge, useCreditCards } from '@/hooks/useCreditCards'
 import { ReceiptScanner } from './ReceiptScanner'
 
 interface ExpenseModalProps {
@@ -32,7 +32,8 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
   const { data: settings } = useSettings()
   const baseCurrency = settings?.currency ?? getDisplayCurrency()
   const { data: rates } = useRates(baseCurrency)
-  const { data: me } = useMe()
+  const { data: cards = [] } = useCreditCards()
+  const createCharge = useCreateCardCharge()
   const createExpense = useCreateExpense()
   const updateExpense = useUpdateExpense()
   const deleteExpense = useDeleteExpense()
@@ -45,6 +46,8 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
   const [notes, setNotes] = useState('')
   const [receiptImageUrl, setReceiptImageUrl] = useState<string | undefined>()
   const [currency, setCurrency] = useState(baseCurrency)
+  const [onCard, setOnCard] = useState(false)
+  const [cardId, setCardId] = useState('')
 
   useEffect(() => {
     if (!open) return
@@ -55,6 +58,8 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
     setNotes(expense?.notes ?? '')
     setReceiptImageUrl(expense?.receiptImageUrl ?? undefined)
     setCurrency(expense?.currency ?? baseCurrency)
+    setOnCard(false)
+    setCardId('')
   }, [open, expense, defaultCategoryId, baseCurrency])
 
   const handleScan = (result: ParsedReceipt) => {
@@ -72,7 +77,8 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
     e.preventDefault()
     const value = parseFloat(amount)
     if (!value || value <= 0) return toast.error(t('modals.expense.amountError'))
-    if (!categoryId) return toast.error(t('modals.expense.categoryError'))
+    if (!onCard && !categoryId) return toast.error(t('modals.expense.categoryError'))
+    if (onCard && !cardId) return toast.error(t('cards.selectCard'))
 
     const payload = {
       amount: value,
@@ -87,6 +93,12 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
       if (expense) {
         await updateExpense.mutateAsync({ id: expense.id, data: payload })
         toast.success(t('modals.expense.updated'))
+      } else if (onCard) {
+        await createCharge.mutateAsync({
+          id: cardId,
+          data: { amount: value, currency, categoryId: categoryId || undefined, date, vendor: vendor.trim() || undefined, notes: notes.trim() || undefined },
+        })
+        toast.success(t('cards.charged'))
       } else {
         await createExpense.mutateAsync(payload)
         toast.success(t('modals.expense.logged'))
@@ -132,6 +144,27 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
       }
     >
       <form id="expense-form" onSubmit={handleSubmit} className="flex flex-col gap-space-md min-w-0">
+        {!isEdit && cards.length > 0 && (
+          <label className="flex items-start gap-space-sm">
+            <input type="checkbox" checked={onCard} onChange={(e) => setOnCard(e.target.checked)} className="mt-1" />
+            <span>
+              <span className="font-body-md text-body-md text-on-surface">{t('cards.payWithCard')}</span>
+              <span className="block font-body-sm text-body-sm text-outline">{t('cards.payWithCardHint')}</span>
+            </span>
+          </label>
+        )}
+        {!isEdit && onCard && (
+          <div>
+            <Label htmlFor="card">{t('cards.selectCard')}</Label>
+            <NativeSelect id="card" value={cardId} onChange={(e) => setCardId(e.target.value)}>
+              <option value="">{t('modals.expense.select')}</option>
+              {cards.map((card) => (
+                <option key={card.id} value={card.id}>{card.name}</option>
+              ))}
+            </NativeSelect>
+          </div>
+        )}
+
         {!isEdit && <ReceiptScanner onScanComplete={handleScan} />}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-md min-w-0">
@@ -157,10 +190,7 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
           </div>
           <div className="min-w-0">
             <Label htmlFor="expense-currency">{t('modals.expense.currency')}</Label>
-            <CurrencySelect id="expense-currency" value={currency} onChange={setCurrency} disabled={me ? !me.multiCurrency : false} />
-            {me && !me.multiCurrency && (
-              <p className="font-body-sm text-body-sm text-outline mt-1">{t('modals.expense.multiCurrencyHint')}</p>
-            )}
+            <CurrencySelect id="expense-currency" value={currency} onChange={setCurrency} />
           </div>
         </div>
 

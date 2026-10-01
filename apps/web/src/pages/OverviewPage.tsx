@@ -81,7 +81,7 @@ export default function OverviewPage() {
       />
 
       {/* KPI row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-lg">
+      <div data-tour="overview-kpis" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-lg">
         <KpiCard
           label={t('overview.kpi.savedInGoals')}
           icon="account_balance"

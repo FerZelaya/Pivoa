@@ -57,6 +57,12 @@ const FEATURES = [
     textKey: 'landing.features.items.cycles.text',
   },
   {
+    icon: 'credit_card',
+    tile: 'bg-tertiary-fixed text-tertiary-container',
+    titleKey: 'landing.features.items.cards.title',
+    textKey: 'landing.features.items.cards.text',
+  },
+  {
     icon: 'support_agent',
     tile: 'bg-tertiary-fixed text-tertiary-container',
     titleKey: 'landing.features.items.support.title',
@@ -111,11 +117,9 @@ const STEPS = [
   { n: '03', titleKey: 'landing.how.steps.3.title', textKey: 'landing.how.steps.3.text' },
 ] as const
 
-const PLAN_IDS = ['free', 'plus', 'pro'] as const
-
 const FAQS = [
   { qKey: 'landing.faq.items.free.q', aKey: 'landing.faq.items.free.a' },
-  { qKey: 'landing.faq.items.plans.q', aKey: 'landing.faq.items.plans.a' },
+  { qKey: 'landing.faq.items.cards.q', aKey: 'landing.faq.items.cards.a' },
   { qKey: 'landing.faq.items.changeBudget.q', aKey: 'landing.faq.items.changeBudget.a' },
   { qKey: 'landing.faq.items.receipts.q', aKey: 'landing.faq.items.receipts.a' },
   { qKey: 'landing.faq.items.privacy.q', aKey: 'landing.faq.items.privacy.a' },
@@ -282,70 +286,24 @@ export default function LandingPage() {
             <h2 className="font-headline-lg text-headline-lg text-on-surface mt-1">{t('landing.plans.title')}</h2>
             <p className="font-body-md text-body-md text-on-surface-variant mt-space-sm">{t('landing.plans.subtitle')}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-space-md">
-            {PLAN_IDS.map((id) => {
-              const points = t(`landing.plans.${id}.points`, { returnObjects: true }) as string[]
-              const featured = id === 'plus'
-              return (
-                <article
-                  key={id}
-                  className={cn(
-                    'rounded-xl p-space-lg flex flex-col gap-space-md shadow-sm',
-                    featured
-                      ? 'bg-primary-container text-on-primary ring-2 ring-primary shadow-md'
-                      : 'bg-surface-container-lowest text-on-surface'
-                  )}
-                >
-                  <div>
-                    {featured && (
-                      <span className="inline-block mb-space-sm px-space-sm py-0.5 rounded-full bg-on-primary/15 font-label-caps text-label-caps uppercase">
-                        {t('landing.plans.featured')}
-                      </span>
-                    )}
-                    <h3 className={cn('font-headline-sm text-headline-sm', featured ? 'text-on-primary' : 'text-on-surface')}>
-                      {t(`landing.plans.${id}.name`)}
-                    </h3>
-                    <p className={cn('font-headline-md text-headline-md mt-1', featured ? 'text-on-primary' : 'text-on-surface')}>
-                      {t(`landing.plans.${id}.price`)}
-                      {id !== 'free' && (
-                        <span className={cn('font-body-sm text-body-sm', featured ? 'text-on-primary/80' : 'text-outline')}>
-                          {t('landing.plans.perMonth')}
-                        </span>
-                      )}
-                    </p>
-                    <p className={cn('font-body-sm text-body-sm mt-1', featured ? 'text-on-primary/80' : 'text-outline')}>
-                      {t(`landing.plans.${id}.note`)}
-                    </p>
-                  </div>
-                  <ul className={cn('flex flex-col gap-space-xs font-body-sm text-body-sm flex-1', featured ? 'text-on-primary/90' : 'text-on-surface-variant')}>
-                    {Array.isArray(points) &&
-                      points.map((point) => (
-                        <li key={point} className="flex items-start gap-space-xs">
-                          <Icon name="check" className={cn('text-[18px] shrink-0 mt-0.5', featured ? 'text-on-primary' : 'text-secondary')} />
-                          <span>{point}</span>
-                        </li>
-                      ))}
-                  </ul>
-                  <Link
-                    to={user ? (id === 'free' ? '/overview' : '/pricing') : id === 'free' ? '/register' : '/pricing'}
-                    className={cn(
-                      'inline-flex items-center justify-center gap-space-xs px-space-md py-2.5 rounded-lg font-body-md text-body-md font-semibold transition-colors',
-                      featured
-                        ? 'bg-surface-container-lowest text-primary hover:bg-primary-fixed'
-                        : 'bg-primary-container text-on-primary hover:bg-primary'
-                    )}
-                  >
-                    {id === 'free' ? t('landing.plans.ctaFree') : id === 'plus' ? t('landing.plans.ctaPlus') : t('landing.plans.ctaPro')}
-                  </Link>
-                </article>
-              )
-            })}
-          </div>
-          <div className="text-center mt-space-lg">
-            <Link to="/pricing" className="font-body-md text-body-md font-semibold text-primary-container hover:text-primary">
-              {t('landing.plans.compare')}
+          <article className="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg sm:p-space-xl max-w-3xl mx-auto">
+            <p className="font-headline-md text-headline-md text-on-surface">{t('landing.plans.free.name')}</p>
+            <p className="font-body-md text-body-md text-on-surface-variant mt-space-xs">{t('landing.plans.free.note')}</p>
+            <ul className="mt-space-lg grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+              {(t('landing.plans.points', { returnObjects: true }) as string[]).map((point) => (
+                <li key={point} className="flex items-start gap-space-xs font-body-sm text-body-sm text-on-surface-variant">
+                  <Icon name="check" className="text-[18px] shrink-0 mt-0.5 text-secondary" />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              to={user ? '/overview' : '/register'}
+              className="inline-flex mt-space-lg items-center gap-space-xs px-space-md py-2.5 rounded-lg bg-primary-container text-on-primary font-body-md text-body-md font-semibold"
+            >
+              {t('landing.plans.ctaFree')}
             </Link>
-          </div>
+          </article>
         </div>
       </section>
 
@@ -399,9 +357,9 @@ export default function LandingPage() {
             <a href="#pricing" className="hover:text-on-surface">
               {t('landing.nav.pricing')}
             </a>
-            <Link to="/pricing" className="hover:text-on-surface">
-              {t('landing.plans.compare')}
-            </Link>
+            <a href="#pricing" className="hover:text-on-surface">
+              {t('landing.nav.pricing')}
+            </a>
             <p>{t('landing.footer.copyright', { year: new Date().getFullYear() })}</p>
           </div>
         </div>

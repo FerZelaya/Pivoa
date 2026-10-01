@@ -10,6 +10,7 @@ import { Icon } from '@/components/ui/icon'
 import { DonutChart } from '@/components/charts/DonutChart'
 import { BudgetModal } from '@/components/budgets/BudgetModal'
 import { DepositModal, GoalModal } from '@/components/goals/GoalModal'
+import { CreditCardsPanel } from '@/components/cards/CreditCardsPanel'
 import { categoryIcon, categoryTone, chartColor } from '@/lib/categories'
 import { formatCompact, formatCurrency, formatCycleRange, formatDate } from '@/lib/format'
 import { cn } from '@/lib/utils'
@@ -76,6 +77,8 @@ export default function BudgetsPage() {
           </button>
         </div>
       </div>
+
+      <CreditCardsPanel />
 
       {/* Hero + composition */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">

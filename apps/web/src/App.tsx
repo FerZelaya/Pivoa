@@ -15,7 +15,6 @@ import SettingsPage from '@/pages/SettingsPage';
 import AuthCallbackPage from '@/pages/AuthCallbackPage';
 import RecoveryPage from '@/pages/RecoveryPage';
 import ForgotPasswordPage from '@/pages/ForgotPasswordPage';
-import PricingPage from '@/pages/PricingPage';
 import SupportPage from '@/pages/SupportPage';
 import { AdminRoute } from '@/components/auth/AdminRoute';
 import { AdminLayout } from '@/components/admin/AdminLayout';
@@ -35,7 +34,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/health" element={<HealthPage />} />
-        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/pricing" element={<Navigate to="/" replace />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route path="/auth/recovery" element={<RecoveryPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />

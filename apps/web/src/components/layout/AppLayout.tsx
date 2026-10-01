@@ -14,6 +14,7 @@ import { cn } from '@/lib/utils'
 import { HelpBubble } from '@/components/support/HelpBubble'
 import { useMe } from '@/hooks/useMe'
 import { LanguageSwitcher } from '@/i18n/LanguageSwitcher'
+import { TourProvider } from '@/tour/TourProvider'
 
 interface AppShellContext {
   openExpense: (options?: { expense?: ExpenseWithCategory; categoryId?: string }) => void
@@ -24,11 +25,11 @@ export function useAppShell() {
 }
 
 const NAV_ITEMS = [
-  { to: '/overview', labelKey: 'nav.overview', icon: 'grid_view' },
-  { to: '/transactions', labelKey: 'nav.transactions', icon: 'receipt_long' },
-  { to: '/budgets', labelKey: 'nav.budgets', icon: 'track_changes' },
+  { to: '/overview', labelKey: 'nav.overview', icon: 'grid_view', tour: 'nav-overview' },
+  { to: '/transactions', labelKey: 'nav.transactions', icon: 'receipt_long', tour: 'nav-transactions' },
+  { to: '/budgets', labelKey: 'nav.budgets', icon: 'track_changes', tour: 'nav-budgets' },
   { to: '/support', labelKey: 'nav.support', icon: 'support_agent' },
-  { to: '/settings', labelKey: 'nav.settings', icon: 'tune' },
+  { to: '/settings', labelKey: 'nav.settings', icon: 'tune', tour: 'nav-settings' },
 ] as const
 
 export function AppLayout() {
@@ -92,6 +93,7 @@ export function AppLayout() {
   const usedPct = overview?.monthlyIncome ? Math.round(overview.budgetPercentage) : 0
 
   return (
+    <TourProvider>
     <div className="min-h-screen bg-background text-on-surface">
       {mobileNavOpen && (
         <div className="fixed inset-0 z-40 bg-inverse-surface/40 backdrop-blur-sm lg:hidden" onClick={() => setMobileNavOpen(false)} />
@@ -111,6 +113,7 @@ export function AppLayout() {
 
           <button
             type="button"
+            data-tour="new-expense"
             onClick={() => context.openExpense()}
             className="w-full py-space-sm px-space-md rounded-lg bg-primary-container text-on-primary hover:bg-primary transition-all flex items-center justify-center gap-space-xs font-body-md text-body-md font-semibold shadow-sm active:scale-[0.98] cursor-pointer"
           >
@@ -123,6 +126,7 @@ export function AppLayout() {
               <li key={item.to}>
                 <NavLink
                   to={item.to}
+                  data-tour={'tour' in item ? item.tour : undefined}
                   className={({ isActive }) =>
                     cn(
                       'flex items-center gap-space-md px-space-md py-space-sm rounded-lg transition-all duration-200 font-body-md text-body-md',
@@ -214,7 +218,7 @@ export function AppLayout() {
         </div>
 
         <div className="flex items-center gap-space-md">
-          <div className="hidden md:flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.02)] text-on-surface font-body-md text-body-md">
+          <div data-tour="cycle-range" className="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container-lowest shadow-[0_1px_2px_rgba(0,0,0,0.02)] text-on-surface font-body-md text-body-md">
             <Icon name="calendar_today" className="text-[18px] text-on-surface-variant" />
             <span>{formatCycleRange(overview?.cycleStart, overview?.cycleEnd)}</span>
           </div>
@@ -223,7 +227,7 @@ export function AppLayout() {
 
           <div className="h-8 w-px bg-outline-variant/40 hidden sm:block" />
 
-          <ProfileMenu name={fullName} email={user?.email ?? ''} plan={me?.plan} isAdmin={Boolean(me?.isAdmin)} onSignOut={signOut} />
+          <ProfileMenu name={fullName} email={user?.email ?? ''} isAdmin={Boolean(me?.isAdmin)} onSignOut={signOut} />
         </div>
       </header>
 
@@ -241,6 +245,7 @@ export function AppLayout() {
       />
       <HelpBubble />
     </div>
+    </TourProvider>
   )
 }
 
@@ -330,13 +335,11 @@ function NotificationBell({ alerts }: { alerts: Alert[] }) {
 function ProfileMenu({
   name,
   email,
-  plan,
   isAdmin,
   onSignOut,
 }: {
   name: string
   email: string
-  plan?: 'free' | 'plus' | 'pro'
   isAdmin: boolean
   onSignOut: () => Promise<void>
 }) {
@@ -357,8 +360,8 @@ function ProfileMenu({
         </div>
         <div className="hidden md:flex flex-col text-left">
           <span className="font-body-md text-body-md font-semibold text-on-surface leading-tight">{name}</span>
-          <span className="font-label-caps text-label-caps text-on-surface-variant uppercase">
-            {plan ? t('nav.planLabel', { plan }) : t('common.plan')}
+          <span className="font-body-sm text-body-sm text-on-surface-variant leading-tight max-w-[140px] truncate">
+            {email}
           </span>
         </div>
         <Icon name="expand_more" className="hidden md:inline-block text-[18px] text-outline" />

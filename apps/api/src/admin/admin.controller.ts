@@ -14,11 +14,10 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import type { AdminStats, AdminUserDetail, AdminUserSummary, PasswordResetResult } from '@pivoa/shared';
 import { SUPABASE_CLIENT } from '../supabase/supabase.module.js';
 import { Admin } from '../auth/decorators/index.js';
-import { BillingService } from '../billing/billing.service.js';
 import { EntitlementsService } from '../billing/entitlements.service.js';
 import { PLAN_LIMITS } from '../common/plans.js';
 import { mapTicket } from '../tickets/tickets.mapper.js';
-import { GrantPlanDto, SetOnboardingDto } from './dto/admin.dto.js';
+import { SetOnboardingDto } from './dto/admin.dto.js';
 
 @Admin()
 @Controller('admin')
@@ -26,7 +25,6 @@ export class AdminController {
   constructor(
     @Inject(SUPABASE_CLIENT) private readonly supabase: SupabaseClient,
     private readonly entitlements: EntitlementsService,
-    private readonly billing: BillingService,
     private readonly config: ConfigService,
   ) {}
 
@@ -147,28 +145,6 @@ export class AdminController {
       .update({ onboarding_completed: dto.completed })
       .eq('user_id', id);
     if (error) throw new BadRequestException(error.message);
-    return { ok: true };
-  }
-
-  @Post('users/:id/plan')
-  async grantPlan(@Param('id') id: string, @Body() dto: GrantPlanDto) {
-    const complimentary = dto.plan !== 'free';
-    const { error } = await this.supabase
-      .from('users')
-      .update({
-        plan: dto.plan,
-        complimentary,
-        subscription_status: complimentary ? 'active' : 'none',
-      })
-      .eq('id', id);
-    if (error) throw new BadRequestException(error.message);
-    return { ok: true };
-  }
-
-  @Post('users/:id/cancel-subscription')
-  async cancel(@Param('id') id: string) {
-    const row = await this.entitlements.getUserRow(id);
-    await this.billing.cancelForUser(id, row.paypal_subscription_id);
     return { ok: true };
   }
 

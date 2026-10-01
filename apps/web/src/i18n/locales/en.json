@@ -145,7 +145,7 @@
     "nav": {
       "features": "Features",
       "how": "How it works",
-      "pricing": "Pricing",
+      "pricing": "Free",
       "faq": "FAQ",
       "openDashboard": "Open Dashboard",
       "signIn": "Sign in",
@@ -196,9 +196,13 @@
           "title": "Custom budget cycles",
           "text": "Reset on any day of the month — payday-aligned windows, not just calendar months."
         },
+        "cards": {
+          "title": "Credit card bills",
+          "text": "Track statement close, due date and rewards. Purchases stay on the card until you record the payment."
+        },
         "support": {
           "title": "In-app support",
-          "text": "Open tickets from the help bubble. Pro gets high-priority responses when you need them most."
+          "text": "Open a ticket from the help bubble whenever something needs a look."
         },
         "languages": {
           "title": "English & Spanish",
@@ -255,25 +259,38 @@
       }
     },
     "plans": {
-      "eyebrow": "Simple pricing",
-      "title": "A plan that matches how you spend",
-      "subtitle": "Start free. Upgrade when you need more scans, currencies and unlimited history.",
+      "eyebrow": "Free forever",
+      "title": "Every feature, no subscription",
+      "subtitle": "Cards, currencies, scans, CSV and unlimited expenses and goals — included for everyone.",
       "perMonth": "/mo",
       "ctaFree": "Start free",
       "ctaPlus": "Get Plus",
       "ctaPro": "Get Pro",
       "compare": "See full pricing",
       "featured": "Most popular",
+      "points": [
+        "Unlimited expenses and savings goals",
+        "Category budgets and alerts",
+        "Credit cards, statement dates and rewards",
+        "Any currency, with one base currency",
+        "AI receipt scanning",
+        "CSV export",
+        "English and Spanish",
+        "In-app support"
+      ],
       "free": {
-        "name": "Free",
+        "name": "Free forever",
         "price": "$0",
-        "note": "Start tracking",
+        "note": "Nothing to upgrade. Everyone gets the full product.",
         "points": [
-          "Onboarding and 1 currency",
-          "50 expenses per cycle",
-          "1 savings goal",
-          "Category budgets & alerts",
-          "English & Spanish"
+          "Unlimited expenses and savings goals",
+          "Category budgets and alerts",
+          "Credit cards, statement dates and rewards",
+          "Any currency, with one base currency",
+          "AI receipt scanning",
+          "CSV export",
+          "English and Spanish",
+          "In-app support"
         ]
       },
       "plus": {
@@ -305,11 +322,11 @@
       "items": {
         "free": {
           "q": "Is Pivoa free?",
-          "a": "Yes. Free includes onboarding, one currency, 50 expenses per cycle and one savings goal — no card required."
+          "a": "Yes. Every feature is free — expenses, goals, currencies, receipt scans, CSV export and credit cards. No card required."
         },
-        "plans": {
-          "q": "What do Plus and Pro unlock?",
-          "a": "Plus adds unlimited expenses and goals, multi-currency, CSV export and 40 receipt scans per cycle. Pro raises scans to 200 and prioritizes your support tickets."
+        "cards": {
+          "q": "When does a card payment hit my budget?",
+          "a": "Purchases stay on the card balance. When you record a payment, that cash expense counts in the budget cycle that contains the payment date."
         },
         "changeBudget": {
           "q": "Can I change my monthly budget later?",
@@ -317,7 +334,7 @@
         },
         "receipts": {
           "q": "How does receipt scanning work?",
-          "a": "Upload a photo of a receipt and Pivoa uses AI to extract the amount, merchant, date and a suggested category. Scans are included with Plus and Pro."
+          "a": "Upload a photo of a receipt and Pivoa uses AI to extract the amount, merchant, date and a suggested category."
         },
         "privacy": {
           "q": "Is my data private?",
@@ -327,7 +344,7 @@
     },
     "cta": {
       "title": "Ready to take control of your month?",
-      "subtitle": "Set your budget in two minutes. Free forever to start — upgrade when you need more.",
+      "subtitle": "Set your budget in two minutes. Free forever.",
       "loggedIn": "Go to dashboard",
       "guest": "Create free account"
     },
@@ -680,6 +697,7 @@
   "settings": {
     "eyebrow": "Workspace Preferences • Budget Controls",
     "title": "Settings",
+    "showTutorial": "Show tutorial",
     "income": {
       "eyebrow": "Aggregate Monthly Cap",
       "title": "Monthly Income & Budget",
@@ -1055,6 +1073,78 @@
       "amountError": "Enter an amount greater than zero",
       "added": "{{amount}} added to {{name}}",
       "addError": "Could not add funds"
+    }
+  },
+  "cards": {
+    "title": "Credit cards",
+    "subtitle": "Charges stay on the card. A payment becomes cash outflow on the due date, in that budget cycle.",
+    "add": "Add card",
+    "empty": "No cards yet. Add one to track statement close, due date, and rewards.",
+    "balance": "Balance",
+    "closes": "Closes {{date}}",
+    "due": "Due {{date}}",
+    "rewards": "{{rate}}% {{type}}",
+    "pay": "Record payment",
+    "charge": "Add charge",
+    "delete": "Remove card",
+    "name": "Card name",
+    "closeDay": "Statement closes",
+    "dueDay": "Payment due",
+    "rewardsType": "Rewards",
+    "rewardsRate": "Rate %",
+    "rewardsLabel": "Program",
+    "types": { "none": "None", "cashback": "Cash back", "miles": "Miles", "points": "Points" },
+    "save": "Save card",
+    "saving": "Saving…",
+    "amount": "Amount",
+    "paidOn": "Payment date",
+    "paidOnHint": "Defaults to the next due date so it counts in that budget cycle.",
+    "paySubmit": "Post payment",
+    "chargeSubmit": "Add to card",
+    "saved": "Card saved",
+    "paid": "Payment posted to {{date}}",
+    "charged": "Charge added to the card",
+    "removed": "Card removed",
+    "error": "Could not update the card",
+    "payWithCard": "Put this on a credit card",
+    "payWithCardHint": "This stays on the card balance until you record a payment.",
+    "selectCard": "Card",
+    "day": "Day {{day}}"
+  },
+  "tour": {
+    "next": "Next",
+    "back": "Back",
+    "done": "Done",
+    "skip": "Skip",
+    "steps": {
+      "overview": {
+        "title": "This is your overview",
+        "body": "Home shows how the current budget cycle is going. Come back here whenever you want the full picture."
+      },
+      "cycle": {
+        "title": "Your budget cycle",
+        "body": "Spending counts inside this date window, not necessarily a calendar month. You can change the start day in Settings."
+      },
+      "kpis": {
+        "title": "This cycle at a glance",
+        "body": "Goals, income cap, outflow, and what is left — all for the cycle shown above."
+      },
+      "expense": {
+        "title": "Add an expense",
+        "body": "Log cash spending here. You can also put a purchase on a credit card so it stays off the budget until you pay the card."
+      },
+      "transactions": {
+        "title": "Transactions",
+        "body": "Search, filter, and export every cash expense from this page."
+      },
+      "budgets": {
+        "title": "Budgets and cards",
+        "body": "Category caps and savings goals live here. Card purchases stay on the card balance until you record a payment, which counts in the cycle of that payment date."
+      },
+      "settings": {
+        "title": "Settings",
+        "body": "Income, currency, and language live here. You can replay this tour anytime with Show tutorial."
+      }
     }
   }
 }

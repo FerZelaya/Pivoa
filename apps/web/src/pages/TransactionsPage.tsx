@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import type { ExpenseWithCategory } from '@pivoa/shared'
@@ -7,7 +7,6 @@ import { useExpenses, useDeleteExpense } from '@/hooks/useExpenses'
 import { useCategories } from '@/hooks/useCategories'
 import { useCategorySpending, useSpendingSummary } from '@/hooks/useAnalytics'
 import { useOverview } from '@/hooks/useOverview'
-import { useMe } from '@/hooks/useMe'
 import { useAppShell } from '@/components/layout'
 import { Icon } from '@/components/ui/icon'
 import { PageHeader } from '@/components/ui/card'
@@ -20,8 +19,6 @@ const PAGE_SIZES = [10, 20, 50]
 export default function TransactionsPage() {
   const { t } = useTranslation()
   const { openExpense } = useAppShell()
-  const navigate = useNavigate()
-  const { data: me } = useMe()
   const [params, setParams] = useSearchParams()
   const search = params.get('search') ?? ''
   const [searchDraft, setSearchDraft] = useState(search)
@@ -104,11 +101,6 @@ export default function TransactionsPage() {
   }
 
   const exportCsv = () => {
-    if (me && !me.csvExport) {
-      toast.error(t('transactions.toasts.csvPlusOnly'))
-      navigate('/pricing')
-      return
-    }
     const source = selected.size ? rows.filter((r) => selected.has(r.id)) : rows
     if (!source.length) return toast.error(t('transactions.toasts.nothingToExport'))
     const escape = (v: string) => `"${v.replace(/"/g, '""')}"`

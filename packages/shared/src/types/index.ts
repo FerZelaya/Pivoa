@@ -10,3 +10,4 @@ export * from "./currency.js";
 export * from "./billing.js";
 export * from "./ticket.js";
 export * from "./admin.js";
+export * from "./credit-card.js";

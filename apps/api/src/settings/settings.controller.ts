@@ -76,6 +76,9 @@ export class SettingsController {
     if (dto.language !== undefined) {
       updateData.language = dto.language;
     }
+    if (dto.tutorialCompleted !== undefined) {
+      updateData.tutorial_completed = dto.tutorialCompleted;
+    }
 
     if (Object.keys(updateData).length === 0) {
       return this.getSettings(user);

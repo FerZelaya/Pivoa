@@ -7,6 +7,8 @@ export interface UserSettings {
   /** UI language: en | es */
   language: 'en' | 'es';
   onboardingCompleted: boolean;
+  /** Spotlight tour finished or skipped. New accounts start false. */
+  tutorialCompleted: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -16,6 +18,7 @@ export interface UpdateSettingsDto {
   currency?: string;
   cycleStartDay?: number;
   language?: 'en' | 'es';
+  tutorialCompleted?: boolean;
 }
 
 export interface CompleteOnboardingDto {

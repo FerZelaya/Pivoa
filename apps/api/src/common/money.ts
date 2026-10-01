@@ -9,6 +9,7 @@ export function mapSettings(row: Record<string, unknown>): UserSettings {
     cycleStartDay: Number(row.cycle_start_day) || 1,
     language,
     onboardingCompleted: Boolean(row.onboarding_completed),
+    tutorialCompleted: Boolean(row.tutorial_completed),
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
   };

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import type { CategoryBudgetWithSpent, SavingsGoalWithProgress } from '@pivoa/shared'
@@ -20,20 +20,14 @@ import { BudgetModal } from '@/components/budgets/BudgetModal'
 import { DepositModal, GoalModal } from '@/components/goals/GoalModal'
 import { categoryIcon, categoryTone } from '@/lib/categories'
 import { cn } from '@/lib/utils'
-import { PlanCard } from '@/components/billing/PlanCard'
-import { useRefreshBilling, useSyncBilling } from '@/hooks/useBilling'
-import { useMe } from '@/hooks/useMe'
 import { LanguageSwitcher } from '@/i18n/LanguageSwitcher'
+import { useTour } from '@/tour/TourProvider'
 
 export default function SettingsPage() {
   const { t } = useTranslation()
+  const { startTour } = useTour()
   const { user, signOut } = useAuth()
-  const { data: me } = useMe()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const refreshBilling = useRefreshBilling()
-  const syncBilling = useSyncBilling()
-  const billingSynced = useRef(false)
   const { data: settings, isPending: settingsLoading } = useSettings()
   const { data: budgets = [], isPending: budgetsLoading } = useBudgets()
   const { data: goals = [], isPending: goalsLoading } = useGoals()
@@ -54,21 +48,6 @@ export default function SettingsPage() {
       setCycleStartDay(settings.cycleStartDay ?? 1)
     }
   }, [settings])
-
-  useEffect(() => {
-    if (searchParams.get('billing') !== 'success' || billingSynced.current) return
-    billingSynced.current = true
-    const subscriptionId = searchParams.get('subscription_id')
-    if (subscriptionId) {
-      syncBilling.mutate(subscriptionId, {
-        onSuccess: () => toast.success(t('settings.toasts.subscriptionUpdated')),
-        onError: (err) => toast.error(err instanceof Error ? err.message : t('settings.toasts.paypalConfirmError')),
-      })
-      return
-    }
-    refreshBilling()
-    toast.success(t('settings.toasts.subscriptionUpdated'))
-  }, [searchParams, refreshBilling, syncBilling, t])
 
   const cap = settings?.monthlyIncomeCap ?? 0
   const allocated = budgets.reduce((sum, b) => sum + b.monthlyLimit, 0)
@@ -119,7 +98,6 @@ export default function SettingsPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
         <div className="lg:col-span-8 flex flex-col gap-space-lg">
-          <PlanCard />
           {/* Monthly income cap */}
           <section className="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm relative overflow-hidden">
             <div className="absolute -right-10 -top-10 w-40 h-40 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
@@ -169,17 +147,11 @@ export default function SettingsPage() {
                 <label className="block font-label-caps text-label-caps uppercase text-on-surface-variant mb-1.5">{t('settings.currencyCycle.baseCurrency')}</label>
                 <CurrencySelect
                   value={settings?.currency ?? 'USD'}
-                  disabled={!me?.multiCurrency}
                   onChange={(code) => {
-                    if (!me?.multiCurrency) return
                     if (code !== settings?.currency) setPendingCurrency(code)
                   }}
                 />
-                <p className="font-body-sm text-body-sm text-outline mt-1.5">
-                  {me && !me.multiCurrency
-                    ? t('settings.currencyCycle.multiCurrencyLocked')
-                    : t('settings.currencyCycle.currencyHint')}
-                </p>
+                <p className="font-body-sm text-body-sm text-outline mt-1.5">{t('settings.currencyCycle.currencyHint')}</p>
               </div>
               <div>
                 <label htmlFor="cycle-day" className="block font-label-caps text-label-caps uppercase text-on-surface-variant mb-1.5">
@@ -319,6 +291,15 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
+            <Button
+              type="button"
+              variant="tonal"
+              className="justify-start"
+              data-tour="settings-tutorial"
+              onClick={() => startTour()}
+            >
+              <Icon name="school" className="text-[18px]" /> {t('settings.showTutorial')}
+            </Button>
             <Button
               variant="destructive-ghost"
               className="justify-start"

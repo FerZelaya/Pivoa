@@ -126,11 +126,8 @@ export class EntitlementsService {
     }
   }
 
-  async assertCanChangeCurrency(userId: string) {
-    const snap = await this.snapshot(userId);
-    if (!snap.limits.multiCurrency) {
-      throw new ForbiddenException('Changing your base currency is a Plus feature.');
-    }
+  async assertCanChangeCurrency(_userId: string) {
+    return;
   }
 
   async assertCanScan(userId: string) {

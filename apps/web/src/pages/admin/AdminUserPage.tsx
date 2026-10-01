@@ -1,13 +1,9 @@
-import { useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import type { PlanId } from '@pivoa/shared'
 import {
   useAdminBan,
-  useAdminCancelSubscription,
   useAdminConfirmEmail,
-  useAdminGrantPlan,
   useAdminOnboarding,
   useAdminPasswordReset,
   useAdminUnban,
@@ -26,9 +22,6 @@ export default function AdminUserPage() {
   const ban = useAdminBan(id)
   const unban = useAdminUnban(id)
   const onboarding = useAdminOnboarding(id)
-  const grant = useAdminGrantPlan(id)
-  const cancel = useAdminCancelSubscription(id)
-  const [plan, setPlan] = useState<PlanId>('plus')
 
   const run = async (action: () => Promise<unknown>, ok: string) => {
     try {
@@ -91,20 +84,6 @@ export default function AdminUserPage() {
             })}
           </p>
           <p>
-            {t('admin.user.planLine', {
-              plan: user.plan,
-              complimentary: user.complimentary ? t('admin.user.complimentary') : '',
-              status: user.subscriptionStatus,
-            })}
-          </p>
-          <p>
-            {t('admin.user.periodEnd', {
-              date: user.currentPeriodEnd ? new Date(user.currentPeriodEnd).toLocaleString() : t('common.emDash'),
-            })}
-          </p>
-          <p>{t('admin.user.paypalPayer', { id: user.paypalPayerId || t('common.emDash') })}</p>
-          <p>{t('admin.user.paypalSubscription', { id: user.paypalSubscriptionId || t('common.emDash') })}</p>
-          <p>
             {t('admin.user.usage', {
               expenses: user.expenseCount,
               goals: user.goalCount,
@@ -154,24 +133,6 @@ export default function AdminUserPage() {
             }
           >
             {user.onboardingCompleted ? t('admin.user.markOnboardingIncomplete') : t('admin.user.markOnboardingComplete')}
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={() => run(() => cancel.mutateAsync(undefined), t('admin.user.toasts.renewalStopped'))}
-          >
-            {t('admin.user.cancelRenewal')}
-          </Button>
-          <p className="font-body-sm text-body-sm text-on-surface-variant basis-full">{t('admin.user.cancelHint')}</p>
-        </div>
-        <div className="flex items-center gap-space-sm">
-          <select value={plan} onChange={(e) => setPlan(e.target.value as PlanId)} className="bg-surface-container-low rounded-lg px-space-md py-2">
-            <option value="free">{t('admin.user.free')}</option>
-            <option value="plus">{t('admin.user.plusComplimentary')}</option>
-            <option value="pro">{t('admin.user.proComplimentary')}</option>
-          </select>
-          <Button type="button" onClick={() => run(() => grant.mutateAsync({ plan }), t('admin.user.toasts.planUpdated'))}>
-            {t('admin.user.grantPlan')}
           </Button>
         </div>
       </section>

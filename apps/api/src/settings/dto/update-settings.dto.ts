@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsNumber, IsInt, Min, Max, MaxLength, Matches, IsIn } from 'class-validator';
+import { IsOptional, IsNumber, IsInt, IsBoolean, Min, Max, MaxLength, Matches, IsIn } from 'class-validator';
 
 export class UpdateSettingsDto {
   @IsOptional()
@@ -22,4 +22,8 @@ export class UpdateSettingsDto {
   @IsOptional()
   @IsIn(['en', 'es'])
   language?: 'en' | 'es';
+
+  @IsOptional()
+  @IsBoolean()
+  tutorialCompleted?: boolean;
 }
