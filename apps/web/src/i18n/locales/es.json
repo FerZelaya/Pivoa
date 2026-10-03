@@ -95,7 +95,12 @@
     "register": {
       "eyebrow": "Empieza • Gratis",
       "title": "Crea tu cuenta",
+      "titleSent": "Revisa tu bandeja de entrada",
       "subtitle": "Dos minutos para armar tu presupuesto mensual y tu primera meta.",
+      "subtitleSent": "Enviamos un enlace de verificación a {{email}}. Ábrelo para terminar de crear tu cuenta.",
+      "checkInboxHint": "¿No llegó? Revisa spam o promociones y vuelve a registrarte con el mismo correo.",
+      "useDifferentEmail": "Usar otro correo",
+      "backToSignIn": "Volver a iniciar sesión",
       "footerHaveAccount": "¿Ya tienes una cuenta?",
       "signIn": "Iniciar sesión",
       "fullName": "Nombre completo",
@@ -104,11 +109,19 @@
       "emailPlaceholder": "tu@ejemplo.com",
       "password": "Contraseña",
       "confirm": "Confirmar",
-      "passwordHint": "Al menos 6 caracteres.",
+      "ageGate": "Confirmo que tengo 18 años o más.",
+      "ageRequired": "Debes confirmar que tienes 18 años o más para crear una cuenta.",
       "submit": "Crear cuenta",
       "submitting": "Creando cuenta…",
-      "passwordsMismatch": "Las contraseñas no coinciden",
-      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres"
+      "passwordsMismatch": "Las contraseñas no coinciden"
+    },
+    "password": {
+      "hint": "Al menos 8 caracteres, con mayúscula, minúscula, un número y un símbolo.",
+      "tooShort": "La contraseña debe tener al menos 8 caracteres.",
+      "needsLower": "La contraseña debe incluir una letra minúscula.",
+      "needsUpper": "La contraseña debe incluir una letra mayúscula.",
+      "needsDigit": "La contraseña debe incluir un número.",
+      "needsSymbol": "La contraseña debe incluir un símbolo (por ejemplo !@#$)."
     },
     "forgot": {
       "eyebrow": "Restablecer contraseña",
@@ -137,7 +150,6 @@
       "hidePassword": "Ocultar contraseña",
       "submit": "Guardar contraseña y continuar",
       "submitting": "Guardando…",
-      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
       "passwordsMismatch": "Las contraseñas no coinciden"
     }
   },

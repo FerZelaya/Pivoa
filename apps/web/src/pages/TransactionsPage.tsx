@@ -13,6 +13,7 @@ import { PageHeader } from '@/components/ui/card'
 import { categoryIcon, categoryTone, chartColor } from '@/lib/categories'
 import { formatCurrency, formatCycleRange, formatDate, formatMoney, getDisplayCurrency, parseLocalDate } from '@/lib/format'
 import { cn } from '@/lib/utils'
+import { safeHttpUrl } from '@/lib/safeUrl'
 
 const PAGE_SIZES = [10, 20, 50]
 
@@ -542,22 +543,28 @@ function LedgerRow({
         </span>
       </td>
       <td className="py-3 px-space-md whitespace-nowrap">
-        {expense.receiptImageUrl ? (
-          <a
-            href={expense.receiptImageUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container-highest transition-colors"
-            title={t('transactions.table.viewReceipt')}
-          >
-            <Icon name="receipt_long" className="text-primary-container text-[18px]" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-secondary ring-2 ring-surface-container-lowest" />
-          </a>
-        ) : (
-          <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container-low text-outline-variant" title={t('transactions.table.noReceipt')}>
-            <Icon name="hide_image" className="text-[18px]" />
-          </span>
-        )}
+        {(() => {
+          const receiptHref = safeHttpUrl(expense.receiptImageUrl)
+          if (!receiptHref) {
+            return (
+              <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container-low text-outline-variant" title={t('transactions.table.noReceipt')}>
+                <Icon name="hide_image" className="text-[18px]" />
+              </span>
+            )
+          }
+          return (
+            <a
+              href={receiptHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container-highest transition-colors"
+              title={t('transactions.table.viewReceipt')}
+            >
+              <Icon name="receipt_long" className="text-primary-container text-[18px]" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-secondary ring-2 ring-surface-container-lowest" />
+            </a>
+          )
+        })()}
       </td>
       <td className="py-3 px-space-md text-right whitespace-nowrap">
         <div className="flex flex-col items-end">

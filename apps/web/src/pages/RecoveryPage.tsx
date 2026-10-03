@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Icon } from '@/components/ui/icon'
 import { AuthError, AuthLayout } from '@/components/auth/AuthLayout'
 import { SplashScreen } from '@/components/auth/SplashScreen'
+import { passwordIssueMessageKey, validatePassword } from '@/lib/password'
 
 function hashIsRecovery() {
   const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''))
@@ -74,7 +75,8 @@ export default function RecoveryPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
-    if (password.length < 6) return setError(t('auth.recovery.passwordTooShort'))
+    const passwordIssue = validatePassword(password)
+    if (passwordIssue) return setError(t(passwordIssueMessageKey(passwordIssue)))
     if (password !== confirmPassword) return setError(t('auth.recovery.passwordsMismatch'))
 
     setLoading(true)
@@ -137,6 +139,7 @@ export default function RecoveryPage() {
             autoComplete="new-password"
           />
         </div>
+        <p className="font-body-sm text-body-sm text-outline -mt-space-xs">{t('auth.password.hint')}</p>
         <Button type="submit" size="lg" className="w-full mt-space-xs" disabled={loading}>
           {loading ? t('auth.recovery.submitting') : t('auth.recovery.submit')}
           {!loading && <Icon name="arrow_forward" className="text-[18px]" />}

@@ -95,7 +95,12 @@
     "register": {
       "eyebrow": "Get started • Free",
       "title": "Create your account",
+      "titleSent": "Check your inbox",
       "subtitle": "Two minutes to set up your monthly budget and first goal.",
+      "subtitleSent": "We sent a verification link to {{email}}. Open it to finish creating your account.",
+      "checkInboxHint": "Didn’t get it? Check spam or promotions, then try signing up again with the same email.",
+      "useDifferentEmail": "Use a different email",
+      "backToSignIn": "Back to sign in",
       "footerHaveAccount": "Already have an account?",
       "signIn": "Sign in",
       "fullName": "Full name",
@@ -104,11 +109,19 @@
       "emailPlaceholder": "you@example.com",
       "password": "Password",
       "confirm": "Confirm",
-      "passwordHint": "At least 6 characters.",
+      "ageGate": "I confirm that I am 18 years of age or older.",
+      "ageRequired": "You must confirm that you are 18 or older to create an account.",
       "submit": "Create account",
       "submitting": "Creating account…",
-      "passwordsMismatch": "Passwords do not match",
-      "passwordTooShort": "Password must be at least 6 characters"
+      "passwordsMismatch": "Passwords do not match"
+    },
+    "password": {
+      "hint": "At least 8 characters, with uppercase, lowercase, a number, and a symbol.",
+      "tooShort": "Password must be at least 8 characters.",
+      "needsLower": "Password must include a lowercase letter.",
+      "needsUpper": "Password must include an uppercase letter.",
+      "needsDigit": "Password must include a number.",
+      "needsSymbol": "Password must include a symbol (for example !@#$)."
     },
     "forgot": {
       "eyebrow": "Reset password",
@@ -137,7 +150,6 @@
       "hidePassword": "Hide password",
       "submit": "Save password and continue",
       "submitting": "Saving…",
-      "passwordTooShort": "Password must be at least 6 characters",
       "passwordsMismatch": "Passwords do not match"
     }
   },

@@ -17,6 +17,7 @@ import { useSettings } from '@/hooks/useSettings'
 import { convertWithRates, useRates } from '@/hooks/useRates'
 import { formatMoney, getDisplayCurrency, toISODate } from '@/lib/format'
 import { useCreateCardCharge, useCreditCards } from '@/hooks/useCreditCards'
+import { safeHttpUrl } from '@/lib/safeUrl'
 import { ReceiptScanner } from './ReceiptScanner'
 
 interface ExpenseModalProps {
@@ -119,6 +120,8 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
       toast.error(err instanceof Error ? err.message : t('modals.expense.deleteError'))
     }
   }
+
+  const receiptHref = safeHttpUrl(receiptImageUrl)
 
   return (
     <Modal
@@ -235,11 +238,11 @@ export function ExpenseModal({ open, onClose, expense, defaultCategoryId }: Expe
           />
         </div>
 
-        {receiptImageUrl && (
+        {receiptHref && (
           <a
-            href={receiptImageUrl}
+            href={receiptHref}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="flex items-center gap-space-xs font-body-sm text-body-sm text-secondary font-medium"
           >
             <Icon name="attachment" className="text-[16px]" /> {t('modals.expense.receiptAttached')}

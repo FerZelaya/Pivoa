@@ -13,7 +13,7 @@ Pivoa uses Supabase Auth with the Google provider. The app buttons call `signInW
    - `http://127.0.0.1:5173`
    - your production web origin
 6. Authorized redirect URIs:
-   - Local Supabase: `http://127.0.0.1:54321/auth/v1/callback`
+   - Local Supabase: `http://127.0.0.1:55321/auth/v1/callback`
    - Hosted Supabase: `https://<project-ref>.supabase.co/auth/v1/callback`
 7. Copy the **Client ID** and **Client secret**.
 
